@@ -1,0 +1,33 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DevCore.Tfs2Slack.Properties" GeneratedClassName="Text">
+  <Profiles />
+  <Settings>
+    <Setting Name="PushFormat" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">@userName @pushed to &lt;@repoUri|@projectName/@repoName&gt;</Value>
+    </Setting>
+    <Setting Name="Pushed" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">pushed</Value>
+    </Setting>
+    <Setting Name="ForcePushed" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">force-pushed</Value>
+    </Setting>
+    <Setting Name="Commit" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">commit</Value>
+    </Setting>
+    <Setting Name="RefPointer" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">-&gt;</Value>
+    </Setting>
+    <Setting Name="Deleted" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">deleted</Value>
+    </Setting>
+    <Setting Name="CommitFormat" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">@action &lt;@commitUri|@commitId&gt; @authorTime @authorName *@comment*</Value>
+    </Setting>
+    <Setting Name="LinesSupressedFormat" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">@count more line(s) suppressed.</Value>
+    </Setting>
+    <Setting Name="DateTimeFormat" Type="System.String" Scope="Application">
+      <Value Profile="(Default)" />
+    </Setting>
+  </Settings>
+</SettingsFile>
