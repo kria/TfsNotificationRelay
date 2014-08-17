@@ -29,5 +29,8 @@
     <Setting Name="DateTimeFormat" Type="System.String" Scope="Application">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="BuildFormat" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">Build &lt;@buildUrl|@projectName/@buildNumber&gt; finished with status: *@buildStatus*.</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

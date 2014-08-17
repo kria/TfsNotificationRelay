@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.TeamFoundation.Build.Server">
+      <HintPath>..\lib\Microsoft.TeamFoundation.Build.Server.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.TeamFoundation.Common, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.TeamFoundation.Framework.Server">
       <HintPath>..\lib\Microsoft.TeamFoundation.Framework.Server.dll</HintPath>
@@ -56,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BuildHandler.cs" />
     <Compile Include="ByteArrayComparer.cs" />
     <Compile Include="NotificationSubscriber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,6 +76,7 @@
       <DependentUpon>Text.settings</DependentUpon>
     </Compile>
     <Compile Include="Properties\Text.cs" />
+    <Compile Include="PushHandler.cs" />
     <Compile Include="TfsHelper.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>

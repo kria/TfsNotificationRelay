@@ -103,5 +103,15 @@ namespace DevCore.Tfs2Slack.Properties {
                 return ((string)(this["DateTimeFormat"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Build <@buildUrl|@projectName/@buildNumber> finished with status: *@buildStatus*." +
+            "")]
+        public string BuildFormat {
+            get {
+                return ((string)(this["BuildFormat"]));
+            }
+        }
     }
 }

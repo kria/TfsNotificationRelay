@@ -70,6 +70,15 @@ namespace DevCore.Tfs2Slack.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#68217a")]
+        public string SlackColor {
+            get {
+                return ((string)(this["SlackColor"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool StripUserDomain {
             get {
@@ -106,10 +115,28 @@ namespace DevCore.Tfs2Slack.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#68217a")]
-        public string SlackColor {
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool NotifyOnPush {
             get {
-                return ((string)(this["SlackColor"]));
+                return ((bool)(this["NotifyOnPush"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool NotifyOnBuildSucceeded {
+            get {
+                return ((bool)(this["NotifyOnBuildSucceeded"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool NotifyOnBuildFailed {
+            get {
+                return ((bool)(this["NotifyOnBuildFailed"]));
             }
         }
     }

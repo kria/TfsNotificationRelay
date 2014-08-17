@@ -52,5 +52,14 @@ namespace DevCore.Tfs2Slack.Properties
             return LinesSupressedFormat.Replace("@count", count.ToString());
         }
 
+        public string FormatBuildText(string buildUrl, string projectName, string buildNumber, string buildStatus)
+        {
+            return BuildFormat
+                .Replace("@buildUrl", buildUrl)
+                .Replace("@projectName", projectName)
+                .Replace("@buildNumber", buildNumber)
+                .Replace("@buildStatus", buildStatus);
+        }
+
     }
 }
