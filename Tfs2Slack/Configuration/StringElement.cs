@@ -13,17 +13,20 @@
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DevCore.Tfs2Slack.Properties
+namespace DevCore.Tfs2Slack.Configuration
 {
-    partial class Settings
+    public class StringElement : ConfigurationElement
     {
-        Settings() : base(new AssemblySettings.ConfigurationFileApplicationSettings(
-                Assembly.GetExecutingAssembly(), typeof(Settings)
-                )) { }
+        [ConfigurationProperty("value")]
+        public string Value
+        {
+            get { return (string)this["value"]; }
+            set { this["value"] = value; }
+        }
     }
 }

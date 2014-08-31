@@ -21,18 +21,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using Microsoft.TeamFoundation.Build.Server;
+using DevCore.Tfs2Slack.Configuration;
 
 namespace DevCore.Tfs2Slack
 {
     class NotificationSubscriber : ISubscriber
     {
-        private Properties.Settings settings = Properties.Settings.Default;
-        private Properties.Text text = Properties.Text.Default;
-
         public string Name
         {
             get { return "Tfs2Slack handler"; }
@@ -45,7 +41,12 @@ namespace DevCore.Tfs2Slack
 
         public Type[] SubscribedTypes()
         {
-            return new Type[] { typeof(PushNotification), typeof(BuildCompletionNotificationEvent) };
+            return new Type[] { 
+                typeof(PushNotification),
+                typeof(BuildCompletionNotificationEvent),
+                typeof(ProjectCreatedEvent),
+                typeof(ProjectDeletedEvent) 
+            };
         }
 
         public EventNotificationStatus ProcessEvent(TeamFoundationRequestContext requestContext, NotificationType notificationType,
@@ -60,106 +61,70 @@ namespace DevCore.Tfs2Slack
 
             try
             {
-                Log(String.Format("notificationType={0}, notificationEventArgs={1}", notificationType, notificationEventArgs));
+                Logger.Log("notificationType={0}, notificationEventArgs={1}", notificationType, notificationEventArgs);
 
-                List<string> lines = null;
+                var config = Configuration.Tfs2SlackSection.Instance;
+                
+                if (notificationType == NotificationType.Notification)
+                {
+                    IEventHandler handler = EventHandlerFactory.GetHandler(notificationEventArgs);
 
-                if (notificationType == NotificationType.Notification && notificationEventArgs is PushNotification)
-                {
-                    lines = PushHandler.CreateMessage(requestContext, notificationEventArgs as PushNotification);
-                }
-                else if (notificationType == NotificationType.Notification && notificationEventArgs is BuildCompletionNotificationEvent)
-                {
-                    lines = BuildHandler.CreateMessage(requestContext, notificationEventArgs as BuildCompletionNotificationEvent); 
-                }
-
-                if (lines != null && lines.Count > 0)
-                {
-                    //Log(lines);
-                    List<string> sendLines = lines;
-                    if (lines != null && lines.Count > settings.MaxLines)
+                    foreach (var bot in config.Bots)
                     {
-                        sendLines = lines.Take(settings.MaxLines).ToList();
-                        sendLines.Add(text.FormatLinesSupressedText(lines.Count - settings.MaxLines));
-                    }
+                        IList<string> lines = handler.ProcessEvent(requestContext, notificationEventArgs, bot);
+                        if (lines != null && lines.Count > 0)
+                        {
+                            IList<string> sendLines = lines;
+                            if (lines != null && lines.Count > config.Settings.MaxLines)
+                            {
+                                int supressedLines = lines.Count - config.Settings.MaxLines;
+                                lines = lines.Take(config.Settings.MaxLines).ToList();
+                                lines.Add(config.Text.FormatLinesSupressedText(supressedLines));
+                            }
 
-                    Task.Run(() => SendToSlack(sendLines));
+                            var channels = bot.SlackChannels.Split(',')
+                                .Select(chan => new Slack.PayloadSettings(bot.SlackWebhookUrl, chan.Trim(), bot.SlackUsername, 
+                                    bot.SlackIconEmoji, bot.SlackIconUrl,bot.SlackColor));
+
+                            foreach (var chan in channels)
+                            {
+                                SendToSlack(lines, chan);
+                            }
+                        }
+                    } 
                 }
                 
             }
             catch (Exception ex)
             {
-                Log(ex);
+                Logger.Log(ex);
             }
             finally
             {
                 timer.Stop();
-                Log("Time spent in ProcessEvent: " + timer.Elapsed);
+                Logger.Log("Time spent in ProcessEvent: " + timer.Elapsed);
             }
 
             return EventNotificationStatus.ActionPermitted;
         }
 
-        private void SendToSlack(IEnumerable<string> lines)
+        private async void SendToSlack(IEnumerable<string> lines, Slack.PayloadSettings settings)
         {
             try
             {
-                dynamic json = JObject.FromObject(new
+                using (var slackClient = new SlackClient())
                 {
-                    channel = settings.SlackChannel,
-                    username = settings.SlackUsername,
-                    attachments = new[] {
-                        new {
-                            fallback = lines.First(),
-                            pretext = lines.First(),
-                            color = settings.SlackColor,
-                            mrkdwn_in = new [] { "pretext", "text", "title", "fields", "fallback" },
-                            fields = from line in lines.Skip(1) select new { value = line, @short = false }
-                        }
-                    }
-                });
-                if (!String.IsNullOrEmpty(settings.SlackIconUrl))
-                    json.icon_url = settings.SlackIconUrl;
-                else if (!String.IsNullOrEmpty(settings.SlackIconEmoji))
-                    json.icon_emoji = settings.SlackIconEmoji;
-
-                Log(json.ToString());
-
-                using (var client = new HttpClient())
-                {
-                    var content = new StringContent(json.ToString(), Encoding.UTF8, "application/json");
-                    var result = client.PostAsync(settings.SlackWebhookUrl, content).Result;
+                    var result = await slackClient.SendMessageAsync(lines, settings);
                     result.EnsureSuccessStatusCode();
                 }
             }
             catch (Exception ex)
             {
-                Log(ex);
+                Logger.Log(ex);
             }
+                
         }
 
-        private void Log(IEnumerable<string> lines)
-        {
-            if (String.IsNullOrEmpty(settings.Logfile)) return;
-
-            using (StreamWriter sw = File.AppendText(settings.Logfile))
-            {
-                foreach (string line in lines)
-                {
-                    sw.WriteLine("[{0}] {1}", DateTime.Now, line);
-                }
-            }
-        }
-        private void Log(string line)
-        {
-            Log(new[] { line });
-        }
-        private void Log(Exception ex)
-        {
-            Log(ex.ToString());
-        }
-
-        
     }
 
 }

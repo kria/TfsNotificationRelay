@@ -1,4 +1,18 @@
-﻿using Microsoft.TeamFoundation.Framework.Server;
+﻿/*
+ * Tfs2Slack - http://github.com/kria/Tfs2Slack
+ * 
+ * Copyright (C) 2014 Kristian Adrup
+ * 
+ * This file is part of Tfs2Slack.
+ * 
+ * Tfs2Slack is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or (at your
+ * option) any later version. See included file COPYING for details.
+ */
+
+using DevCore.Tfs2Slack.Configuration;
+using Microsoft.TeamFoundation.Framework.Server;
 using Microsoft.TeamFoundation.Git.Server;
 using Microsoft.TeamFoundation.Integration.Server;
 using System;
@@ -7,15 +21,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DevCore.Tfs2Slack
+namespace DevCore.Tfs2Slack.EventHandlers
 {
-    class PushHandler
+    class GitPushHandler : IEventHandler
     {
-        private static Properties.Settings settings = Properties.Settings.Default;
-        private static Properties.Text text = Properties.Text.Default;
+        private static Configuration.SettingsElement settings = Configuration.Tfs2SlackSection.Instance.Settings;
+        private static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
 
-        public static List<string> CreateMessage(TeamFoundationRequestContext requestContext, PushNotification pushNotification)
+        public IList<string> ProcessEvent(TeamFoundationRequestContext requestContext, object notificationEventArgs, Configuration.BotElement bot)
         {
+            var pushNotification = (PushNotification)notificationEventArgs;
+            if (!bot.NotifyOn.HasFlag(TfsEvents.GitPush)) return null;
             var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
             var commonService = requestContext.GetService<CommonStructureService>();
 
