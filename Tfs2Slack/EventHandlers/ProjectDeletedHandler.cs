@@ -29,7 +29,7 @@ namespace DevCore.Tfs2Slack.EventHandlers
         {
             var ev = (ProjectDeletedEvent)notificationEventArgs;
             if (!bot.NotifyOn.HasFlag(TfsEvents.ProjectDeleted)) return null;
-            return new string[] { text.FormatProjectDeletedText(ev.Uri) };
+            return new[] { text.ProjectDeletedFormat.FormatWith(new { ProjectUri = ev.Uri }) };
         }
     }
 }

@@ -81,7 +81,7 @@ namespace DevCore.Tfs2Slack
                             {
                                 int supressedLines = lines.Count - config.Settings.MaxLines;
                                 lines = lines.Take(config.Settings.MaxLines).ToList();
-                                lines.Add(config.Text.FormatLinesSupressedText(supressedLines));
+                                lines.Add(config.Text.LinesSupressedFormat.FormatWith(new { Count = supressedLines }));
                             }
 
                             var channels = bot.SlackChannels.Split(',')

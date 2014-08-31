@@ -58,8 +58,13 @@ namespace DevCore.Tfs2Slack.EventHandlers
                     projectLinks.Add(projectName, String.Format("<{0}|{1}>", projectUrl, projectName));
                 }
             }
-            string message = text.FormatCheckinText(userName, changesetUrl, checkin.Changeset, checkin.Comment,
-                String.Join(", ", projectLinks.Values.Select(x => x)));
+            string message = text.CheckinFormat.FormatWith(new { 
+                UserName = userName, 
+                ChangesetUrl = changesetUrl, 
+                ChangesetId = checkin.Changeset, 
+                ProjectLinks = String.Join(", ", projectLinks.Values.Select(x => x)),
+                Comment = checkin.Comment
+            });
 
             return new string[] { message };   
         }

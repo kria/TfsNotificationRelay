@@ -45,7 +45,13 @@ namespace DevCore.Tfs2Slack.EventHandlers
                     build.TeamProject,
                     build.Uri);
                 
-                lines.Add(text.FormatBuildText(buildUrl, build.TeamProject, build.BuildNumber, build.Status.ToString()));
+                lines.Add(text.BuildFormat.FormatWith(new
+                {
+                    BuildUrl = buildUrl,
+                    ProjectName = build.TeamProject,
+                    BuildNumber = build.BuildNumber,
+                    BuildStatuses = build.Status
+                }));
             }
 
             return lines;

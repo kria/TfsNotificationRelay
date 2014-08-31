@@ -45,7 +45,14 @@ namespace DevCore.Tfs2Slack.EventHandlers
 
                 var lines = new List<string>();
 
-                lines.Add(text.FormatPushText(userName, repoUri, projectName, repoName, pushNotification.IsForceRequired(requestContext, repository)));
+                lines.Add(text.PushFormat.FormatWith(new
+                {
+                    UserName = userName,
+                    Pushed = pushNotification.IsForceRequired(requestContext, repository) ? text.ForcePushed : text.Pushed,
+                    RepoUri = repoUri,
+                    ProjectName = projectName,
+                    RepoName = repoName
+                }));
 
                 var refNames = new Dictionary<byte[], List<string>>(new ByteArrayComparer());
                 var oldCommits = new HashSet<byte[]>(new ByteArrayComparer());
@@ -179,7 +186,16 @@ namespace DevCore.Tfs2Slack.EventHandlers
             StringBuilder sb = new StringBuilder();
             List<string> names = null;
             if (refNames.TryGetValue(gitCommit.ObjectId, out names)) sb.AppendFormat("{0} ", String.Concat(names));
-            sb.Append(text.FormatCommitText(action, commitUri, gitCommit.ObjectId.ToShortHexString(), authorTime, authorName, comment.Truncate(settings.CommentMaxLength)));
+            string formattedTime = String.IsNullOrEmpty(text.DateTimeFormat) ? authorTime.ToString() : authorTime.ToString(text.DateTimeFormat);
+            sb.Append(text.CommitFormat.FormatWith(new
+            {
+                Action = action,
+                CommitUri = commitUri,
+                CommitId = gitCommit.ObjectId.ToShortHexString(),
+                AuthorTime = formattedTime,
+                AuthorName = authorName,
+                Comment = comment.Truncate(settings.CommentMaxLength)
+            }));
 
             return sb.ToString();
         }

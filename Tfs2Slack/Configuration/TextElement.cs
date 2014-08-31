@@ -99,64 +99,6 @@ namespace DevCore.Tfs2Slack.Configuration
         {
             get { return (string)this["checkinFormat"]; }
         }
-        
 
-        public string FormatPushText(string userName, string repoUri, string projectName, string repoName, bool isForcePush)
-        {
-            return PushFormat
-                .Replace("@userName", userName)
-                .Replace("@pushed", isForcePush ? ForcePushed : Pushed)
-                .Replace("@repoUri", repoUri)
-                .Replace("@projectName", projectName)
-                .Replace("@repoName", repoName);
-        }
-
-        public string FormatCommitText(string action, string commitUri, string commitId, DateTime authorTime, string authorName, string comment)
-        {
-            string formattedTime = String.IsNullOrEmpty(DateTimeFormat) ? authorTime.ToString() : authorTime.ToString(DateTimeFormat);
-            return CommitFormat
-                .Replace("@action", action)
-                .Replace("@commitUri", commitUri)
-                .Replace("@commitId", commitId)
-                .Replace("@authorTime", formattedTime)
-                .Replace("@authorName", authorName)
-                .Replace("@comment", comment);
-        }
-
-        public string FormatLinesSupressedText(int count)
-        {
-            return LinesSupressedFormat.Replace("@count", count.ToString());
-        }
-
-        public string FormatBuildText(string buildUrl, string projectName, string buildNumber, string buildStatus)
-        {
-            return BuildFormat
-                .Replace("@buildUrl", buildUrl)
-                .Replace("@projectName", projectName)
-                .Replace("@buildNumber", buildNumber)
-                .Replace("@buildStatus", buildStatus);
-        }
-
-        public string FormatProjectCreatedText(string projectUrl, string projectName)
-        {
-            return ProjectCreatedFormat
-                .Replace("@projectUrl", projectUrl)
-                .Replace("@projectName", projectName);
-        }
-
-        public string FormatProjectDeletedText(string projectUri)
-        {
-            return ProjectDeletedFormat.Replace("@projectUri", projectUri);
-        }
-
-        public string FormatCheckinText(string userName, string changesetUrl, int changesetId, string comment, string projectLinks)
-        {
-            return CheckinFormat
-                .Replace("@userName", userName)
-                .Replace("@changesetUrl", changesetUrl)
-                .Replace("@changesetId", changesetId.ToString())
-                .Replace("@comment", comment)
-                .Replace("@projectLinks", projectLinks);
-        }
     }
 }

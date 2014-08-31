@@ -37,7 +37,7 @@ namespace DevCore.Tfs2Slack.EventHandlers
                 requestContext.ServiceHost.Name,
                 ev.Name);
 
-            return new string[] { text.FormatProjectCreatedText(projectUrl, ev.Name) };
+            return new [] { text.ProjectCreatedFormat.FormatWith(new { ProjectUrl = projectUrl, ProjectName = ev.Name }) };
         }
     }
 }
