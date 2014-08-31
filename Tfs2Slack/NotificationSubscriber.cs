@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using Microsoft.TeamFoundation.Build.Server;
 using DevCore.Tfs2Slack.Configuration;
+using Microsoft.TeamFoundation.VersionControl.Server;
 
 namespace DevCore.Tfs2Slack
 {
@@ -45,7 +46,8 @@ namespace DevCore.Tfs2Slack
                 typeof(PushNotification),
                 typeof(BuildCompletionNotificationEvent),
                 typeof(ProjectCreatedEvent),
-                typeof(ProjectDeletedEvent) 
+                typeof(ProjectDeletedEvent),
+                typeof(CheckinNotification)
             };
         }
 

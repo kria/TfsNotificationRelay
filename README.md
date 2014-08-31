@@ -22,7 +22,7 @@ Tfs2Slack is a plugin for Team Foundation Server 2013 that sends notifications t
   - [x] Lightweight/annotated tag
   - [x] Force-push
 - TFVC
-  - [ ] Checkin
+  - [x] Checkin
   - [ ] Label
 - [ ] Work items
 

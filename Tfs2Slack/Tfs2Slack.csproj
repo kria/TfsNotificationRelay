@@ -43,6 +43,9 @@
     <Reference Include="Microsoft.TeamFoundation.Server.Core">
       <HintPath>..\lib\Microsoft.TeamFoundation.Server.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.TeamFoundation.VersionControl.Server">
+      <HintPath>..\lib\Microsoft.TeamFoundation.VersionControl.Server.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.WebApi, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -69,6 +72,7 @@
     <Compile Include="EventHandlers\BuildCompletionHandler.cs" />
     <Compile Include="ByteArrayComparer.cs" />
     <Compile Include="EventHandlerFactory.cs" />
+    <Compile Include="EventHandlers\CheckinHandler.cs" />
     <Compile Include="EventHandlers\ProjectCreatedHandler.cs" />
     <Compile Include="EventHandlers\ProjectDeletedHandler.cs" />
     <Compile Include="IEventHandler.cs" />

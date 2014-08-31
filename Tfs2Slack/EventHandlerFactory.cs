@@ -22,6 +22,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DevCore.Tfs2Slack.EventHandlers;
 using DevCore.Tfs2Slack.Configuration;
+using Microsoft.TeamFoundation.VersionControl.Server;
 
 namespace DevCore.Tfs2Slack
 {
@@ -37,6 +38,8 @@ namespace DevCore.Tfs2Slack
                 return new ProjectCreatedHandler();
             else if (notificationEventArgs is ProjectDeletedEvent)
                 return new ProjectDeletedHandler();
+            else if (notificationEventArgs is CheckinNotification)
+                return new CheckinHandler();
             else
                 throw new NotImplementedException();
                 

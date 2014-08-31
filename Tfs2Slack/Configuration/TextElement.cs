@@ -94,6 +94,13 @@ namespace DevCore.Tfs2Slack.Configuration
             get { return (string)this["projectDeletedFormat"]; }
         }
 
+        [ConfigurationProperty("checkinFormat")]
+        public string CheckinFormat
+        {
+            get { return (string)this["checkinFormat"]; }
+        }
+        
+
         public string FormatPushText(string userName, string repoUri, string projectName, string repoName, bool isForcePush)
         {
             return PushFormat
@@ -140,6 +147,16 @@ namespace DevCore.Tfs2Slack.Configuration
         public string FormatProjectDeletedText(string projectUri)
         {
             return ProjectDeletedFormat.Replace("@projectUri", projectUri);
+        }
+
+        public string FormatCheckinText(string userName, string changesetUrl, int changesetId, string comment, string projectLinks)
+        {
+            return CheckinFormat
+                .Replace("@userName", userName)
+                .Replace("@changesetUrl", changesetUrl)
+                .Replace("@changesetId", changesetId.ToString())
+                .Replace("@comment", comment)
+                .Replace("@projectLinks", projectLinks);
         }
     }
 }

@@ -24,10 +24,11 @@ namespace DevCore.Tfs2Slack
     {
         None = 0,
         GitPush = 1,
-        BuildSucceeded = 1,
-        BuildFailed = 2,
-        ProjectCreated = 4,
-        ProjectDeleted = 8,
+        BuildSucceeded = 2,
+        BuildFailed = 4,
+        ProjectCreated = 8,
+        ProjectDeleted = 16,
+        Checkin = 32,
         All = 0xFFFFFFFF
     }
 }
