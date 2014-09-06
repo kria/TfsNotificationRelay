@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using DevCore.Tfs2Slack.EventHandlers;
 using DevCore.Tfs2Slack.Configuration;
 using Microsoft.TeamFoundation.VersionControl.Server;
+using Microsoft.TeamFoundation.WorkItemTracking.Server;
 
 namespace DevCore.Tfs2Slack
 {
@@ -40,6 +41,8 @@ namespace DevCore.Tfs2Slack
                 return new ProjectDeletedHandler();
             else if (notificationEventArgs is CheckinNotification)
                 return new CheckinHandler();
+            else if (notificationEventArgs is WorkItemChangedEvent)
+                return new WorkItemChangedHandler();
             else
                 throw new NotImplementedException();
                 

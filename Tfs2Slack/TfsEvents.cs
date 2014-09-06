@@ -29,6 +29,8 @@ namespace DevCore.Tfs2Slack
         ProjectCreated = 8,
         ProjectDeleted = 16,
         Checkin = 32,
+        WorkItemStateChange = 64,
+        WorkItemAssignmentChange = 128,
         All = 0xFFFFFFFF
     }
 }
