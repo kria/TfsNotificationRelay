@@ -28,9 +28,14 @@ namespace DevCore.Tfs2Slack
             return BitConverter.ToString(buffer).Replace("-", "").ToLower();
         }
 
+        public static string ToHexString(this byte[] buffer, int length)
+        {
+            return buffer.ToHexString().Substring(0, length);
+        }
+
         public static string ToShortHexString(this byte[] buffer)
         {
-            return buffer.ToHexString().Substring(0, 6);
+            return buffer.ToHexString().Substring(0, 7);
         }
 
         public static bool IsZero(this byte[] buffer)

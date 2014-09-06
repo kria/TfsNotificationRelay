@@ -100,5 +100,36 @@ namespace DevCore.Tfs2Slack.Configuration
             get { return (string)this["checkinFormat"]; }
         }
 
+        [ConfigurationProperty("countAddFormat")]
+        public string CountAddFormat
+        {
+            get { return (string)this["countAddFormat"]; }
+        }
+
+        [ConfigurationProperty("countDeleteFormat")]
+        public string CountDeleteFormat
+        {
+            get { return (string)this["countDeleteFormat"]; }
+        }
+
+        [ConfigurationProperty("countEditFormat")]
+        public string CountEditFormat
+        {
+            get { return (string)this["countEditFormat"]; }
+        }
+
+        [ConfigurationProperty("countRenameFormat")]
+        public string CountRenameFormat
+        {
+            get { return (string)this["countRenameFormat"]; }
+        }
+
+        [ConfigurationProperty("countSourceRenameFormat")]
+        public string CountSourceRenameFormat
+        {
+            get { return (string)this["countSourceRenameFormat"]; }
+        }
+
+        
     }
 }

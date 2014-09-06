@@ -177,11 +177,16 @@ namespace DevCore.Tfs2Slack.EventHandlers
         private static string CommitToString(TeamFoundationRequestContext requestContext, TfsGitCommit gitCommit, string action, PushNotification pushNotification,
             Dictionary<byte[], List<string>> refNames)
         {
+            var commitService = requestContext.GetService<TeamFoundationGitCommitService>();
+            var commitManifest = commitService.GetCommitManifest(requestContext, gitCommit.Repository, gitCommit.ObjectId);            
             string repoUri = gitCommit.Repository.GetRepositoryUri(requestContext);
             string commitUri = repoUri + "/commit/" + gitCommit.ObjectId.ToHexString();
             DateTime authorTime = gitCommit.GetLocalAuthorTime(requestContext);
-            string authorName = gitCommit.GetAuthor(requestContext);
+            string author = gitCommit.GetAuthor(requestContext);
+            string authorName = gitCommit.GetAuthorName(requestContext);
+            string authorEmail = gitCommit.GetAuthorEmail(requestContext);
             string comment = gitCommit.GetComment(requestContext);
+            var changeCounts = String.Join(", ", commitManifest.ChangeCounts.Select(c => ChangeCountToString(c)));
 
             StringBuilder sb = new StringBuilder();
             List<string> names = null;
@@ -191,13 +196,29 @@ namespace DevCore.Tfs2Slack.EventHandlers
             {
                 Action = action,
                 CommitUri = commitUri,
-                CommitId = gitCommit.ObjectId.ToShortHexString(),
+                CommitId = gitCommit.ObjectId.ToHexString(settings.HashLength),
+                ChangeCounts = changeCounts,
                 AuthorTime = formattedTime,
+                Author = author,
                 AuthorName = authorName,
+                AuthorEmail = authorEmail,
                 Comment = comment.Truncate(settings.CommentMaxLength)
             }));
 
             return sb.ToString();
+        }
+
+        private static string ChangeCountToString(KeyValuePair<TfsGitChangeType, int> changeCount) {
+            string format = null;
+            switch (changeCount.Key)
+            {
+                case TfsGitChangeType.Add: format = text.CountAddFormat; break;
+                case TfsGitChangeType.Delete: format = text.CountDeleteFormat; break;
+                case TfsGitChangeType.Edit: format = text.CountEditFormat; break;
+                case TfsGitChangeType.Rename: format = text.CountRenameFormat; break;
+                case TfsGitChangeType.SourceRename: format = text.CountSourceRenameFormat; break;
+            }
+            return format.FormatWith(new { Count = changeCount.Value });
         }
     }
 

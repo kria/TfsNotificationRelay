@@ -45,5 +45,11 @@ namespace DevCore.Tfs2Slack.Configuration
         {
             get { return (int)this["maxLines"]; }
         }
+
+        [ConfigurationProperty("hashLength")]
+        public int HashLength
+        {
+            get { return (int)this["hashLength"]; }
+        }
     }
 }
