@@ -20,7 +20,7 @@
         <xs:element name="bots">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="bot">
+              <xs:element name="bot" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="eventRules">
