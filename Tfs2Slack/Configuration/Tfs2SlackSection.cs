@@ -49,5 +49,23 @@ namespace DevCore.Tfs2Slack.Configuration
             get { return (TextElement)this["text"]; }
         }
 
+        [ConfigurationProperty("xmlns")]
+        public string Xmlns
+        {
+            get { return (string)this["xmlns"]; }
+        }
+
+        [ConfigurationProperty("xmlns:xsi")]
+        public string XmlnsXsi
+        {
+            get { return (string)this["xmlns:xsi"]; }
+        }
+
+        [ConfigurationProperty("xsi:noNamespaceSchemaLocation")]
+        public string XsiNoNamespaceSchemaLocation
+        {
+            get { return (string)this["xsi:noNamespaceSchemaLocation"]; }
+        }
+
     }
 }

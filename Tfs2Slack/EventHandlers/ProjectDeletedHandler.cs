@@ -21,15 +21,22 @@ using System.Threading.Tasks;
 
 namespace DevCore.Tfs2Slack.EventHandlers
 {
-    class ProjectDeletedHandler : IEventHandler
+    class ProjectDeletedHandler : BaseHandler
     {
-        private static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
-
-        public IList<string> ProcessEvent(TeamFoundationRequestContext requestContext, object notificationEventArgs, Configuration.BotElement bot)
+        protected override IList<string> _ProcessEvent(TeamFoundationRequestContext requestContext, object notificationEventArgs, Configuration.BotElement bot)
         {
             var ev = (ProjectDeletedEvent)notificationEventArgs;
-            if (!bot.NotifyOn.HasFlag(TfsEvents.ProjectDeleted)) return null;
+            if (!IsNotificationMatch(bot)) return null;
             return new[] { text.ProjectDeletedFormat.FormatWith(new { ProjectUri = ev.Uri }) };
+        }
+
+        public bool IsNotificationMatch(Configuration.BotElement bot)
+        {
+            var rule = bot.EventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.ProjectDeleted));
+
+            if (rule != null) return rule.Notify;
+
+            return false;
         }
     }
 }

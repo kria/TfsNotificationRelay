@@ -18,18 +18,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DevCore.Tfs2Slack.EventHandlers
 {
-    class ProjectCreatedHandler : IEventHandler
+    class ProjectCreatedHandler : BaseHandler
     {
-        private static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
-
-        public IList<string> ProcessEvent(TeamFoundationRequestContext requestContext, object notificationEventArgs, Configuration.BotElement bot)
+        protected override IList<string> _ProcessEvent(TeamFoundationRequestContext requestContext, object notificationEventArgs, Configuration.BotElement bot)
         {
             var ev = (ProjectCreatedEvent)notificationEventArgs;
-            if (!bot.NotifyOn.HasFlag(TfsEvents.ProjectCreated)) return null;
+            if (!IsNotificationMatch(bot, ev.Name)) return null;
             var locationService = requestContext.GetService<TeamFoundationLocationService>();
 
             string projectUrl = String.Format("{0}/{1}/{2}",
@@ -38,6 +37,16 @@ namespace DevCore.Tfs2Slack.EventHandlers
                 ev.Name);
 
             return new [] { text.ProjectCreatedFormat.FormatWith(new { ProjectUrl = projectUrl, ProjectName = ev.Name }) };
+        }
+
+        public bool IsNotificationMatch(Configuration.BotElement bot, string projectName)
+        {
+            var rule = bot.EventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.ProjectCreated)
+                && (String.IsNullOrEmpty(r.TeamProject) || Regex.IsMatch(projectName, r.TeamProject)));
+
+            if (rule != null) return rule.Notify;
+
+            return false;
         }
     }
 }

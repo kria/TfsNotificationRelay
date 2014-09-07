@@ -69,10 +69,13 @@
     <Compile Include="Configuration\ConfigurationHelper.cs" />
     <Compile Include="Configuration\BotElement.cs" />
     <Compile Include="Configuration\BotElementCollection.cs" />
+    <Compile Include="Configuration\EventRuleCollection.cs" />
+    <Compile Include="Configuration\EventRuleElement.cs" />
     <Compile Include="Configuration\SettingsElement.cs" />
     <Compile Include="Configuration\StringElement.cs" />
     <Compile Include="Configuration\TextElement.cs" />
     <Compile Include="Configuration\Tfs2SlackSection.cs" />
+    <Compile Include="EventHandlers\BaseHandler.cs" />
     <Compile Include="EventHandlers\BuildCompletionHandler.cs" />
     <Compile Include="ByteArrayComparer.cs" />
     <Compile Include="EventHandlerFactory.cs" />
@@ -96,6 +99,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="Tfs2Slack.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

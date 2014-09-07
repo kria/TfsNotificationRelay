@@ -19,23 +19,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace DevCore.Tfs2Slack.EventHandlers
 {
-    class BuildCompletionHandler : IEventHandler
+    class BuildCompletionHandler : BaseHandler
     {
-        private static Configuration.SettingsElement settings = Configuration.Tfs2SlackSection.Instance.Settings;
-        private static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
-
-        public IList<string> ProcessEvent(TeamFoundationRequestContext requestContext, object notificationEventArgs, Configuration.BotElement bot)
+        protected override IList<string> _ProcessEvent(TeamFoundationRequestContext requestContext, object notificationEventArgs, Configuration.BotElement bot)
         {
             var buildNotification = (BuildCompletionNotificationEvent)notificationEventArgs;
+            var build = buildNotification.Build;
+            
             var lines = new List<string>();
 
-            var build = buildNotification.Build;
-
-            if (bot.NotifyOn.HasFlag(TfsEvents.BuildSucceeded) && build.Status.HasFlag(BuildStatus.Succeeded) ||
-                (bot.NotifyOn.HasFlag(TfsEvents.BuildFailed) && build.Status.HasFlag(BuildStatus.Failed)))
+            if (IsNotificationMatch(build, bot))
             {
                 var locationService = requestContext.GetService<TeamFoundationLocationService>();
 
@@ -55,6 +52,23 @@ namespace DevCore.Tfs2Slack.EventHandlers
             }
 
             return lines;
+        }
+
+        private bool IsNotificationMatch(BuildDetail build, Configuration.BotElement bot)
+        {
+            foreach (var rule in bot.EventRules)
+            {
+                if (build.Status.HasFlag(BuildStatus.Succeeded) && rule.Events.HasFlag(TfsEvents.BuildSucceeded)
+                    || build.Status.HasFlag(BuildStatus.Failed) && rule.Events.HasFlag(TfsEvents.BuildFailed))
+                {
+                    if ((String.IsNullOrEmpty(rule.TeamProject) || Regex.IsMatch(build.TeamProject, rule.TeamProject))
+                        && (String.IsNullOrEmpty(rule.BuildDefinition) || Regex.IsMatch(build.BuildNumber, rule.BuildDefinition)))
+                    {
+                        return rule.Notify;
+                    }
+                }
+            }
+            return false;
         }
 
     }

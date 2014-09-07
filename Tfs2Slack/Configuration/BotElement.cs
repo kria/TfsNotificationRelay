@@ -64,10 +64,12 @@ namespace DevCore.Tfs2Slack.Configuration
             get { return (string)this["slackColor"]; }
         }
 
-        [ConfigurationProperty("notifyOn")]
-        public TfsEvents NotifyOn
+        [ConfigurationProperty("eventRules", IsDefaultCollection = false)]
+        [ConfigurationCollection(typeof(EventRuleCollection),
+            AddItemName = "rule")]
+        public EventRuleCollection EventRules
         {
-            get { return (TfsEvents)this["notifyOn"]; }
+            get { return (EventRuleCollection)base["eventRules"]; }
         }
     }
 }

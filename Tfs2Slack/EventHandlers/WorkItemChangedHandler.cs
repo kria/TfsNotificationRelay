@@ -20,21 +20,17 @@ using Microsoft.TeamFoundation.Framework.Server;
 using Microsoft.TeamFoundation.WorkItemTracking.Server;
 using Microsoft.TeamFoundation.Integration.Server;
 using Microsoft.TeamFoundation.Server.Core;
-using Microsoft.VisualStudio.Services.Identity;
 using Microsoft.TeamFoundation.Framework.Common;
+using System.Text.RegularExpressions;
 
 namespace DevCore.Tfs2Slack.EventHandlers
 {
-    class WorkItemChangedHandler :  IEventHandler
+    class WorkItemChangedHandler :  BaseHandler
     {
-        private static Configuration.SettingsElement settings = Configuration.Tfs2SlackSection.Instance.Settings;
-        private static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
-
-        public IList<string> ProcessEvent(TeamFoundationRequestContext requestContext, object notificationEventArgs, Configuration.BotElement bot)
+        protected override IList<string> _ProcessEvent(TeamFoundationRequestContext requestContext, object notificationEventArgs, Configuration.BotElement bot)
         {
             var ev = (WorkItemChangedEvent)notificationEventArgs;
-            if (bot.NotifyOn.HasFlag(TfsEvents.WorkItemStateChange) && ev.ChangedFields.StringFields.Any(f => f.ReferenceName == "System.State") ||
-                bot.NotifyOn.HasFlag(TfsEvents.WorkItemAssignmentChange) && ev.ChangedFields.StringFields.Any(f => f.ReferenceName == "System.AssignedTo"))
+            if (IsNotificationMatch(bot, ev, ev.PortfolioProject))
             {
                 var identityService = requestContext.GetService<TeamFoundationIdentityService>();
                 var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.Identifier, ev.ChangerSid);
@@ -54,6 +50,21 @@ namespace DevCore.Tfs2Slack.EventHandlers
                 return new[] { msg };
             }
             else return null;
+        }
+
+        public bool IsNotificationMatch(Configuration.BotElement bot, WorkItemChangedEvent ev, string projectName)
+        {
+            bool isStateChanged = ev.ChangedFields.StringFields.Any(f => f.ReferenceName == "System.State");
+            bool isAssignmentChanged = ev.ChangedFields.StringFields.Any(f => f.ReferenceName == "System.AssignedTo");
+
+            var rule = bot.EventRules.FirstOrDefault(r =>
+                (r.Events.HasFlag(TfsEvents.WorkItemStateChange) && isStateChanged
+                || r.Events.HasFlag(TfsEvents.WorkItemAssignmentChange) && isAssignmentChanged)
+                && (String.IsNullOrEmpty(r.TeamProject) || Regex.IsMatch(projectName, r.TeamProject)));
+
+            if (rule != null) return rule.Notify;
+
+            return false;
         }
     }
 }

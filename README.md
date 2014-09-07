@@ -5,14 +5,15 @@ Tfs2Slack is a plugin for Team Foundation Server 2013 that sends notifications t
 ## Features and TODO
 
 - [x] Notify multiple Slack organizations and channels
-- [x] Event type filtering
+- [x] Rule-based event filtering
+- [x] Project/repository regex filtering
 - [x] Configurable notification format
-- [x] Link to events in TFS
-- [ ] Team project/repository filtering
+- [x] Notification links to event in TFS web
 
 ### Events
 
 - [x] Build completion
+- [x] Work item update
 - [x] Team project creation/deletion
 - Git
   - [x] Push
@@ -23,8 +24,7 @@ Tfs2Slack is a plugin for Team Foundation Server 2013 that sends notifications t
   - [x] Force-push
 - TFVC
   - [x] Checkin
-  - [ ] Label
-- [ ] Work items
+- [ ] Code reviews
 
 ## Screenshot
 
@@ -42,8 +42,8 @@ Install the Tfs2Slack plugin by dropping `DevCore.Tfs2Slack.dll`, `DevCore.Tfs2S
 
 ## TFS 2013 version support
 
-Because of a breaking API change in TFS 2013 Update 2, the plugin as is only works for TFS 2013 update 2 (and possibly later).
-I will publish a branch with support for previous TFS 2013 versions at a later date, and also try it on update 3.
+Because of a breaking API change in TFS 2013 Update 2, the plugin as is only works for TFS 2013 update 2 and 3 (and possibly later).
+I will publish a branch with support for previous TFS 2013 versions at a later date.
 
 ## License
 

@@ -23,15 +23,11 @@ using System.Text.RegularExpressions;
 
 namespace DevCore.Tfs2Slack.EventHandlers
 {
-    class CheckinHandler : IEventHandler
+    class CheckinHandler : BaseHandler
     {
-        private static Configuration.SettingsElement settings = Configuration.Tfs2SlackSection.Instance.Settings;
-        private static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
-
-        public IList<string> ProcessEvent(TeamFoundationRequestContext requestContext, object notificationEventArgs, Configuration.BotElement bot)
+        protected override IList<string> _ProcessEvent(TeamFoundationRequestContext requestContext, object notificationEventArgs, Configuration.BotElement bot)
         {
             var checkin = (CheckinNotification)notificationEventArgs;
-            if (!bot.NotifyOn.HasFlag(TfsEvents.Checkin)) return null;
 
             string userName = checkin.ChangesetOwner.UniqueName;
             if (settings.StripUserDomain) userName = Utils.StripDomain(userName);
@@ -58,6 +54,9 @@ namespace DevCore.Tfs2Slack.EventHandlers
                     projectLinks.Add(projectName, String.Format("<{0}|{1}>", projectUrl, projectName));
                 }
             }
+
+            if (!IsNotificationMatch(checkin, bot, projectLinks.Keys.ToList())) return null;
+
             string message = text.CheckinFormat.FormatWith(new { 
                 UserName = userName, 
                 ChangesetUrl = changesetUrl, 
@@ -67,6 +66,16 @@ namespace DevCore.Tfs2Slack.EventHandlers
             });
 
             return new string[] { message };   
+        }
+
+        public bool IsNotificationMatch(CheckinNotification checkin, Configuration.BotElement bot, IEnumerable<string> projectNames)
+        {
+            var rule = bot.EventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.Checkin) 
+                && (String.IsNullOrEmpty(r.TeamProject) || projectNames.Any(n => Regex.IsMatch(n, r.TeamProject))));
+
+            if (rule != null) return rule.Notify;
+
+            return false;
         }
     }
 }

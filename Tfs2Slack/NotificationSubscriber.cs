@@ -78,17 +78,9 @@ namespace DevCore.Tfs2Slack
                         IList<string> lines = handler.ProcessEvent(requestContext, notificationEventArgs, bot);
                         if (lines != null && lines.Count > 0)
                         {
-                            IList<string> sendLines = lines;
-                            if (lines != null && lines.Count > config.Settings.MaxLines)
-                            {
-                                int supressedLines = lines.Count - config.Settings.MaxLines;
-                                lines = lines.Take(config.Settings.MaxLines).ToList();
-                                lines.Add(config.Text.LinesSupressedFormat.FormatWith(new { Count = supressedLines }));
-                            }
-
                             var channels = bot.SlackChannels.Split(',')
                                 .Select(chan => new Slack.PayloadSettings(bot.SlackWebhookUrl, chan.Trim(), bot.SlackUsername, 
-                                    bot.SlackIconEmoji, bot.SlackIconUrl,bot.SlackColor));
+                                    bot.SlackIconEmoji, bot.SlackIconUrl, bot.SlackColor));
 
                             foreach (var chan in channels)
                             {

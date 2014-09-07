@@ -19,19 +19,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DevCore.Tfs2Slack.EventHandlers
 {
-    class GitPushHandler : IEventHandler
+    class GitPushHandler : BaseHandler
     {
-        private static Configuration.SettingsElement settings = Configuration.Tfs2SlackSection.Instance.Settings;
-        private static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
-
-        public IList<string> ProcessEvent(TeamFoundationRequestContext requestContext, object notificationEventArgs, Configuration.BotElement bot)
+        protected override IList<string> _ProcessEvent(TeamFoundationRequestContext requestContext, object notificationEventArgs, Configuration.BotElement bot)
         {
             var pushNotification = (PushNotification)notificationEventArgs;
-            if (!bot.NotifyOn.HasFlag(TfsEvents.GitPush)) return null;
             var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
             var commonService = requestContext.GetService<CommonStructureService>();
 
@@ -42,6 +39,8 @@ namespace DevCore.Tfs2Slack.EventHandlers
                 string projectName = commonService.GetProject(requestContext, pushNotification.TeamProjectUri).Name;
                 string userName = pushNotification.AuthenticatedUserName;
                 if (settings.StripUserDomain) userName = Utils.StripDomain(userName);
+
+                if (!IsNotificationMatch(bot, projectName, repoName)) return null;
 
                 var lines = new List<string>();
 
@@ -153,6 +152,17 @@ namespace DevCore.Tfs2Slack.EventHandlers
             }
         }
 
+        public bool IsNotificationMatch(Configuration.BotElement bot, string projectName, string repoName)
+        {
+            var rule = bot.EventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.GitPush)
+                && (String.IsNullOrEmpty(r.TeamProject) || Regex.IsMatch(projectName, r.TeamProject))
+                && (String.IsNullOrEmpty(r.GitRepository) || Regex.IsMatch(repoName, r.GitRepository)));
+
+            if (rule != null) return rule.Notify;
+
+            return false;
+        }
+
         private static string RefsToString(IEnumerable<TfsGitRefUpdateResult> refUpdateResults)
         {
             return String.Concat(RefsToStrings(refUpdateResults));
@@ -212,11 +222,11 @@ namespace DevCore.Tfs2Slack.EventHandlers
             string format = null;
             switch (changeCount.Key)
             {
-                case TfsGitChangeType.Add: format = text.CountAddFormat; break;
-                case TfsGitChangeType.Delete: format = text.CountDeleteFormat; break;
-                case TfsGitChangeType.Edit: format = text.CountEditFormat; break;
-                case TfsGitChangeType.Rename: format = text.CountRenameFormat; break;
-                case TfsGitChangeType.SourceRename: format = text.CountSourceRenameFormat; break;
+                case TfsGitChangeType.Add: format = text.ChangeCountAddFormat; break;
+                case TfsGitChangeType.Delete: format = text.ChangeCountDeleteFormat; break;
+                case TfsGitChangeType.Edit: format = text.ChangeCountEditFormat; break;
+                case TfsGitChangeType.Rename: format = text.ChangeCountRenameFormat; break;
+                case TfsGitChangeType.SourceRename: format = text.ChangeCountSourceRenameFormat; break;
             }
             return format.FormatWith(new { Count = changeCount.Value });
         }

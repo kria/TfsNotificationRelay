@@ -100,34 +100,34 @@ namespace DevCore.Tfs2Slack.Configuration
             get { return (string)this["checkinFormat"]; }
         }
 
-        [ConfigurationProperty("countAddFormat")]
-        public string CountAddFormat
+        [ConfigurationProperty("changeCountAddFormat")]
+        public string ChangeCountAddFormat
         {
-            get { return (string)this["countAddFormat"]; }
+            get { return (string)this["changeCountAddFormat"]; }
         }
 
-        [ConfigurationProperty("countDeleteFormat")]
-        public string CountDeleteFormat
+        [ConfigurationProperty("changeCountDeleteFormat")]
+        public string ChangeCountDeleteFormat
         {
-            get { return (string)this["countDeleteFormat"]; }
+            get { return (string)this["changeCountDeleteFormat"]; }
         }
 
-        [ConfigurationProperty("countEditFormat")]
-        public string CountEditFormat
+        [ConfigurationProperty("changeCountEditFormat")]
+        public string ChangeCountEditFormat
         {
-            get { return (string)this["countEditFormat"]; }
+            get { return (string)this["changeCountEditFormat"]; }
         }
 
-        [ConfigurationProperty("countRenameFormat")]
-        public string CountRenameFormat
+        [ConfigurationProperty("changeCountRenameFormat")]
+        public string ChangeCountRenameFormat
         {
-            get { return (string)this["countRenameFormat"]; }
+            get { return (string)this["changeCountRenameFormat"]; }
         }
 
-        [ConfigurationProperty("countSourceRenameFormat")]
-        public string CountSourceRenameFormat
+        [ConfigurationProperty("changeCountSourceRenameFormat")]
+        public string ChangeCountSourceRenameFormat
         {
-            get { return (string)this["countSourceRenameFormat"]; }
+            get { return (string)this["changeCountSourceRenameFormat"]; }
         }
 
         [ConfigurationProperty("workItemchangedFormat")]
