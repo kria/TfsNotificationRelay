@@ -188,7 +188,7 @@ namespace DevCore.Tfs2Slack.EventHandlers
             Dictionary<byte[], List<string>> refNames)
         {
             var commitService = requestContext.GetService<TeamFoundationGitCommitService>();
-            var commitManifest = commitService.GetCommitManifest(requestContext, gitCommit.Repository, gitCommit.ObjectId);            
+            var commitManifest = commitService.GetCommitManifest(requestContext, gitCommit.Repository, gitCommit.ObjectId);
             string repoUri = gitCommit.Repository.GetRepositoryUri(requestContext);
             string commitUri = repoUri + "/commit/" + gitCommit.ObjectId.ToHexString();
             DateTime authorTime = gitCommit.GetLocalAuthorTime(requestContext);
@@ -196,7 +196,9 @@ namespace DevCore.Tfs2Slack.EventHandlers
             string authorName = gitCommit.GetAuthorName(requestContext);
             string authorEmail = gitCommit.GetAuthorEmail(requestContext);
             string comment = gitCommit.GetComment(requestContext);
-            var changeCounts = String.Join(", ", commitManifest.ChangeCounts.Select(c => ChangeCountToString(c)));
+            var changeCounts = "";
+            if (commitManifest.ChangeCounts != null)
+                changeCounts = String.Join(", ", commitManifest.ChangeCounts.Select(c => ChangeCountToString(c)));
 
             StringBuilder sb = new StringBuilder();
             List<string> names = null;
