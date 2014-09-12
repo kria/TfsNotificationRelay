@@ -106,5 +106,10 @@ namespace DevCore.Tfs2Slack
 
             return string.Format(provider, rewrittenFormat, values.ToArray());
         }
+
+        public static bool IsMatchOrNoPattern(this string input, string pattern)
+        {
+            return String.IsNullOrEmpty(pattern) || Regex.IsMatch(input, pattern);
+        }
     }
 }

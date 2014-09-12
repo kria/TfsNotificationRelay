@@ -36,15 +36,16 @@ namespace DevCore.Tfs2Slack.Notifications
             return new[] { text.BuildFormat.FormatWith(this) };
         }
 
-        public override bool IsMatch(Configuration.EventRuleCollection eventRules)
+        public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
             foreach (var rule in eventRules)
             {
                 if (BuildStatuses.HasFlag(BuildStatus.Succeeded) && rule.Events.HasFlag(TfsEvents.BuildSucceeded)
                     || BuildStatuses.HasFlag(BuildStatus.Failed) && rule.Events.HasFlag(TfsEvents.BuildFailed))
                 {
-                    if ((String.IsNullOrEmpty(rule.TeamProject) || Regex.IsMatch(ProjectName, rule.TeamProject))
-                        && (String.IsNullOrEmpty(rule.BuildDefinition) || Regex.IsMatch(BuildNumber, rule.BuildDefinition)))
+                    if (collection.IsMatchOrNoPattern(rule.Collection)
+                        && ProjectName.IsMatchOrNoPattern(rule.TeamProject) 
+                        && BuildNumber.IsMatchOrNoPattern(rule.BuildDefinition))
                     {
                         return rule.Notify;
                     }

@@ -63,7 +63,7 @@ namespace DevCore.Tfs2Slack.EventHandlers
 
                     foreach (var bot in config.Bots)
                     {
-                        if (!notification.IsMatch(bot.EventRules)) continue;
+                        if (!notification.IsMatch(requestContext.ServiceHost.Name, bot.EventRules)) continue;
                         
                         IList<string> lines = notification.ToMessage(bot);
                         if (lines != null && lines.Count > 0)

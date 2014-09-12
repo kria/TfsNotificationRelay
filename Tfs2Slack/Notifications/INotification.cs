@@ -25,6 +25,6 @@ namespace DevCore.Tfs2Slack.Notifications
 
         IList<string> ToMessage(Configuration.BotElement bot);
 
-        bool IsMatch(Configuration.EventRuleCollection eventRules);
+        bool IsMatch(string collection, Configuration.EventRuleCollection eventRules);
     }
 }

@@ -34,6 +34,12 @@ namespace DevCore.Tfs2Slack.Configuration
             get { return (bool)this["notify"]; }
         }
 
+        [ConfigurationProperty("collection")]
+        public string Collection
+        {
+            get { return (string)this["collection"]; }
+        }
+
         [ConfigurationProperty("teamProject")]
         public string TeamProject
         {

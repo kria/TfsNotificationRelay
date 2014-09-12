@@ -28,6 +28,6 @@ namespace DevCore.Tfs2Slack.Notifications
             return this.Select(r => r.ToString(bot)).ToList();
         }
 
-        public abstract bool IsMatch(Configuration.EventRuleCollection eventRules);
+        public abstract bool IsMatch(string collection, Configuration.EventRuleCollection eventRules);
     }
 }

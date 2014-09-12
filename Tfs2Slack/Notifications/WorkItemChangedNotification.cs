@@ -43,12 +43,13 @@ namespace DevCore.Tfs2Slack.Notifications
             return new[] { text.WorkItemchangedFormat.FormatWith(this) };
         }
 
-        public override bool IsMatch(Configuration.EventRuleCollection eventRules)
+        public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
             var rule = eventRules.FirstOrDefault(r =>
                 (r.Events.HasFlag(TfsEvents.WorkItemStateChange) && IsStateChanged
                 || r.Events.HasFlag(TfsEvents.WorkItemAssignmentChange) && IsAssignmentChanged)
-                && (String.IsNullOrEmpty(r.TeamProject) || Regex.IsMatch(ProjectName, r.TeamProject)));
+                && collection.IsMatchOrNoPattern(r.Collection)
+                && ProjectName.IsMatchOrNoPattern(r.TeamProject));
 
             if (rule != null) return rule.Notify;
 

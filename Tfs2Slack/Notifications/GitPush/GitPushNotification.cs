@@ -33,11 +33,12 @@ namespace DevCore.Tfs2Slack.Notifications.GitPush
             this.repoName = repoName;
         }
 
-        public override bool IsMatch(Configuration.EventRuleCollection eventRules)
+        public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
             var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.GitPush)
-                && (String.IsNullOrEmpty(r.TeamProject) || Regex.IsMatch(projectName, r.TeamProject))
-                && (String.IsNullOrEmpty(r.GitRepository) || Regex.IsMatch(repoName, r.GitRepository)));
+                && collection.IsMatchOrNoPattern(r.Collection)
+                && projectName.IsMatchOrNoPattern(r.TeamProject)
+                && repoName.IsMatchOrNoPattern(r.GitRepository));
 
             if (rule != null) return rule.Notify;
 

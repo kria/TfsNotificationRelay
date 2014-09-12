@@ -30,9 +30,11 @@ namespace DevCore.Tfs2Slack.Notifications
             return new[] { text.ProjectDeletedFormat.FormatWith(this) };
         }
 
-        public override bool IsMatch(Configuration.EventRuleCollection eventRules)
+        public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
-            var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.ProjectDeleted));
+            var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.ProjectDeleted)
+                && collection.IsMatchOrNoPattern(r.Collection));
+
             if (rule != null) return rule.Notify;
 
             return false;
