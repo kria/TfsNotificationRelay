@@ -12,6 +12,7 @@
  */
 
 using DevCore.Tfs2Slack.Configuration;
+using DevCore.Tfs2Slack.Notifications;
 using Microsoft.TeamFoundation.Framework.Server;
 using Microsoft.TeamFoundation.Integration.Server;
 using System;
@@ -25,10 +26,14 @@ namespace DevCore.Tfs2Slack.EventHandlers
 {
     class ProjectCreatedHandler : BaseHandler
     {
-        protected override IList<string> _ProcessEvent(TeamFoundationRequestContext requestContext, object notificationEventArgs, Configuration.BotElement bot)
+        public override Type[] SubscribedTypes()
+        {
+            return new Type[] { typeof(ProjectCreatedEvent) };
+        }
+
+        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines)
         {
             var ev = (ProjectCreatedEvent)notificationEventArgs;
-            if (!IsNotificationMatch(bot, ev.Name)) return null;
             var locationService = requestContext.GetService<TeamFoundationLocationService>();
 
             string projectUrl = String.Format("{0}/{1}/{2}",
@@ -36,17 +41,7 @@ namespace DevCore.Tfs2Slack.EventHandlers
                 requestContext.ServiceHost.Name,
                 ev.Name);
 
-            return new [] { text.ProjectCreatedFormat.FormatWith(new { ProjectUrl = projectUrl, ProjectName = ev.Name }) };
-        }
-
-        public bool IsNotificationMatch(Configuration.BotElement bot, string projectName)
-        {
-            var rule = bot.EventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.ProjectCreated)
-                && (String.IsNullOrEmpty(r.TeamProject) || Regex.IsMatch(projectName, r.TeamProject)));
-
-            if (rule != null) return rule.Notify;
-
-            return false;
+            return new ProjectCreatedNotification() { ProjectUrl = projectUrl, ProjectName = ev.Name };
         }
     }
 }

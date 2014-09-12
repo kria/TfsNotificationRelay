@@ -11,18 +11,20 @@
  * option) any later version. See included file COPYING for details.
  */
 
-using Microsoft.TeamFoundation.Framework.Server;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DevCore.Tfs2Slack
+namespace DevCore.Tfs2Slack.Notifications
 {
-    interface IEventHandler
+    public interface INotification
     {
-        IList<string> ProcessEvent(TeamFoundationRequestContext requestContext, object notificationEventArgs, Configuration.BotElement bot);
+        int TotalLineCount { get; set; }
+
+        IList<string> ToMessage(Configuration.BotElement bot);
+
+        bool IsMatch(Configuration.EventRuleCollection eventRules);
     }
 }

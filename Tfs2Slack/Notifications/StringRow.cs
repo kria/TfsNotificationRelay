@@ -12,28 +12,25 @@
  */
 
 using DevCore.Tfs2Slack.Configuration;
-using DevCore.Tfs2Slack.Notifications;
-using Microsoft.TeamFoundation.Framework.Server;
-using Microsoft.TeamFoundation.Integration.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DevCore.Tfs2Slack.EventHandlers
+namespace DevCore.Tfs2Slack.Notifications
 {
-    class ProjectDeletedHandler : BaseHandler
+    class StringRow : NotificationRow
     {
-        public override Type[] SubscribedTypes()
-        {
-            return new Type[] { typeof(ProjectDeletedEvent) };
-        }
+        public string Text { get; set; }
 
-        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines)
+        public StringRow(string text)
         {
-            var ev = (ProjectDeletedEvent)notificationEventArgs;
-            return new ProjectDeletedNotification() { ProjectUri = ev.Uri };
+            this.Text = text;
+        }
+        public override string ToString(BotElement bot)
+        {
+            return Text;
         }
     }
 }

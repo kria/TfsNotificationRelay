@@ -12,6 +12,8 @@
  */
 
 using DevCore.Tfs2Slack.Configuration;
+using DevCore.Tfs2Slack.Notifications;
+using DevCore.Tfs2Slack.Notifications.GitPush;
 using Microsoft.TeamFoundation.Framework.Server;
 using Microsoft.TeamFoundation.Git.Server;
 using Microsoft.TeamFoundation.Integration.Server;
@@ -26,32 +28,31 @@ namespace DevCore.Tfs2Slack.EventHandlers
 {
     class GitPushHandler : BaseHandler
     {
-        protected override IList<string> _ProcessEvent(TeamFoundationRequestContext requestContext, object notificationEventArgs, Configuration.BotElement bot)
+        public override Type[] SubscribedTypes()
+        {
+            return new Type[] { typeof(PushNotification) };
+        }
+
+        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines)
         {
             var pushNotification = (PushNotification)notificationEventArgs;
             var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
             var commonService = requestContext.GetService<CommonStructureService>();
+            var commitService = requestContext.GetService<TeamFoundationGitCommitService>();
 
             using (TfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, pushNotification.RepositoryId))
             {
-                string repoName = pushNotification.RepositoryName;
-                string repoUri = repository.GetRepositoryUri(requestContext);
-                string projectName = commonService.GetProject(requestContext, pushNotification.TeamProjectUri).Name;
-                string userName = pushNotification.AuthenticatedUserName;
-                if (settings.StripUserDomain) userName = Utils.StripDomain(userName);
-
-                if (!IsNotificationMatch(bot, projectName, repoName)) return null;
-
-                var lines = new List<string>();
-
-                lines.Add(text.PushFormat.FormatWith(new
+                var pushRow = new PushRow()
                 {
-                    UserName = userName,
-                    Pushed = pushNotification.IsForceRequired(requestContext, repository) ? text.ForcePushed : text.Pushed,
-                    RepoUri = repoUri,
-                    ProjectName = projectName,
-                    RepoName = repoName
-                }));
+                    UniqueName = pushNotification.AuthenticatedUserName,
+                    RepoName = pushNotification.RepositoryName,
+                    RepoUri = repository.GetRepositoryUri(requestContext),
+                    ProjectName = commonService.GetProject(requestContext, pushNotification.TeamProjectUri).Name,
+                    IsForcePush = pushNotification.IsForceRequired(requestContext, repository)
+                };
+                var notification = new GitPushNotification(pushRow.ProjectName, pushRow.RepoName);
+                notification.Add(pushRow);
+                notification.TotalLineCount++;
 
                 var refNames = new Dictionary<byte[], List<string>>(new ByteArrayComparer());
                 var oldCommits = new HashSet<byte[]>(new ByteArrayComparer());
@@ -112,60 +113,44 @@ namespace DevCore.Tfs2Slack.EventHandlers
 
                 }
 
-                // Display new commits with refs
-                foreach (byte[] commitId in pushNotification.IncludedCommits)
+                notification.TotalLineCount += pushNotification.IncludedCommits.Count() + oldCommits.Count + unknowns.Count;
+
+                // Add new commits with refs
+                foreach (byte[] commitId in pushNotification.IncludedCommits.TakeWhile(c => notification.Count < maxLines))
                 {
                     TfsGitCommit gitCommit = (TfsGitCommit)repository.LookupObject(requestContext, commitId);
-                    string line = CommitToString(requestContext, gitCommit, text.Commit, pushNotification, refNames);
-                    lines.Add(line);
+                    notification.Add(CreateCommitRow(requestContext, commitService, gitCommit, CommitRowType.Commit, pushNotification, refNames));
                 }
 
-                // Display updated refs to old commits
-                foreach (byte[] commitId in oldCommits)
+                // Add updated refs to old commits
+                foreach (byte[] commitId in oldCommits.TakeWhile(c => notification.Count < maxLines))
                 {
-                    string line = null;
-
                     if (commitId.IsZero())
                     {
-                        line = String.Format("{0} {1}", String.Concat(refNames[commitId]), text.Deleted);
+                        notification.Add(new DeleteRow() { RefNames = refNames[commitId] });
                     }
                     else
                     {
                         TfsGitCommit gitCommit = (TfsGitCommit)repository.LookupObject(requestContext, commitId);
-                        line = CommitToString(requestContext, gitCommit, text.RefPointer, pushNotification, refNames);
+                        notification.Add(CreateCommitRow(requestContext, commitService, gitCommit, CommitRowType.RefUpdate, pushNotification, refNames));
                     }
-                    lines.Add(line);
                 }
 
-                // Display "unknown" refs
-                foreach (var refUpdateResultGroup in unknowns)
+                // Add "unknown" refs
+                foreach (var refUpdateResultGroup in unknowns.TakeWhile(c => notification.Count < maxLines))
                 {
                     byte[] newObjectId = refUpdateResultGroup.NewObjectId;
                     TfsGitObject gitObject = repository.LookupObject(requestContext, newObjectId);
-                    string line = String.Format("{0} {1} {2} {3}",
-                        RefsToString(refUpdateResultGroup.RefUpdateResults), text.RefPointer, gitObject.ObjectType, newObjectId.ToHexString());
-
-                    lines.Add(line);
+                    notification.Add(new RefUpdateRow()
+                    {
+                        NewObjectId = newObjectId,
+                        ObjectType = gitObject.ObjectType,
+                        RefNames = RefsToStrings(refUpdateResultGroup.RefUpdateResults)
+                    });
                 }
 
-                return lines;
+                return notification;
             }
-        }
-
-        public bool IsNotificationMatch(Configuration.BotElement bot, string projectName, string repoName)
-        {
-            var rule = bot.EventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.GitPush)
-                && (String.IsNullOrEmpty(r.TeamProject) || Regex.IsMatch(projectName, r.TeamProject))
-                && (String.IsNullOrEmpty(r.GitRepository) || Regex.IsMatch(repoName, r.GitRepository)));
-
-            if (rule != null) return rule.Notify;
-
-            return false;
-        }
-
-        private static string RefsToString(IEnumerable<TfsGitRefUpdateResult> refUpdateResults)
-        {
-            return String.Concat(RefsToStrings(refUpdateResults));
         }
 
         private static string[] RefsToStrings(IEnumerable<TfsGitRefUpdateResult> refUpdateResults)
@@ -184,53 +169,29 @@ namespace DevCore.Tfs2Slack.EventHandlers
             return refStrings.ToArray();
         }
 
-        private static string CommitToString(TeamFoundationRequestContext requestContext, TfsGitCommit gitCommit, string action, PushNotification pushNotification,
-            Dictionary<byte[], List<string>> refNames)
+        private static CommitRow CreateCommitRow(TeamFoundationRequestContext requestContext, TeamFoundationGitCommitService commitService,  
+            TfsGitCommit gitCommit, CommitRowType rowType, PushNotification pushNotification, Dictionary<byte[], List<string>> refNames)
         {
-            var commitService = requestContext.GetService<TeamFoundationGitCommitService>();
             var commitManifest = commitService.GetCommitManifest(requestContext, gitCommit.Repository, gitCommit.ObjectId);
             string repoUri = gitCommit.Repository.GetRepositoryUri(requestContext);
-            string commitUri = repoUri + "/commit/" + gitCommit.ObjectId.ToHexString();
-            DateTime authorTime = gitCommit.GetLocalAuthorTime(requestContext);
-            string author = gitCommit.GetAuthor(requestContext);
-            string authorName = gitCommit.GetAuthorName(requestContext);
-            string authorEmail = gitCommit.GetAuthorEmail(requestContext);
-            string comment = gitCommit.GetComment(requestContext);
-            var changeCounts = "";
-            if (commitManifest.ChangeCounts != null)
-                changeCounts = String.Join(", ", commitManifest.ChangeCounts.Select(c => ChangeCountToString(c)));
 
-            StringBuilder sb = new StringBuilder();
-            List<string> names = null;
-            if (refNames.TryGetValue(gitCommit.ObjectId, out names)) sb.AppendFormat("{0} ", String.Concat(names));
-            string formattedTime = String.IsNullOrEmpty(text.DateTimeFormat) ? authorTime.ToString() : authorTime.ToString(text.DateTimeFormat);
-            sb.Append(text.CommitFormat.FormatWith(new
+            var commitRow = new CommitRow()
             {
-                Action = action,
-                CommitUri = commitUri,
-                CommitId = gitCommit.ObjectId.ToHexString(settings.HashLength),
-                ChangeCounts = changeCounts,
-                AuthorTime = formattedTime,
-                Author = author,
-                AuthorName = authorName,
-                AuthorEmail = authorEmail,
-                Comment = comment.Truncate(settings.CommentMaxLength)
-            }));
+                CommitId = gitCommit.ObjectId,
+                Type = rowType,
+                CommitUri = repoUri + "/commit/" + gitCommit.ObjectId.ToHexString(),
+                AuthorTime = gitCommit.GetLocalAuthorTime(requestContext),
+                Author = gitCommit.GetAuthor(requestContext),
+                AuthorName = gitCommit.GetAuthorName(requestContext),
+                AuthorEmail = gitCommit.GetAuthorEmail(requestContext),
+                Comment = gitCommit.GetComment(requestContext),
+                ChangeCounts = commitManifest.ChangeCounts
+            };
+            List<string> refs = null;
+            refNames.TryGetValue(gitCommit.ObjectId, out refs);
+            commitRow.RefNames = refs;
 
-            return sb.ToString();
-        }
-
-        private static string ChangeCountToString(KeyValuePair<TfsGitChangeType, int> changeCount) {
-            string format = null;
-            switch (changeCount.Key)
-            {
-                case TfsGitChangeType.Add: format = text.ChangeCountAddFormat; break;
-                case TfsGitChangeType.Delete: format = text.ChangeCountDeleteFormat; break;
-                case TfsGitChangeType.Edit: format = text.ChangeCountEditFormat; break;
-                case TfsGitChangeType.Rename: format = text.ChangeCountRenameFormat; break;
-                case TfsGitChangeType.SourceRename: format = text.ChangeCountSourceRenameFormat; break;
-            }
-            return format.FormatWith(new { Count = changeCount.Value });
+            return commitRow;
         }
     }
 

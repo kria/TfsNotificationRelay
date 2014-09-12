@@ -20,56 +20,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using DevCore.Tfs2Slack.Notifications;
 
 namespace DevCore.Tfs2Slack.EventHandlers
 {
     class BuildCompletionHandler : BaseHandler
     {
-        protected override IList<string> _ProcessEvent(TeamFoundationRequestContext requestContext, object notificationEventArgs, Configuration.BotElement bot)
+        public override Type[] SubscribedTypes()
+        {
+            return new Type[] { typeof(BuildCompletionNotificationEvent) };
+        }
+
+        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines)
         {
             var buildNotification = (BuildCompletionNotificationEvent)notificationEventArgs;
             var build = buildNotification.Build;
-            
-            var lines = new List<string>();
 
-            if (IsNotificationMatch(build, bot))
+            var locationService = requestContext.GetService<TeamFoundationLocationService>();
+
+            string buildUrl = String.Format("{0}/{1}/{2}/_build#buildUri={3}&_a=summary",
+                locationService.GetAccessMapping(requestContext, "PublicAccessMapping").AccessPoint,
+                requestContext.ServiceHost.Name,
+                build.TeamProject,
+                build.Uri);
+            var notification = new BuildCompletionNotification()
             {
-                var locationService = requestContext.GetService<TeamFoundationLocationService>();
+                BuildUrl = buildUrl,
+                ProjectName = build.TeamProject,
+                BuildNumber = build.BuildNumber,
+                BuildStatuses = build.Status
+            };
 
-                string buildUrl = String.Format("{0}/{1}/{2}/_build#buildUri={3}&_a=summary",
-                    locationService.GetAccessMapping(requestContext, "PublicAccessMapping").AccessPoint,
-                    requestContext.ServiceHost.Name,
-                    build.TeamProject,
-                    build.Uri);
-                
-                lines.Add(text.BuildFormat.FormatWith(new
-                {
-                    BuildUrl = buildUrl,
-                    ProjectName = build.TeamProject,
-                    BuildNumber = build.BuildNumber,
-                    BuildStatuses = build.Status
-                }));
-            }
-
-            return lines;
+            return notification;
         }
-
-        private bool IsNotificationMatch(BuildDetail build, Configuration.BotElement bot)
-        {
-            foreach (var rule in bot.EventRules)
-            {
-                if (build.Status.HasFlag(BuildStatus.Succeeded) && rule.Events.HasFlag(TfsEvents.BuildSucceeded)
-                    || build.Status.HasFlag(BuildStatus.Failed) && rule.Events.HasFlag(TfsEvents.BuildFailed))
-                {
-                    if ((String.IsNullOrEmpty(rule.TeamProject) || Regex.IsMatch(build.TeamProject, rule.TeamProject))
-                        && (String.IsNullOrEmpty(rule.BuildDefinition) || Regex.IsMatch(build.BuildNumber, rule.BuildDefinition)))
-                    {
-                        return rule.Notify;
-                    }
-                }
-            }
-            return false;
-        }
-
     }
 }

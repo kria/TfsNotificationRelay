@@ -130,6 +130,12 @@ namespace DevCore.Tfs2Slack.Configuration
             get { return (string)this["changeCountSourceRenameFormat"]; }
         }
 
+        [ConfigurationProperty("changeCountUnknownFormat")]
+        public string ChangeCountUnknownFormat
+        {
+            get { return (string)this["changeCountUnknownFormat"]; }
+        }
+
         [ConfigurationProperty("workItemchangedFormat")]
         public string WorkItemchangedFormat
         {
