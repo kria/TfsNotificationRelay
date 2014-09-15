@@ -21,6 +21,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using DevCore.Tfs2Slack.Notifications;
+using Newtonsoft.Json.Linq;
 
 namespace DevCore.Tfs2Slack.EventHandlers
 {
@@ -34,24 +35,37 @@ namespace DevCore.Tfs2Slack.EventHandlers
         protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines)
         {
             var buildNotification = (BuildCompletionNotificationEvent)notificationEventArgs;
-            var build = buildNotification.Build;
-
+            BuildDetail build = buildNotification.Build;
             var locationService = requestContext.GetService<TeamFoundationLocationService>();
+            var buildService = requestContext.GetService<TeamFoundationBuildService>();
 
-            string buildUrl = String.Format("{0}/{1}/{2}/_build#buildUri={3}&_a=summary",
+            using (var buildReader = buildService.QueryQueuedBuildsById(requestContext, build.QueueIds, new[] { "*"}, QueryOptions.None))
+            {
+                var result = buildReader.Current<BuildQueueQueryResult>();
+                QueuedBuild qb = result.QueuedBuilds.FirstOrDefault();
+
+                string buildUrl = String.Format("{0}/{1}/{2}/_build#buildUri={3}&_a=summary",
                 locationService.GetAccessMapping(requestContext, "PublicAccessMapping").AccessPoint,
                 requestContext.ServiceHost.Name,
                 build.TeamProject,
                 build.Uri);
-            var notification = new BuildCompletionNotification()
-            {
-                BuildUrl = buildUrl,
-                ProjectName = build.TeamProject,
-                BuildNumber = build.BuildNumber,
-                BuildStatuses = build.Status
-            };
+                var notification = new BuildCompletionNotification()
+                {
+                    BuildUrl = buildUrl,
+                    ProjectName = build.TeamProject,
+                    BuildNumber = build.BuildNumber,
+                    BuildStatus = build.Status,
+                    BuildReason = build.Reason,
+                    StartTime =  build.StartTime,
+                    FinishTime = build.FinishTime,
+                    RequestedFor = qb.RequestedFor,
+                    RequestedForDisplayName = qb.RequestedForDisplayName
+                };
 
-            return notification;
+                return notification;
+            }
+
+            
         }
     }
 }

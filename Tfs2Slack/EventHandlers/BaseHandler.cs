@@ -74,11 +74,12 @@ namespace DevCore.Tfs2Slack.EventHandlers
                             }
                         }
 
+                        string color = notification.Color ?? bot.SlackColor;
                         if (lines != null && lines.Count > 0)
                         {
                             var channels = bot.SlackChannels.Split(',')
                                 .Select(chan => new Slack.PayloadSettings(bot.SlackWebhookUrl, chan.Trim(), bot.SlackUsername,
-                                    bot.SlackIconEmoji, bot.SlackIconUrl, bot.SlackColor));
+                                    bot.SlackIconEmoji, bot.SlackIconUrl, color));
 
                             foreach (var chan in channels)
                             {

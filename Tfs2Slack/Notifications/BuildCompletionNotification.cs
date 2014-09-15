@@ -24,24 +24,44 @@ namespace DevCore.Tfs2Slack.Notifications
     class BuildCompletionNotification : BaseNotification
     {
         protected static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
+        protected static Configuration.SettingsElement settings = Configuration.Tfs2SlackSection.Instance.Settings;
 
         public string ProjectName { get; set; }
         public string BuildDefinition { get; set; }
-        public BuildStatus BuildStatuses { get; set; }
+        public BuildStatus BuildStatus { get; set; }
         public string BuildUrl { get; set; }
         public string BuildNumber { get; set; }
+        public BuildReason BuildReason { get; set; }
+        public string RequestedFor { get; set; }
+        public string RequestedForDisplayName { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime FinishTime { get; set; }
+        public string TriggeredBy 
+        {
+            get { return settings.StripUserDomain ? Utils.StripDomain(RequestedFor) : RequestedFor; }
+        }
+        public string BuildDuration
+        {
+            get
+            {
+                var duration = FinishTime - StartTime;
+                return String.IsNullOrEmpty(text.TimeSpanFormat) ? duration.ToString(@"hh\:mm\:ss") : duration.ToString(text.TimeSpanFormat);
+            }
+        }
 
         public override IList<string> ToMessage(Configuration.BotElement bot)
         {
-            return new[] { text.BuildFormat.FormatWith(this) };
+            Color = BuildStatus.HasFlag(BuildStatus.Succeeded) ? bot.SuccessColor : bot.ErrorColor;
+            var sb = new StringBuilder();
+            return new[] { text.BuildFormat.FormatWith(this), BuildStatus.ToString() };
         }
 
         public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
             foreach (var rule in eventRules)
             {
-                if (BuildStatuses.HasFlag(BuildStatus.Succeeded) && rule.Events.HasFlag(TfsEvents.BuildSucceeded)
-                    || BuildStatuses.HasFlag(BuildStatus.Failed) && rule.Events.HasFlag(TfsEvents.BuildFailed))
+                if (BuildStatus.HasFlag(BuildStatus.Succeeded) && rule.Events.HasFlag(TfsEvents.BuildSucceeded)
+                    || BuildStatus.HasFlag(BuildStatus.Failed) && rule.Events.HasFlag(TfsEvents.BuildFailed))
                 {
                     if (collection.IsMatchOrNoPattern(rule.Collection)
                         && ProjectName.IsMatchOrNoPattern(rule.TeamProject) 

@@ -76,6 +76,12 @@ namespace DevCore.Tfs2Slack.Configuration
             get { return (string)this["dateTimeFormat"]; }
         }
 
+        [ConfigurationProperty("timeSpanFormat")]
+        public string TimeSpanFormat
+        {
+            get { return (string)this["timeSpanFormat"]; }
+        }
+
         [ConfigurationProperty("buildFormat")]
         public string BuildFormat
         {

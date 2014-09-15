@@ -47,6 +47,8 @@
                   <xs:attribute name="slackIconEmoji" type="xs:string" />
                   <xs:attribute name="slackIconUrl" type="xs:string" />
                   <xs:attribute name="slackColor" type="xs:string" use="required" />
+                  <xs:attribute name="successColor" type="xs:string" use="required" />
+                  <xs:attribute name="errorColor" type="xs:string" use="required" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
@@ -63,6 +65,7 @@
             <xs:attribute name="commitFormat" type="xs:string" use="required" />
             <xs:attribute name="linesSupressedFormat" type="xs:string" use="required" />
             <xs:attribute name="dateTimeFormat" type="xs:string" use="required" />
+            <xs:attribute name="timeSpanFormat" type="xs:string" use="required" />
             <xs:attribute name="buildFormat" type="xs:string" use="required" />
             <xs:attribute name="projectCreatedFormat" type="xs:string" use="required" />
             <xs:attribute name="projectDeletedFormat" type="xs:string" use="required" />

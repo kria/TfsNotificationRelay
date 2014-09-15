@@ -64,6 +64,18 @@ namespace DevCore.Tfs2Slack.Configuration
             get { return (string)this["slackColor"]; }
         }
 
+        [ConfigurationProperty("successColor")]
+        public string SuccessColor
+        {
+            get { return (string)this["successColor"]; }
+        }
+
+        [ConfigurationProperty("errorColor")]
+        public string ErrorColor
+        {
+            get { return (string)this["errorColor"]; }
+        }
+
         [ConfigurationProperty("eventRules", IsDefaultCollection = false)]
         [ConfigurationCollection(typeof(EventRuleCollection),
             AddItemName = "rule")]

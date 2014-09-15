@@ -23,6 +23,8 @@ namespace DevCore.Tfs2Slack.Notifications
     {
         int TotalLineCount { get; set; }
 
+        string Color { get; set; }
+
         IList<string> ToMessage(Configuration.BotElement bot);
 
         bool IsMatch(string collection, Configuration.EventRuleCollection eventRules);
