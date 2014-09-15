@@ -2,6 +2,8 @@
 
 Tfs2Slack is a plugin for Team Foundation Server 2013 that sends notifications to Slack.com.
 
+[![Build status](https://ci.appveyor.com/api/projects/status/6jo9qqoqxjrgpwrp)](https://ci.appveyor.com/project/kria/tfs2slack)
+
 ## Features and TODO
 
 - [x] Notify multiple Slack organizations and channels
