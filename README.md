@@ -34,9 +34,9 @@ Tfs2Slack is a plugin for Team Foundation Server 2013 that sends notifications t
 
 ## Installation
 
-1. If you don't already have one, add an Incoming WebHooks integration under Configure Integrations in Slack.
+1. If you don't already have one, add an Incoming WebHooks integration under *Configure Integrations* in Slack.
 2. Download the latest [release][0] or clone and build the source yourself.
-3. Open `DevCore.Tfs2Slack.dll.config` and set at least your full unique Webhook URL in `slackWebhookUrl`. There are [more settings and formats][1] in there that should be somewhat self-explanatory.
+3. Open `DevCore.Tfs2Slack.dll.config` and set at least your full unique Webhook URL in `slackWebhookUrl`. There are more [settings and formats][1] in there that should be somewhat self-explanatory.
 4. Install the Tfs2Slack plugin by dropping `DevCore.Tfs2Slack.dll`, `DevCore.Tfs2Slack.dll.config` and `Newtonsoft.Json.dll` in *C:\Program Files\Microsoft Team Foundation Server 12.0\Application Tier\Web Services\bin\Plugins* on the server.
 
 [0]: https://github.com/kria/Tfs2Slack/releases
@@ -44,8 +44,12 @@ Tfs2Slack is a plugin for Team Foundation Server 2013 that sends notifications t
 
 ## TFS 2013 version support
 
-Because of a breaking API change in TFS 2013 Update 2, the plugin as is only works for TFS 2013 update 2 and 3 (and possibly later).
-I will publish a branch with support for previous TFS 2013 versions at a later date.
+I'm referencing Update 3 assemblies and testing only on a TFS 2013 Update 3 server, so the plugin is most likely to work as intended on that version.
+The development did start on TFS 2013 Update 2 and the plugin probably still works on there.
+Because of a few breaking API changes in TFS 2013 Update 2, the plugin won't work on previous versions without some minor modifications.
+These are the API changes I know of in Update 2 that affect the plugin:
+- Spelling fixed for PushNotification.AuthenticatedUserName (Microsoft.TeamFoundation.Git.Server.dll)
+- WorkItemChangedEvent moved from Microsoft.TeamFoundation.WorkItemTracking.Server.DataAccessLayer.dll to Microsoft.TeamFoundation.WorkItemTracking.Server.dll
 
 ## License
 
