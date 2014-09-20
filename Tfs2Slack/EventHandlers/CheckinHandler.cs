@@ -44,6 +44,7 @@ namespace DevCore.Tfs2Slack.EventHandlers
             {
                 TeamProjectCollection = requestContext.ServiceHost.Name,
                 UniqueName = checkin.ChangesetOwner.UniqueName,
+                DisplayName = checkin.ChangesetOwner.DisplayName,
                 ChangesetUrl = String.Format("{0}_versionControl/changeset/{1}", baseUrl, checkin.Changeset),
                 ChangesetId = checkin.Changeset,
                 Projects = new Dictionary<string, string>(),

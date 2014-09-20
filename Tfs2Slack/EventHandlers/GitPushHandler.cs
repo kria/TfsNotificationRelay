@@ -14,9 +14,11 @@
 using DevCore.Tfs2Slack.Configuration;
 using DevCore.Tfs2Slack.Notifications;
 using DevCore.Tfs2Slack.Notifications.GitPush;
+using Microsoft.TeamFoundation.Framework.Common;
 using Microsoft.TeamFoundation.Framework.Server;
 using Microsoft.TeamFoundation.Git.Server;
 using Microsoft.TeamFoundation.Integration.Server;
+using Microsoft.TeamFoundation.Server.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,12 +41,16 @@ namespace DevCore.Tfs2Slack.EventHandlers
             var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
             var commonService = requestContext.GetService<CommonStructureService>();
             var commitService = requestContext.GetService<TeamFoundationGitCommitService>();
+            var identityService = requestContext.GetService<TeamFoundationIdentityService>();
+            
+            var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.Identifier, pushNotification.Pusher.Identifier);
 
             using (TfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, pushNotification.RepositoryId))
             {
                 var pushRow = new PushRow()
                 {
                     UniqueName = pushNotification.AuthenticatedUserName,
+                    DisplayName = identity.DisplayName,
                     RepoName = pushNotification.RepositoryName,
                     RepoUri = repository.GetRepositoryUri(requestContext),
                     ProjectName = commonService.GetProject(requestContext, pushNotification.TeamProjectUri).Name,

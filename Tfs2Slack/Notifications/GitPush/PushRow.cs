@@ -23,6 +23,7 @@ namespace DevCore.Tfs2Slack.Notifications.GitPush
     class PushRow : NotificationRow
     {
         public string UniqueName { get; set; }
+        public string DisplayName { get; set; }
         public string RepoUri { get; set; }
         public string ProjectName { get; set; }
         public string RepoName { get; set; }

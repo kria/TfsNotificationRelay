@@ -42,6 +42,7 @@ namespace DevCore.Tfs2Slack.EventHandlers
             {
                 TeamProjectCollection = requestContext.ServiceHost.Name,
                 UniqueName = identity.UniqueName,
+                DisplayName = identity.DisplayName,
                 WiUrl = ev.DisplayUrl,
                 WiType = ev.CoreFields.StringFields.Single(f => f.ReferenceName == "System.WorkItemType").NewValue,
                 WiId = ev.CoreFields.IntegerFields.Single(f => f.ReferenceName == "System.Id").NewValue,

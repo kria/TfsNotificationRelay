@@ -36,9 +36,13 @@ namespace DevCore.Tfs2Slack.Notifications
         public string RequestedForDisplayName { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime FinishTime { get; set; }
-        public string TriggeredBy 
+        public string UserName 
         {
             get { return settings.StripUserDomain ? Utils.StripDomain(RequestedFor) : RequestedFor; }
+        }
+        public string DisplayName
+        {
+            get { return RequestedForDisplayName; }
         }
         public string BuildDuration
         {

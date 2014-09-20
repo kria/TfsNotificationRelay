@@ -26,6 +26,7 @@ namespace DevCore.Tfs2Slack.Notifications
         protected static Configuration.SettingsElement settings = Configuration.Tfs2SlackSection.Instance.Settings;
 
         public string UniqueName { get; set; }
+        public string DisplayName { get; set; }
         public string ChangesetUrl { get; set; }
         public int ChangesetId { get; set; }
         public Dictionary<string, string> Projects { get; set; }
