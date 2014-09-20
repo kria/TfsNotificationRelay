@@ -21,6 +21,8 @@ namespace DevCore.Tfs2Slack.Notifications
 {
     abstract class MultiRowNotification : List<NotificationRow>, INotification
     {
+        public string TeamProjectCollection { get; set; }
+
         public int TotalLineCount { get; set; }
 
         public string Color { get; set; }

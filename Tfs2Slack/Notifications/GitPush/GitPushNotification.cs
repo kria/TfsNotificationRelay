@@ -27,8 +27,9 @@ namespace DevCore.Tfs2Slack.Notifications.GitPush
         private string projectName;
         private string repoName;
 
-        public GitPushNotification(string projectName, string repoName)
+        public GitPushNotification(string teamProjecCollection, string projectName, string repoName)
         {
+            this.TeamProjectCollection = teamProjecCollection;
             this.projectName = projectName;
             this.repoName = repoName;
         }
@@ -36,7 +37,7 @@ namespace DevCore.Tfs2Slack.Notifications.GitPush
         public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
             var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.GitPush)
-                && collection.IsMatchOrNoPattern(r.Collection)
+                && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
                 && projectName.IsMatchOrNoPattern(r.TeamProject)
                 && repoName.IsMatchOrNoPattern(r.GitRepository));
 

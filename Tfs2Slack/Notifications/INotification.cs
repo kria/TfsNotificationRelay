@@ -21,6 +21,8 @@ namespace DevCore.Tfs2Slack.Notifications
 {
     public interface INotification
     {
+        string TeamProjectCollection { get; set; }
+
         int TotalLineCount { get; set; }
 
         string Color { get; set; }

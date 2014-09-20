@@ -13,6 +13,7 @@
 
 using DevCore.Tfs2Slack.Notifications;
 using Microsoft.TeamFoundation.Framework.Server;
+using Microsoft.TeamFoundation.Integration.Server;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,6 +27,7 @@ namespace DevCore.Tfs2Slack.EventHandlers
     {
         protected static Configuration.SettingsElement settings = Configuration.Tfs2SlackSection.Instance.Settings;
         protected static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
+        private static IDictionary<string, string> projectsNames;
 
         public string Name
         {
@@ -37,11 +39,16 @@ namespace DevCore.Tfs2Slack.EventHandlers
             get { return SubscriberPriority.Normal; }
         }
 
+        public IDictionary<string, string> ProjectsNames
+        {
+            get { return projectsNames; }
+        }
+
         public abstract Type[] SubscribedTypes();
 
         protected abstract INotification CreateNotification(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines);
 
-        public EventNotificationStatus ProcessEvent(TeamFoundationRequestContext requestContext, NotificationType notificationType,
+        public virtual EventNotificationStatus ProcessEvent(TeamFoundationRequestContext requestContext, NotificationType notificationType,
             object notificationEventArgs, out int statusCode, out string statusMessage, out Microsoft.TeamFoundation.Common.ExceptionPropertyCollection properties)
         {
             statusCode = 0;
@@ -54,6 +61,13 @@ namespace DevCore.Tfs2Slack.EventHandlers
             try
             {
                 Logger.Log("notificationType={0}, notificationEventArgs={1}", notificationType, notificationEventArgs);
+
+                if (projectsNames == null)
+                {
+                    var commonService = requestContext.GetService<CommonStructureService>();
+                    projectsNames = commonService.GetProjects(requestContext).ToDictionary(p => p.Uri, p => p.Name);
+
+                }
 
                 var config = Configuration.Tfs2SlackSection.Instance;                
 

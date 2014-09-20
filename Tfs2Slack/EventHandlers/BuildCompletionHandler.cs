@@ -51,6 +51,7 @@ namespace DevCore.Tfs2Slack.EventHandlers
                 build.Uri);
                 var notification = new BuildCompletionNotification()
                 {
+                    TeamProjectCollection = requestContext.ServiceHost.Name,
                     BuildUrl = buildUrl,
                     ProjectName = build.TeamProject,
                     BuildNumber = build.BuildNumber,

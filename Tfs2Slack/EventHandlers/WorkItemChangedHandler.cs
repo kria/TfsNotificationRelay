@@ -40,6 +40,7 @@ namespace DevCore.Tfs2Slack.EventHandlers
             var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.Identifier, ev.ChangerSid);
             var notification = new WorkItemChangedNotification()
             {
+                TeamProjectCollection = requestContext.ServiceHost.Name,
                 UniqueName = identity.UniqueName,
                 WiUrl = ev.DisplayUrl,
                 WiType = ev.CoreFields.StringFields.Single(f => f.ReferenceName == "System.WorkItemType").NewValue,

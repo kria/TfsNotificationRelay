@@ -41,7 +41,10 @@ namespace DevCore.Tfs2Slack.EventHandlers
                 requestContext.ServiceHost.Name,
                 ev.Name);
 
-            return new ProjectCreatedNotification() { ProjectUrl = projectUrl, ProjectName = ev.Name };
+            if (!this.ProjectsNames.ContainsKey(ev.Uri))
+                this.ProjectsNames.Add(ev.Uri, ev.Name);
+
+            return new ProjectCreatedNotification() { TeamProjectCollection = requestContext.ServiceHost.Name, ProjectUrl = projectUrl, ProjectName = ev.Name };
         }
     }
 }

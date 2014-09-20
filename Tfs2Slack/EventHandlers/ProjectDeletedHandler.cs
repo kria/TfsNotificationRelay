@@ -33,7 +33,14 @@ namespace DevCore.Tfs2Slack.EventHandlers
         protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines)
         {
             var ev = (ProjectDeletedEvent)notificationEventArgs;
-            return new ProjectDeletedNotification() { ProjectUri = ev.Uri };
+            
+            string projectName;
+            if (this.ProjectsNames.TryGetValue(ev.Uri, out projectName))
+            {
+                this.ProjectsNames.Remove(ev.Uri);
+            }
+
+            return new ProjectDeletedNotification() { TeamProjectCollection = requestContext.ServiceHost.Name, ProjectUri = ev.Uri, ProjectName = projectName };
         }
     }
 }

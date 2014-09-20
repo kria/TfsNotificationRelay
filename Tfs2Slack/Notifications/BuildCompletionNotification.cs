@@ -52,7 +52,6 @@ namespace DevCore.Tfs2Slack.Notifications
         public override IList<string> ToMessage(Configuration.BotElement bot)
         {
             Color = BuildStatus.HasFlag(BuildStatus.Succeeded) ? bot.SuccessColor : bot.ErrorColor;
-            var sb = new StringBuilder();
             return new[] { text.BuildFormat.FormatWith(this), BuildStatus.ToString() };
         }
 
@@ -63,7 +62,7 @@ namespace DevCore.Tfs2Slack.Notifications
                 if (BuildStatus.HasFlag(BuildStatus.Succeeded) && rule.Events.HasFlag(TfsEvents.BuildSucceeded)
                     || BuildStatus.HasFlag(BuildStatus.Failed) && rule.Events.HasFlag(TfsEvents.BuildFailed))
                 {
-                    if (collection.IsMatchOrNoPattern(rule.Collection)
+                    if (collection.IsMatchOrNoPattern(rule.TeamProjectCollection)
                         && ProjectName.IsMatchOrNoPattern(rule.TeamProject) 
                         && BuildNumber.IsMatchOrNoPattern(rule.BuildDefinition))
                     {

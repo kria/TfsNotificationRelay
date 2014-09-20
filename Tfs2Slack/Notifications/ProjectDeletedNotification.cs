@@ -25,6 +25,12 @@ namespace DevCore.Tfs2Slack.Notifications
 
         public string ProjectUri { get; set; }
 
+        private string projectName;
+        public string ProjectName {
+            get { return projectName ?? ProjectUri; }
+            set { projectName = value; }
+        }
+
         public override IList<string> ToMessage(Configuration.BotElement bot)
         {
             return new[] { text.ProjectDeletedFormat.FormatWith(this) };
@@ -33,7 +39,7 @@ namespace DevCore.Tfs2Slack.Notifications
         public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
             var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.ProjectDeleted)
-                && collection.IsMatchOrNoPattern(r.Collection));
+                && collection.IsMatchOrNoPattern(r.TeamProjectCollection));
 
             if (rule != null) return rule.Notify;
 

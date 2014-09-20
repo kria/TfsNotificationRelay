@@ -50,7 +50,7 @@ namespace DevCore.Tfs2Slack.EventHandlers
                     ProjectName = commonService.GetProject(requestContext, pushNotification.TeamProjectUri).Name,
                     IsForcePush = pushNotification.IsForceRequired(requestContext, repository)
                 };
-                var notification = new GitPushNotification(pushRow.ProjectName, pushRow.RepoName);
+                var notification = new GitPushNotification(requestContext.ServiceHost.Name, pushRow.ProjectName, pushRow.RepoName);
                 notification.Add(pushRow);
                 notification.TotalLineCount++;
 

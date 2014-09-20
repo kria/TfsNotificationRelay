@@ -48,7 +48,7 @@ namespace DevCore.Tfs2Slack.Notifications
             var rule = eventRules.FirstOrDefault(r =>
                 (r.Events.HasFlag(TfsEvents.WorkItemStateChange) && IsStateChanged
                 || r.Events.HasFlag(TfsEvents.WorkItemAssignmentChange) && IsAssignmentChanged)
-                && collection.IsMatchOrNoPattern(r.Collection)
+                && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
                 && ProjectName.IsMatchOrNoPattern(r.TeamProject));
 
             if (rule != null) return rule.Notify;

@@ -30,7 +30,7 @@
                             <xs:complexType>
                               <xs:attribute name="events" type="xs:string" use="required" />
                               <xs:attribute name="notify" type="xs:string" use="required" />
-                              <xs:attribute name="collection" type="xs:string" />
+                              <xs:attribute name="teamProjectCollection" type="xs:string" />
                               <xs:attribute name="teamProject" type="xs:string" />
                               <xs:attribute name="gitRepository" type="xs:string" />
                               <xs:attribute name="buildDefinition" type="xs:string" />

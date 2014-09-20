@@ -42,6 +42,7 @@ namespace DevCore.Tfs2Slack.EventHandlers
 
             var notification = new CheckinNotification()
             {
+                TeamProjectCollection = requestContext.ServiceHost.Name,
                 UniqueName = checkin.ChangesetOwner.UniqueName,
                 ChangesetUrl = String.Format("{0}_versionControl/changeset/{1}", baseUrl, checkin.Changeset),
                 ChangesetId = checkin.Changeset,
