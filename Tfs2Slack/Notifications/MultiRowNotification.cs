@@ -25,13 +25,13 @@ namespace DevCore.Tfs2Slack.Notifications
 
         public int TotalLineCount { get; set; }
 
-        public string Color { get; set; }
-
         public IList<string> ToMessage(Configuration.BotElement bot)
         {
             return this.Select(r => r.ToString(bot)).ToList();
         }
 
         public abstract bool IsMatch(string collection, Configuration.EventRuleCollection eventRules);
+
+        public abstract Slack.Message ToSlackMessage(Configuration.BotElement bot, string channel);
     }
 }

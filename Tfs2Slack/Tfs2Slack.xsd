@@ -77,6 +77,10 @@
             <xs:attribute name="changeCountSourceRenameFormat" type="xs:string" use="required" />
             <xs:attribute name="changeCountUnknownFormat" type="xs:string" use="required" />
             <xs:attribute name="workItemchangedFormat" type="xs:string" use="required" />
+            <xs:attribute name="updated" type="xs:string" use="required" />
+            <xs:attribute name="created" type="xs:string" use="required" />
+            <xs:attribute name="state" type="xs:string" use="required" />
+            <xs:attribute name="assignedTo" type="xs:string" use="required" />
           </xs:complexType>
         </xs:element>
       </xs:sequence>

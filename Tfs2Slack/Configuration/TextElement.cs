@@ -147,6 +147,30 @@ namespace DevCore.Tfs2Slack.Configuration
         {
             get { return (string)this["workItemchangedFormat"]; }
         }
+
+        [ConfigurationProperty("updated")]
+        public string Updated
+        {
+            get { return (string)this["updated"]; }
+        }
+
+        [ConfigurationProperty("created")]
+        public string Created
+        {
+            get { return (string)this["created"]; }
+        }
+
+        [ConfigurationProperty("state")]
+        public string State
+        {
+            get { return (string)this["state"]; }
+        }
+
+        [ConfigurationProperty("assignedTo")]
+        public string AssignedTo
+        {
+            get { return (string)this["assignedTo"]; }
+        }
         
     }
 }

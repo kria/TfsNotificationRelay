@@ -41,6 +41,7 @@ namespace DevCore.Tfs2Slack.EventHandlers
             var notification = new WorkItemChangedNotification()
             {
                 TeamProjectCollection = requestContext.ServiceHost.Name,
+                IsNew = ev.ChangeType == ChangeTypes.New,
                 UniqueName = identity.UniqueName,
                 DisplayName = identity.DisplayName,
                 WiUrl = ev.DisplayUrl,
@@ -49,7 +50,9 @@ namespace DevCore.Tfs2Slack.EventHandlers
                 WiTitle = ev.WorkItemTitle,
                 ProjectName = ev.PortfolioProject,
                 IsStateChanged = ev.ChangedFields.StringFields.Any(f => f.ReferenceName == "System.State"),
-                IsAssignmentChanged = ev.ChangedFields.StringFields.Any(f => f.ReferenceName == "System.AssignedTo")
+                IsAssignmentChanged = ev.ChangedFields.StringFields.Any(f => f.ReferenceName == "System.AssignedTo"),
+                State = ev.CoreFields.StringFields.Single(f => f.ReferenceName == "System.State").NewValue,
+                AssignedTo = ev.CoreFields.StringFields.Single(f => f.ReferenceName == "System.AssignedTo").NewValue
             };
 
             return notification;

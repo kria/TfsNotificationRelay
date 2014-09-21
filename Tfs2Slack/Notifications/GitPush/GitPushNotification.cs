@@ -12,6 +12,7 @@
  */
 
 using DevCore.Tfs2Slack.Configuration;
+using DevCore.Tfs2Slack.Slack;
 using Microsoft.TeamFoundation.Git.Server;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,8 @@ namespace DevCore.Tfs2Slack.Notifications.GitPush
 {
     class GitPushNotification : MultiRowNotification
     {
+        private static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
+
         private string projectName;
         private string repoName;
 
@@ -44,6 +47,19 @@ namespace DevCore.Tfs2Slack.Notifications.GitPush
             if (rule != null) return rule.Notify;
 
             return false;
+        }
+
+        public override Slack.Message ToSlackMessage(BotElement bot, string channel)
+        {
+            var lines = ToMessage(bot);
+            if (lines != null && lines.Count > 0)
+            {
+                if (lines.Count < TotalLineCount)
+                {
+                    lines.Add(text.LinesSupressedFormat.FormatWith(new { Count = TotalLineCount - lines.Count }));
+                }
+            }
+            return SlackHelper.CreateSlackMessage(lines, bot, channel, bot.SlackColor);
         }
     }
 

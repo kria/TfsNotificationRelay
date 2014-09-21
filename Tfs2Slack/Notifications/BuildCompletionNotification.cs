@@ -11,6 +11,7 @@
  * option) any later version. See included file COPYING for details.
  */
 
+using DevCore.Tfs2Slack.Slack;
 using Microsoft.TeamFoundation.Build.Server;
 using System;
 using System.Collections.Generic;
@@ -55,8 +56,14 @@ namespace DevCore.Tfs2Slack.Notifications
 
         public override IList<string> ToMessage(Configuration.BotElement bot)
         {
-            Color = BuildStatus.HasFlag(BuildStatus.Succeeded) ? bot.SuccessColor : bot.ErrorColor;
             return new[] { text.BuildFormat.FormatWith(this), BuildStatus.ToString() };
+        }
+
+        public override Slack.Message ToSlackMessage(Configuration.BotElement bot, string channel)
+        {
+            var lines = ToMessage(bot);
+            var color = BuildStatus.HasFlag(BuildStatus.Succeeded) ? bot.SuccessColor : bot.ErrorColor;
+            return SlackHelper.CreateSlackMessage(lines, bot, channel, color);
         }
 
         public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)

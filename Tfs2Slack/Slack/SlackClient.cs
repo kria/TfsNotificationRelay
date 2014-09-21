@@ -11,7 +11,9 @@
  * option) any later version. See included file COPYING for details.
  */
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,11 +21,26 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DevCore.Tfs2Slack
+namespace DevCore.Tfs2Slack.Slack
 {
     class SlackClient : HttpClient
     {
-        public Task<HttpResponseMessage> SendMessageAsync(IEnumerable<string> lines, Slack.PayloadSettings settings)
+        public Task<HttpResponseMessage> SendMessageAsync(Message message, string webhookUrl)
+        {
+            string json = JsonConvert.SerializeObject(message, Formatting.Indented, new JsonSerializerSettings
+            {
+                NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+
+            Logger.Log(json);
+
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            return PostAsync(webhookUrl, content);
+        }
+
+        [Obsolete]
+        public Task<HttpResponseMessage> SendMessageAsync(IEnumerable<string> lines, PayloadSettings settings)
         {
             dynamic json = JObject.FromObject(new
             {
@@ -49,6 +66,5 @@ namespace DevCore.Tfs2Slack
             var content = new StringContent(json.ToString(), Encoding.UTF8, "application/json");
             return PostAsync(settings.WebhookUrl, content);
         }
-
     }
 }

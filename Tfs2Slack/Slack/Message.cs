@@ -11,22 +11,29 @@
  * option) any later version. See included file COPYING for details.
  */
 
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DevCore.Tfs2Slack.Notifications
+namespace DevCore.Tfs2Slack.Slack
 {
-    public interface INotification
+    public class Message
     {
-        string TeamProjectCollection { get; set; }
+        public string Channel { get; set; }
 
-        Slack.Message ToSlackMessage(Configuration.BotElement bot, string channel);
+        public string Username { get; set; }
 
-        IList<string> ToMessage(Configuration.BotElement bot);
+        public string Text { get; set; }
 
-        bool IsMatch(string collection, Configuration.EventRuleCollection eventRules);
+        public IEnumerable<Attachment> Attachments { get; set; }
+
+        [JsonProperty(PropertyName = "icon_url")]
+        public string IconUrl { get; set; }
+
+        [JsonProperty(PropertyName = "icon_emoji")]
+        public string IconEmoji { get; set; }
     }
 }

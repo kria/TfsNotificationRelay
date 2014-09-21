@@ -12,6 +12,7 @@
  */
 
 using DevCore.Tfs2Slack.Notifications;
+using DevCore.Tfs2Slack.Slack;
 using Microsoft.TeamFoundation.Framework.Server;
 using Microsoft.TeamFoundation.Integration.Server;
 using System;
@@ -66,7 +67,6 @@ namespace DevCore.Tfs2Slack.EventHandlers
                 {
                     var commonService = requestContext.GetService<CommonStructureService>();
                     projectsNames = commonService.GetProjects(requestContext).ToDictionary(p => p.Uri, p => p.Name);
-
                 }
 
                 var config = Configuration.Tfs2SlackSection.Instance;                
@@ -78,27 +78,14 @@ namespace DevCore.Tfs2Slack.EventHandlers
                     foreach (var bot in config.Bots)
                     {
                         if (!notification.IsMatch(requestContext.ServiceHost.Name, bot.EventRules)) continue;
-                        
-                        IList<string> lines = notification.ToMessage(bot);
-                        if (lines != null && lines.Count > 0)
-                        {
-                            if (lines.Count < notification.TotalLineCount)
-                            {
-                                lines.Add(text.LinesSupressedFormat.FormatWith(new { Count = notification.TotalLineCount - lines.Count }));
-                            }
-                        }
 
-                        string color = notification.Color ?? bot.SlackColor;
-                        if (lines != null && lines.Count > 0)
-                        {
-                            var channels = bot.SlackChannels.Split(',')
-                                .Select(chan => new Slack.PayloadSettings(bot.SlackWebhookUrl, chan.Trim(), bot.SlackUsername,
-                                    bot.SlackIconEmoji, bot.SlackIconUrl, color));
+                        var channels = bot.SlackChannels.Split(',').Select(chan => chan.Trim());
 
-                            foreach (var chan in channels)
-                            {
-                                SendToSlack(lines, chan);
-                            }
+                        foreach (string channel in channels)
+                        {
+                            var slackMessage = notification.ToSlackMessage(bot, channel);
+                            if (slackMessage != null)
+                                SendToSlack(slackMessage, bot.SlackWebhookUrl);
                         }
                     }
                 }
@@ -117,13 +104,13 @@ namespace DevCore.Tfs2Slack.EventHandlers
             return EventNotificationStatus.ActionPermitted;
         }
 
-        private async void SendToSlack(IEnumerable<string> lines, Slack.PayloadSettings settings)
+        private async void SendToSlack(Slack.Message message, string webhookUrl)
         {
             try
             {
                 using (var slackClient = new SlackClient())
                 {
-                    var result = await slackClient.SendMessageAsync(lines, settings);
+                    var result = await slackClient.SendMessageAsync(message, webhookUrl);
                     result.EnsureSuccessStatusCode();
                 }
             }

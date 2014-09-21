@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DevCore.Tfs2Slack.Slack;
 
 namespace DevCore.Tfs2Slack.Notifications
 {
@@ -23,11 +24,13 @@ namespace DevCore.Tfs2Slack.Notifications
     {
         public string TeamProjectCollection { get; set; }
 
-        public int TotalLineCount { get; set; }
-
-        public string Color { get; set; }
-
         public abstract IList<string> ToMessage(Configuration.BotElement bot);
+
+        public virtual Slack.Message ToSlackMessage(Configuration.BotElement bot, string channel)
+        {
+            var lines = ToMessage(bot);
+            return SlackHelper.CreateSlackMessage(lines, bot, channel, bot.SlackColor);
+        }
 
         public abstract bool IsMatch(string collection, Configuration.EventRuleCollection eventRules);
     }
