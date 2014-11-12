@@ -51,5 +51,11 @@ namespace DevCore.Tfs2Slack.Configuration
         {
             get { return (int)this["hashLength"]; }
         }
+
+        [ConfigurationProperty("identifyForcePush")]
+        public bool IdentifyForcePush
+        {
+            get { return (bool)this["identifyForcePush"]; }
+        }
     }
 }

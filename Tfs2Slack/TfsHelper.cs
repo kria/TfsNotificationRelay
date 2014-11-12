@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DevCore.Tfs2Slack
 {
@@ -25,16 +24,24 @@ namespace DevCore.Tfs2Slack
     {
         public static bool IsDescendantOf(this TfsGitCommit commit, TeamFoundationRequestContext requestContext, byte[] ancestorId)
         {
-            return MatchAncestor(requestContext, commit.GetParents(requestContext), ancestorId);
-        }
+            Queue<TfsGitCommit> q = new Queue<TfsGitCommit>();
+            HashSet<byte[]> visited = new HashSet<byte[]>(new ByteArrayComparer());
 
-        private static bool MatchAncestor(TeamFoundationRequestContext requestContext, IEnumerable<TfsGitCommit> commits, byte[] ancestorId)
-        {
-            if (commits.Count() == 0) return false;
+            q.Enqueue(commit);
 
-            return commits.First().ObjectId.SequenceEqual(ancestorId) 
-                || MatchAncestor(requestContext, commits.First().GetParents(requestContext), ancestorId) 
-                || MatchAncestor(requestContext, commits.Skip(1), ancestorId);
+            while (q.Count > 0)
+            {
+                TfsGitCommit current = q.Dequeue();
+                if (!visited.Add(current.ObjectId))
+                    continue;
+
+                if (current.ObjectId.SequenceEqual(ancestorId)) return true;
+
+                foreach (var c in current.GetParents(requestContext))
+                    q.Enqueue(c);
+
+            }
+            return false;
         }
 
         public static bool IsForceRequired(this PushNotification pushNotification, TeamFoundationRequestContext requestContext, TfsGitRepository repository)
