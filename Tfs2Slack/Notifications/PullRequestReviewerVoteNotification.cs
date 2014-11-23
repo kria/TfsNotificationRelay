@@ -59,7 +59,7 @@ namespace DevCore.Tfs2Slack.Notifications
 
         public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
-            var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.PullRequestCreated)
+            var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.PullRequestReviewerVote)
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
                 && ProjectName.IsMatchOrNoPattern(r.TeamProject)
                 && RepoName.IsMatchOrNoPattern(r.GitRepository));
