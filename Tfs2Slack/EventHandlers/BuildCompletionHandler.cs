@@ -25,16 +25,10 @@ using Newtonsoft.Json.Linq;
 
 namespace DevCore.Tfs2Slack.EventHandlers
 {
-    class BuildCompletionHandler : BaseHandler
+    class BuildCompletionHandler : BaseHandler<BuildCompletionNotificationEvent>
     {
-        public override Type[] SubscribedTypes()
+        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, BuildCompletionNotificationEvent buildNotification, int maxLines)
         {
-            return new Type[] { typeof(BuildCompletionNotificationEvent) };
-        }
-
-        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines)
-        {
-            var buildNotification = (BuildCompletionNotificationEvent)notificationEventArgs;
             BuildDetail build = buildNotification.Build;
             var locationService = requestContext.GetService<TeamFoundationLocationService>();
             var buildService = requestContext.GetService<TeamFoundationBuildService>();

@@ -23,17 +23,10 @@ using System.Threading.Tasks;
 
 namespace DevCore.Tfs2Slack.EventHandlers
 {
-    class ProjectDeletedHandler : BaseHandler
+    class ProjectDeletedHandler : BaseHandler<ProjectDeletedEvent>
     {
-        public override Type[] SubscribedTypes()
+        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, ProjectDeletedEvent ev, int maxLines)
         {
-            return new Type[] { typeof(ProjectDeletedEvent) };
-        }
-
-        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines)
-        {
-            var ev = (ProjectDeletedEvent)notificationEventArgs;
-            
             string projectName;
             if (this.ProjectsNames.TryGetValue(ev.Uri, out projectName))
             {

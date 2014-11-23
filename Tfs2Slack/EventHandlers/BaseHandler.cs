@@ -24,6 +24,21 @@ using System.Threading.Tasks;
 
 namespace DevCore.Tfs2Slack.EventHandlers
 {
+    public abstract class BaseHandler<T> : BaseHandler
+    {
+        public override Type[] SubscribedTypes()
+        {
+            return new Type[] { typeof(T) };
+        }
+
+        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines)
+        {
+            return CreateNotification(requestContext, (T)notificationEventArgs, maxLines);
+        }
+
+        protected abstract INotification CreateNotification(TeamFoundationRequestContext requestContext, T notificationEventArgs, int maxLines);
+    }
+
     public abstract class BaseHandler : ISubscriber
     {
         protected static Configuration.SettingsElement settings = Configuration.Tfs2SlackSection.Instance.Settings;
@@ -122,4 +137,5 @@ namespace DevCore.Tfs2Slack.EventHandlers
         }
 
     }
+
 }

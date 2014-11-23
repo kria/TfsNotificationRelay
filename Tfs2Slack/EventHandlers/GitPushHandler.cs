@@ -28,16 +28,10 @@ using System.Threading.Tasks;
 
 namespace DevCore.Tfs2Slack.EventHandlers
 {
-    class GitPushHandler : BaseHandler
+    class GitPushHandler : BaseHandler<PushNotification>
     {
-        public override Type[] SubscribedTypes()
+        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, PushNotification pushNotification, int maxLines)
         {
-            return new Type[] { typeof(PushNotification) };
-        }
-
-        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines)
-        {
-            var pushNotification = (PushNotification)notificationEventArgs;
             var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
             var commonService = requestContext.GetService<CommonStructureService>();
             var commitService = requestContext.GetService<TeamFoundationGitCommitService>();

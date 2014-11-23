@@ -24,16 +24,10 @@ using System.Threading.Tasks;
 
 namespace DevCore.Tfs2Slack.EventHandlers
 {
-    class ProjectCreatedHandler : BaseHandler
+    class ProjectCreatedHandler : BaseHandler<ProjectCreatedEvent>
     {
-        public override Type[] SubscribedTypes()
+        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, ProjectCreatedEvent ev, int maxLines)
         {
-            return new Type[] { typeof(ProjectCreatedEvent) };
-        }
-
-        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines)
-        {
-            var ev = (ProjectCreatedEvent)notificationEventArgs;
             var locationService = requestContext.GetService<TeamFoundationLocationService>();
 
             string projectUrl = String.Format("{0}/{1}/{2}",

@@ -26,16 +26,10 @@ using DevCore.Tfs2Slack.Notifications;
 
 namespace DevCore.Tfs2Slack.EventHandlers
 {
-    class WorkItemChangedHandler :  BaseHandler
+    class WorkItemChangedHandler : BaseHandler<WorkItemChangedEvent>
     {
-        public override Type[] SubscribedTypes()
+        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, WorkItemChangedEvent ev, int maxLines)
         {
-            return new Type[] { typeof(WorkItemChangedEvent) };
-        }
-
-        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines)
-        {
-            var ev = (WorkItemChangedEvent)notificationEventArgs;
             var identityService = requestContext.GetService<TeamFoundationIdentityService>();
             var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.Identifier, ev.ChangerSid);
             var notification = new WorkItemChangedNotification()

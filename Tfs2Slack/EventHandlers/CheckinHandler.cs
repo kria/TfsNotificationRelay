@@ -24,17 +24,10 @@ using DevCore.Tfs2Slack.Notifications;
 
 namespace DevCore.Tfs2Slack.EventHandlers
 {
-    class CheckinHandler : BaseHandler
+    class CheckinHandler : BaseHandler<TFVC.CheckinNotification>
     {
-        public override Type[] SubscribedTypes()
+        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, TFVC.CheckinNotification checkin, int maxLines)
         {
-            return new Type[] { typeof(TFVC.CheckinNotification) };
-        }
-
-        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines)
-        {
-            var checkin = (TFVC.CheckinNotification)notificationEventArgs;
-
             var locationService = requestContext.GetService<TeamFoundationLocationService>();
             string baseUrl = String.Format("{0}/{1}/",
                     locationService.GetAccessMapping(requestContext, "PublicAccessMapping").AccessPoint,
