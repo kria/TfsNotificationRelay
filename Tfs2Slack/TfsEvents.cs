@@ -31,6 +31,10 @@ namespace DevCore.Tfs2Slack
         Checkin = 32,
         WorkItemStateChange = 64,
         WorkItemAssignmentChange = 128,
+        PullRequestCreated = 256,
+        PullRequestStatusUpdate = 512,
+        PullRequestReviewerVote = 1024,
+
         All = 0xFFFFFFFF
     }
 }

@@ -171,6 +171,61 @@ namespace DevCore.Tfs2Slack.Configuration
         {
             get { return (string)this["assignedTo"]; }
         }
+
+        [ConfigurationProperty("pullRequestCreatedFormat")]
+        public string PullRequestCreatedFormat
+        {
+            get { return (string)this["pullRequestCreatedFormat"]; }
+        }
+
+        [ConfigurationProperty("pullRequestStatusUpdateFormat")]
+        public string PullRequestStatusUpdateFormat
+        {
+            get { return (string)this["pullRequestStatusUpdateFormat"]; }
+        }
+
+        [ConfigurationProperty("pullRequestReviewerVoteFormat")]
+        public string PullRequestReviewerVoteFormat
+        {
+            get { return (string)this["pullRequestReviewerVoteFormat"]; }
+        }
+
+        [ConfigurationProperty("voteApproved")]
+        public string VoteApproved
+        {
+            get { return (string)this["voteApproved"]; }
+        }
+
+        [ConfigurationProperty("voteRejected")]
+        public string VoteRejected
+        {
+            get { return (string)this["voteRejected"]; }
+        }
+
+        [ConfigurationProperty("voteRescinded")]
+        public string VoteRescinded
+        {
+            get { return (string)this["voteRescinded"]; }
+        }
+
+        [ConfigurationProperty("completed")]
+        public string Completed
+        {
+            get { return (string)this["completed"]; }
+        }
+
+        [ConfigurationProperty("abandoned")]
+        public string Abandoned
+        {
+            get { return (string)this["abandoned"]; }
+        }
+
+        [ConfigurationProperty("reactivated")]
+        public string Reactivated
+        {
+            get { return (string)this["reactivated"]; }
+        }
+        
         
     }
 }
