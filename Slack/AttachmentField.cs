@@ -11,7 +11,6 @@
  * option) any later version. See included file COPYING for details.
  */
 
-
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -19,25 +18,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DevCore.Tfs2Slack.Slack
+namespace DevCore.TfsRelay.Slack
 {
-    public class Attachment
+    public class AttachmentField
     {
-        private static readonly string[] mrkdwn_in = { "pretext", "text", "title", "fields", "fallback" };
+        public AttachmentField() {}
 
-        public string Fallback { get; set; }
-        
-        public string Text { get; set; }
-        
-        public string Pretext { get; set; }
-        
-        public string Color { get; set; }
-        
-        [JsonProperty(PropertyName = "mrkdwn_in")]
-        public IEnumerable<string> MrkdwnIn 
+        public AttachmentField(string title, string value, bool isShort = false) 
         {
-            get { return mrkdwn_in; }
+            this.Title = title;
+            this.Value = value;
+            this.IsShort = isShort;
         }
-        public IEnumerable<AttachmentField> Fields { get; set; }
+
+        public string Title { get; set; }
+        
+        public string Value { get; set; }
+
+        [JsonProperty(PropertyName = "short")]
+        public bool IsShort { get; set; }
     }
 }

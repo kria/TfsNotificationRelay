@@ -11,7 +11,6 @@
  * option) any later version. See included file COPYING for details.
  */
 
-using DevCore.Tfs2Slack.Slack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +20,8 @@ using System.Threading.Tasks;
 
 namespace DevCore.Tfs2Slack.Notifications
 {
-    class WorkItemChangedNotification : BaseNotification
+    public class WorkItemChangedNotification : BaseNotification
     {
-        protected static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
         protected static Configuration.SettingsElement settings = Configuration.Tfs2SlackSection.Instance.Settings;
 
         public bool IsNew { get; set; }
@@ -44,44 +42,35 @@ namespace DevCore.Tfs2Slack.Notifications
             get { return settings.StripUserDomain ? Utils.StripDomain(UniqueName) : UniqueName; }
         }
 
-        public string Action
+        private string FormatAction(Configuration.BotElement bot)
         {
-            get { return IsNew ? text.Created : text.Updated;  }
+            return IsNew ? bot.Text.Created : bot.Text.Updated;
         }
 
         public override IList<string> ToMessage(Configuration.BotElement bot)
         {
             var lines = new List<string>();
-            lines.Add(text.WorkItemchangedFormat.FormatWith(this));
-            lines.Add(String.Format("*State:* {0}", State));
-            lines.Add(String.Format("*AssignedTo:* {0} ", AssignedTo));
+            var formatter = new
+            {
+                TeamProjectCollection = this.TeamProjectCollection,
+                DisplayName = this.DisplayName,
+                ProjectName = this.ProjectName,
+                WiUrl = this.WiUrl,
+                WiType = this.WiType,
+                WiId = this.WiId,
+                WiTitle = this.WiTitle,
+                IsStateChanged = this.IsStateChanged,
+                IsAssignmentChanged = this.IsAssignmentChanged,
+                AssignedTo = this.AssignedTo,
+                State = this.State,
+                UserName = this.UserName,
+                Action = FormatAction(bot)
+            };
+            lines.Add(bot.Text.WorkItemchangedFormat.FormatWith(formatter));
+            lines.Add(String.Format("State: {0}", State));
+            lines.Add(String.Format("AssignedTo: {0} ", AssignedTo));
 
             return lines;
-        }
-
-        public override Slack.Message ToSlackMessage(Configuration.BotElement bot, string channel)
-        {
-            string header = text.WorkItemchangedFormat.FormatWith(this);
-
-            var message = new Slack.Message()
-            {
-                Channel = channel,
-                Username = bot.SlackUsername,
-                Attachments = new[] { 
-                    new Attachment() {
-                        Fallback = header,
-                        Pretext = header,
-                        Color = bot.SlackColor,
-                        Fields = new[] { new AttachmentField(text.State, State, true), new AttachmentField(text.AssignedTo, AssignedTo, true) }
-                    }
-                }
-            };
-            if (!String.IsNullOrEmpty(bot.SlackIconUrl))
-                message.IconUrl = bot.SlackIconUrl;
-            else if (!String.IsNullOrEmpty(bot.SlackIconEmoji))
-                message.IconEmoji = bot.SlackIconEmoji;
-
-            return message;
         }
 
         public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)

@@ -18,24 +18,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DevCore.Tfs2Slack.Slack
+namespace DevCore.TfsRelay.Slack
 {
-    public class AttachmentField
+    public class Message
     {
-        public AttachmentField() {}
+        public string Channel { get; set; }
 
-        public AttachmentField(string title, string value, bool isShort = false) 
-        {
-            this.Title = title;
-            this.Value = value;
-            this.IsShort = isShort;
-        }
+        public string Username { get; set; }
 
-        public string Title { get; set; }
-        
-        public string Value { get; set; }
+        public string Text { get; set; }
 
-        [JsonProperty(PropertyName = "short")]
-        public bool IsShort { get; set; }
+        public IEnumerable<Attachment> Attachments { get; set; }
+
+        [JsonProperty(PropertyName = "icon_url")]
+        public string IconUrl { get; set; }
+
+        [JsonProperty(PropertyName = "icon_emoji")]
+        public string IconEmoji { get; set; }
     }
 }

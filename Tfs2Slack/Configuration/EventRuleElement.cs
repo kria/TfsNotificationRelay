@@ -20,8 +20,10 @@ using System.Threading.Tasks;
 
 namespace DevCore.Tfs2Slack.Configuration
 {
-    public class EventRuleElement : ConfigurationElement
+    public class EventRuleElement : ConfigurationElement, IKeyedConfigurationElement
     {
+        public object Key { get { return this; } }
+        
         [ConfigurationProperty("events", IsRequired = true)]
         public TfsEvents Events
         {

@@ -20,31 +20,7 @@ using System.Threading.Tasks;
 
 namespace DevCore.Tfs2Slack.Configuration
 {
-    public class EventRuleCollection : ConfigurationElementCollection,
-       IEnumerable<EventRuleElement>
+    public class EventRuleCollection : ConfigurationElementCollection<EventRuleElement>
     {
-        protected override ConfigurationElement CreateNewElement()
-        {
-            return new EventRuleElement();
-        }
-
-        protected override object GetElementKey(ConfigurationElement element)
-        {
-            return element;
-        }
-        public EventRuleElement this[int index]
-        {
-            get { return (EventRuleElement)BaseGet(index); }
-        }
-
-        public new IEnumerator<EventRuleElement> GetEnumerator()
-        {
-            int count = base.Count;
-            for (int i = 0; i < count; i++)
-            {
-                yield return base.BaseGet(i) as EventRuleElement;
-            }
-        }
-
     }
 }

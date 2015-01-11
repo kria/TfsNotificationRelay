@@ -21,7 +21,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DevCore.Tfs2Slack.Slack
+namespace DevCore.TfsRelay.Slack
 {
     class SlackClient : HttpClient
     {
@@ -33,7 +33,7 @@ namespace DevCore.Tfs2Slack.Slack
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
 
-            Logger.Log(json);
+            //Logger.Log(json);
 
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             return PostAsync(webhookUrl, content);
@@ -61,7 +61,7 @@ namespace DevCore.Tfs2Slack.Slack
             else if (!String.IsNullOrEmpty(settings.IconEmoji))
                 json.icon_emoji = settings.IconEmoji;
 
-            Logger.Log(json.ToString());
+            //Logger.Log(json.ToString());
 
             var content = new StringContent(json.ToString(), Encoding.UTF8, "application/json");
             return PostAsync(settings.WebhookUrl, content);

@@ -17,7 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DevCore.Tfs2Slack.Slack
+namespace DevCore.TfsRelay.Slack
 {
     class PayloadSettings
     {

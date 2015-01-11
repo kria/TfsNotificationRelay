@@ -21,7 +21,6 @@ namespace DevCore.Tfs2Slack.Notifications
 {
     class PullRequestCreatedNotification : BaseNotification
     {
-        protected readonly static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
         protected readonly static Configuration.SettingsElement settings = Configuration.Tfs2SlackSection.Instance.Settings;
 
         public string UniqueName { get; set; }
@@ -40,7 +39,7 @@ namespace DevCore.Tfs2Slack.Notifications
 
         public override IList<string> ToMessage(Configuration.BotElement bot)
         {
-            return new[] { text.PullRequestCreatedFormat.FormatWith(this) };
+            return new[] { bot.Text.PullRequestCreatedFormat.FormatWith(this) };
         }
 
         public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)

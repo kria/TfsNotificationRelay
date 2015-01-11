@@ -11,7 +11,6 @@
  * option) any later version. See included file COPYING for details.
  */
 
-using DevCore.Tfs2Slack.Slack;
 using Microsoft.TeamFoundation.Build.Server;
 using System;
 using System.Collections.Generic;
@@ -22,9 +21,8 @@ using System.Threading.Tasks;
 
 namespace DevCore.Tfs2Slack.Notifications
 {
-    class BuildCompletionNotification : BaseNotification
+    public class BuildCompletionNotification : BaseNotification
     {
-        protected static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
         protected static Configuration.SettingsElement settings = Configuration.Tfs2SlackSection.Instance.Settings;
 
         public string ProjectName { get; set; }
@@ -45,25 +43,37 @@ namespace DevCore.Tfs2Slack.Notifications
         {
             get { return RequestedForDisplayName; }
         }
-        public string BuildDuration
+        private string GetBuildDuration(Configuration.BotElement bot)
         {
-            get
-            {
-                var duration = FinishTime - StartTime;
-                return String.IsNullOrEmpty(text.TimeSpanFormat) ? duration.ToString(@"hh\:mm\:ss") : duration.ToString(text.TimeSpanFormat);
-            }
+            var duration = FinishTime - StartTime;
+            return String.IsNullOrEmpty(bot.Text.TimeSpanFormat) ? duration.ToString(@"hh\:mm\:ss") : duration.ToString(bot.Text.TimeSpanFormat);
+        }
+
+        public bool IsSuccessful
+        {
+            get { return BuildStatus.HasFlag(BuildStatus.Succeeded); }
         }
 
         public override IList<string> ToMessage(Configuration.BotElement bot)
         {
-            return new[] { text.BuildFormat.FormatWith(this), BuildStatus.ToString() };
-        }
-
-        public override Slack.Message ToSlackMessage(Configuration.BotElement bot, string channel)
-        {
-            var lines = ToMessage(bot);
-            var color = BuildStatus.HasFlag(BuildStatus.Succeeded) ? bot.SuccessColor : bot.ErrorColor;
-            return SlackHelper.CreateSlackMessage(lines, bot, channel, color);
+            var formatter = new
+            {
+                TeamProjectCollection = this.TeamProjectCollection,
+                ProjectName = this.ProjectName,
+                BuildDefinition = this.BuildDefinition,
+                BuildStatus = this.BuildStatus,
+                BuildUrl = this.BuildUrl,
+                BuildNumber = this.BuildNumber,
+                BuildReason = this.BuildReason,
+                RequestedFor = this.RequestedFor,
+                RequestedForDisplayName = this.RequestedForDisplayName,
+                DisplayName = this.RequestedForDisplayName,
+                StartTime = this.StartTime,
+                FinishTime = this.FinishTime,
+                UserName = this.UserName,
+                BuildDuration = GetBuildDuration(bot)
+            };
+            return new[] { bot.Text.BuildFormat.FormatWith(formatter), BuildStatus.ToString() };
         }
 
         public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)

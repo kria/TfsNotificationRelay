@@ -32,13 +32,18 @@ namespace DevCore.Tfs2Slack.Notifications.GitPush
         {
             get { return settings.StripUserDomain ? Utils.StripDomain(UniqueName) : UniqueName; }
         }
-        public string Pushed
-        {
-            get { return IsForcePush ? text.ForcePushed : text.Pushed; }
-        }
         public override string ToString(BotElement bot)
         {
-            return text.PushFormat.FormatWith(this);
+            var formatter = new
+            {
+                DisplayName = this.DisplayName,
+                RepoUri = this.RepoUri,
+                ProjectName = this.ProjectName,
+                RepoName = this.RepoName,
+                Pushed = this.IsForcePush ? bot.Text.ForcePushed : bot.Text.Pushed,
+                UserName = this.UserName
+            };
+            return bot.Text.PushFormat.FormatWith(formatter);
         }
     }
 }

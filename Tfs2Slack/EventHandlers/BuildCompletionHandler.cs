@@ -21,7 +21,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using DevCore.Tfs2Slack.Notifications;
-using Newtonsoft.Json.Linq;
 
 namespace DevCore.Tfs2Slack.EventHandlers
 {
@@ -33,7 +32,7 @@ namespace DevCore.Tfs2Slack.EventHandlers
             var locationService = requestContext.GetService<TeamFoundationLocationService>();
             var buildService = requestContext.GetService<TeamFoundationBuildService>();
 
-            using (var buildReader = buildService.QueryQueuedBuildsById(requestContext, build.QueueIds, new[] { "*"}, QueryOptions.None))
+            using (var buildReader = buildService.QueryQueuedBuildsById(requestContext, build.QueueIds, new[] { "*" }, QueryOptions.None))
             {
                 var result = buildReader.Current<BuildQueueQueryResult>();
                 QueuedBuild qb = result.QueuedBuilds.FirstOrDefault();

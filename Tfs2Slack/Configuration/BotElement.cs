@@ -20,63 +20,58 @@ using System.Threading.Tasks;
 
 namespace DevCore.Tfs2Slack.Configuration
 {
-    public class BotElement : ConfigurationElement
+    public class BotElement : ConfigurationElement, IKeyedConfigurationElement
     {
-        [ConfigurationProperty("name", IsRequired = true, IsKey = true)]
-        public string Name
+        public object Key { get { return Id; } }
+
+        [ConfigurationProperty("id", IsRequired = true, IsKey = true)]
+        public string Id
         {
-            get { return (string)this["name"]; }
+            get { return (string)this["id"]; }
         }
 
-        [ConfigurationProperty("slackWebhookUrl")]
-        public string SlackWebhookUrl
+        [ConfigurationProperty("type", IsRequired = true)]
+        public string Type
         {
-            get { return (string)this["slackWebhookUrl"]; }
+            get { return (string)this["type"]; }
         }
 
-        [ConfigurationProperty("slackChannels", IsRequired = true)]
-        public string SlackChannels
+        [ConfigurationProperty("textId", IsRequired = true)]
+        public string TextId
         {
-            get { return (string)this["slackChannels"]; }
+            get { return (string)this["textId"]; }
         }
 
-        [ConfigurationProperty("slackUsername")]
-        public string SlackUsername
+        public TextElement Text { get; set; }
+
+        [ConfigurationProperty("botSettings")]
+        [ConfigurationCollection(typeof(NameValueConfigurationCollection))]
+        protected NameValueConfigurationCollection BotSettingsConfigurationCollection
         {
-            get { return (string)this["slackUsername"]; }
+            get { return (NameValueConfigurationCollection)base["botSettings"]; }
         }
 
-        [ConfigurationProperty("slackIconEmoji")]
-        public string SlackIconEmoji
+        private Dictionary<string, string> _BotSettings;
+        public Dictionary<string, string> BotSettings
         {
-            get { return (string)this["slackIconEmoji"]; }
+            get
+            {
+                if (_BotSettings != null) return _BotSettings;
+                _BotSettings = new Dictionary<string, string>();
+                foreach (NameValueConfigurationElement element in BotSettingsConfigurationCollection)
+                {
+                    _BotSettings.Add(element.Name, element.Value);
+                }
+                return _BotSettings;
+            }
         }
 
-        [ConfigurationProperty("slackIconUrl")]
-        public string SlackIconUrl
+        public string GetSetting(string name) 
         {
-            get { return (string)this["slackIconUrl"]; }
+            return BotSettingsConfigurationCollection[name].Value;
         }
 
-        [ConfigurationProperty("slackColor")]
-        public string SlackColor
-        {
-            get { return (string)this["slackColor"]; }
-        }
-
-        [ConfigurationProperty("successColor")]
-        public string SuccessColor
-        {
-            get { return (string)this["successColor"]; }
-        }
-
-        [ConfigurationProperty("errorColor")]
-        public string ErrorColor
-        {
-            get { return (string)this["errorColor"]; }
-        }
-
-        [ConfigurationProperty("eventRules", IsDefaultCollection = false)]
+        [ConfigurationProperty("eventRules")]
         [ConfigurationCollection(typeof(EventRuleCollection),
             AddItemName = "rule")]
         public EventRuleCollection EventRules

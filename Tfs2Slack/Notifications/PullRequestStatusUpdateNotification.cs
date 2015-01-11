@@ -22,7 +22,6 @@ namespace DevCore.Tfs2Slack.Notifications
 {
     class PullRequestStatusUpdateNotification : BaseNotification
     {
-        protected readonly static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
         protected readonly static Configuration.SettingsElement settings = Configuration.Tfs2SlackSection.Instance.Settings;
 
         public PullRequestStatus Status { get; set; } 
@@ -34,19 +33,16 @@ namespace DevCore.Tfs2Slack.Notifications
         public int PrId { get; set; }
         public string PrUrl { get; set; }
         public string PrTitle { get; set; }
-        public string Action
+        private string FormatAction(Configuration.BotElement bot)
         {
-            get
-            {
-                switch (Status)
+            switch (Status)
                 {
-                    case PullRequestStatus.Abandoned: return text.Abandoned;
-                    case PullRequestStatus.Active: return text.Reactivated;
-                    case PullRequestStatus.Completed: return text.Completed;
+                    case PullRequestStatus.Abandoned: return bot.Text.Abandoned;
+                    case PullRequestStatus.Active: return bot.Text.Reactivated;
+                    case PullRequestStatus.Completed: return bot.Text.Completed;
                     default:
                         return String.Format("updated status to {0} for", Status.ToString());
                 }
-            }
         }
         public string UserName
         {
@@ -55,7 +51,21 @@ namespace DevCore.Tfs2Slack.Notifications
 
         public override IList<string> ToMessage(Configuration.BotElement bot)
         {
-            return new[] { text.PullRequestStatusUpdateFormat.FormatWith(this) };
+            var formatter = new
+            {
+                TeamProjectCollection = this.TeamProjectCollection,
+                Status = this.Status,
+                DisplayName = this.DisplayName,
+                ProjectName = this.ProjectName,
+                RepoUri = this.RepoUri,
+                RepoName = this.RepoName,
+                PrId = this.PrId,
+                PrUrl = this.PrUrl,
+                PrTitle = this.PrTitle,
+                UserName = this.UserName,
+                Action = FormatAction(bot)
+            };
+            return new[] { bot.Text.PullRequestStatusUpdateFormat.FormatWith(formatter) };
         }
 
         public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)

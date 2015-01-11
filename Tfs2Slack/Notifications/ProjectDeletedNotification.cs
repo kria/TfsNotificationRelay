@@ -21,8 +21,6 @@ namespace DevCore.Tfs2Slack.Notifications
 {
     class ProjectDeletedNotification : BaseNotification
     {
-        protected static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
-
         public string ProjectUri { get; set; }
 
         private string projectName;
@@ -33,7 +31,7 @@ namespace DevCore.Tfs2Slack.Notifications
 
         public override IList<string> ToMessage(Configuration.BotElement bot)
         {
-            return new[] { text.ProjectDeletedFormat.FormatWith(this) };
+            return new[] { bot.Text.ProjectDeletedFormat.FormatWith(this) };
         }
 
         public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)

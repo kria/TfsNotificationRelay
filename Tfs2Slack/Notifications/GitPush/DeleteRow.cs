@@ -26,7 +26,7 @@ namespace DevCore.Tfs2Slack.Notifications.GitPush
 
         public override string ToString(BotElement bot)
         {
-            return String.Format("{0} {1}", String.Concat(RefNames), text.Deleted);
+            return String.Format("{0} {1}", String.Concat(RefNames), bot.Text.Deleted);
         }
     }
 }

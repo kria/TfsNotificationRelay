@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace DevCore.Tfs2Slack.Notifications
 {
-    abstract class MultiRowNotification : List<NotificationRow>, INotification
+    public abstract class MultiRowNotification : List<NotificationRow>, INotification
     {
         public string TeamProjectCollection { get; set; }
 
@@ -27,11 +27,18 @@ namespace DevCore.Tfs2Slack.Notifications
 
         public IList<string> ToMessage(Configuration.BotElement bot)
         {
-            return this.Select(r => r.ToString(bot)).ToList();
+            var lines = this.Select(r => r.ToString(bot)).ToList();
+            if (lines != null && lines.Count > 0)
+            {
+                if (lines.Count < TotalLineCount)
+                {
+                    lines.Add(bot.Text.LinesSupressedFormat.FormatWith(new { Count = TotalLineCount - lines.Count }));
+                }
+            }
+
+            return lines;
         }
 
         public abstract bool IsMatch(string collection, Configuration.EventRuleCollection eventRules);
-
-        public abstract Slack.Message ToSlackMessage(Configuration.BotElement bot, string channel);
     }
 }

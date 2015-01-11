@@ -22,7 +22,6 @@ namespace DevCore.Tfs2Slack.Notifications
 {
     class ProjectCreatedNotification : BaseNotification
     {
-        protected static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
         protected static Configuration.SettingsElement settings = Configuration.Tfs2SlackSection.Instance.Settings;
 
         public string ProjectUrl { get; set; }
@@ -30,7 +29,7 @@ namespace DevCore.Tfs2Slack.Notifications
 
         public override IList<string> ToMessage(Configuration.BotElement bot)
         {
-            return new[] { text.ProjectCreatedFormat.FormatWith(this) };
+            return new[] { bot.Text.ProjectCreatedFormat.FormatWith(this) };
         }
 
         public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)

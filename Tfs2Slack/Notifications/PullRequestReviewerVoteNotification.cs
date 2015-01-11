@@ -21,7 +21,6 @@ namespace DevCore.Tfs2Slack.Notifications
 {
     class PullRequestReviewerVoteNotification : BaseNotification
     {
-        protected readonly static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
         protected readonly static Configuration.SettingsElement settings = Configuration.Tfs2SlackSection.Instance.Settings;
 
         public short Vote { get; set; }
@@ -33,18 +32,15 @@ namespace DevCore.Tfs2Slack.Notifications
         public int PrId { get; set; }
         public string PrUrl { get; set; }
         public string PrTitle { get; set; }
-        public string Action
+        private string FormatAction(Configuration.BotElement bot)
         {
-            get
+            switch (Vote)
             {
-                switch (Vote)
-                {
-                    case -10: return text.VoteRejected;
-                    case 0: return text.VoteRescinded;
-                    case 10: return text.VoteApproved;
-                    default:
-                        return String.Format("voted {0} on", Vote);
-                }
+                case -10: return bot.Text.VoteRejected;
+                case 0: return bot.Text.VoteRescinded;
+                case 10: return bot.Text.VoteApproved;
+                default:
+                    return String.Format("voted {0} on", Vote);
             }
         }
         public string UserName
@@ -54,7 +50,21 @@ namespace DevCore.Tfs2Slack.Notifications
 
         public override IList<string> ToMessage(Configuration.BotElement bot)
         {
-            return new[] { text.PullRequestReviewerVoteFormat.FormatWith(this) };
+            var formatter = new
+            {
+                TeamProjectCollection = this.TeamProjectCollection,
+                Vote = this.Vote,
+                DisplayName = this.DisplayName,
+                ProjectName = this.ProjectName,
+                RepoUri = this.RepoUri,
+                RepoName = this.RepoName,
+                PrId = this.PrId,
+                PrUrl = this.PrUrl,
+                PrTitle = this.PrTitle,
+                UserName = this.UserName,
+                Action = FormatAction(bot)
+            };
+            return new[] { bot.Text.PullRequestReviewerVoteFormat.FormatWith(formatter) };
         }
 
         public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)

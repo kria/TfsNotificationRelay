@@ -30,7 +30,7 @@ namespace DevCore.Tfs2Slack.Notifications.GitPush
         public override string ToString(BotElement bot)
         {
             return String.Format("{0} {1} {2} {3}", 
-                String.Concat(RefNames), text.RefPointer, ObjectType, NewObjectId.ToHexString());
+                String.Concat(RefNames), bot.Text.RefPointer, ObjectType, NewObjectId.ToHexString());
         }
     }
 }

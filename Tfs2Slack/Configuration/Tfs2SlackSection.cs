@@ -35,18 +35,20 @@ namespace DevCore.Tfs2Slack.Configuration
             get { return (SettingsElement)this["settings"]; }
         }
 
-        [ConfigurationProperty("bots", IsDefaultCollection = false)]
-        [ConfigurationCollection(typeof(BotElementCollection),
+        [ConfigurationProperty("bots")]
+        [ConfigurationCollection(typeof(ConfigurationElementCollection<BotElement>),
             AddItemName = "bot")]
-        public BotElementCollection Bots
+        public ConfigurationElementCollection<BotElement> Bots
         {
-            get { return (BotElementCollection)base["bots"]; }
+            get { return (ConfigurationElementCollection<BotElement>)base["bots"]; }
         }
 
-        [ConfigurationProperty("text")]
-        public TextElement Text
+        [ConfigurationProperty("texts")]
+        [ConfigurationCollection(typeof(ConfigurationElementCollection<TextElement>),
+            AddItemName = "text")]
+        public ConfigurationElementCollection<TextElement> Texts
         {
-            get { return (TextElement)this["text"]; }
+            get { return (ConfigurationElementCollection<TextElement>)base["texts"]; }
         }
 
         [ConfigurationProperty("xmlns")]
@@ -65,6 +67,19 @@ namespace DevCore.Tfs2Slack.Configuration
         public string XsiNoNamespaceSchemaLocation
         {
             get { return (string)this["xsi:noNamespaceSchemaLocation"]; }
+        }
+
+        protected override void PostDeserialize()
+        {
+            base.PostDeserialize();
+            
+            foreach (var bot in Bots)
+            {
+                var text = this.Texts.FirstOrDefault(t => t.Id == bot.TextId);
+                if (text == null) throw new Tfs2SlackException(String.Format("Unknown textId ({0}) for bot {1}", bot.TextId, bot.Id));
+
+                bot.Text = text;
+            }
         }
 
     }

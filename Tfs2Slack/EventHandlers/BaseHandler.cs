@@ -12,15 +12,17 @@
  */
 
 using DevCore.Tfs2Slack.Notifications;
-using DevCore.Tfs2Slack.Slack;
 using Microsoft.TeamFoundation.Framework.Server;
 using Microsoft.TeamFoundation.Integration.Server;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
+using System.Configuration;
 
 namespace DevCore.Tfs2Slack.EventHandlers
 {
@@ -42,7 +44,7 @@ namespace DevCore.Tfs2Slack.EventHandlers
     public abstract class BaseHandler : ISubscriber
     {
         protected static Configuration.SettingsElement settings = Configuration.Tfs2SlackSection.Instance.Settings;
-        protected static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
+        //protected static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
         private static IDictionary<string, string> projectsNames;
 
         public string Name
@@ -77,7 +79,8 @@ namespace DevCore.Tfs2Slack.EventHandlers
             try
             {
                 Logger.Log("notificationType={0}, notificationEventArgs={1}", notificationType, notificationEventArgs);
-
+                IEnumerable<int> l = new List<int>();
+                
                 if (projectsNames == null)
                 {
                     var commonService = requestContext.GetService<CommonStructureService>();
@@ -93,15 +96,9 @@ namespace DevCore.Tfs2Slack.EventHandlers
                     foreach (var bot in config.Bots)
                     {
                         if (!notification.IsMatch(requestContext.ServiceHost.Name, bot.EventRules)) continue;
-
-                        var channels = bot.SlackChannels.Split(',').Select(chan => chan.Trim());
-
-                        foreach (string channel in channels)
-                        {
-                            var slackMessage = notification.ToSlackMessage(bot, channel);
-                            if (slackMessage != null)
-                                SendToSlack(slackMessage, bot.SlackWebhookUrl);
-                        }
+                        
+                        var notifier = (INotifier)Activator.CreateInstance(Type.GetType(bot.Type));
+                        notifier.Notify(notification, bot);
                     }
                 }
 
@@ -119,22 +116,6 @@ namespace DevCore.Tfs2Slack.EventHandlers
             return EventNotificationStatus.ActionPermitted;
         }
 
-        private async void SendToSlack(Slack.Message message, string webhookUrl)
-        {
-            try
-            {
-                using (var slackClient = new SlackClient())
-                {
-                    var result = await slackClient.SendMessageAsync(message, webhookUrl);
-                    result.EnsureSuccessStatusCode();
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ex);
-            }
-
-        }
 
     }
 

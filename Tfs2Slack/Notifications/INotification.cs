@@ -23,8 +23,6 @@ namespace DevCore.Tfs2Slack.Notifications
     {
         string TeamProjectCollection { get; set; }
 
-        Slack.Message ToSlackMessage(Configuration.BotElement bot, string channel);
-
         IList<string> ToMessage(Configuration.BotElement bot);
 
         bool IsMatch(string collection, Configuration.EventRuleCollection eventRules);

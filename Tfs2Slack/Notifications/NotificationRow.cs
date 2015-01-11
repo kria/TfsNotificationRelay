@@ -20,10 +20,9 @@ using DevCore.Tfs2Slack.Configuration;
 
 namespace DevCore.Tfs2Slack.Notifications
 {
-    abstract class NotificationRow
+    public abstract class NotificationRow
     {
         protected readonly static Configuration.SettingsElement settings = Configuration.Tfs2SlackSection.Instance.Settings;
-        protected readonly static Configuration.TextElement text = Configuration.Tfs2SlackSection.Instance.Text;
 
         public abstract string ToString(BotElement bot);
     }

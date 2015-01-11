@@ -36,16 +36,16 @@ namespace DevCore.Tfs2Slack.Notifications.GitPush
 
         public override string ToString(BotElement bot)
         {
-            string formattedTime = String.IsNullOrEmpty(text.DateTimeFormat) ? AuthorTime.ToString() : AuthorTime.ToString(text.DateTimeFormat);
+            string formattedTime = String.IsNullOrEmpty(bot.Text.DateTimeFormat) ? AuthorTime.ToString() : AuthorTime.ToString(bot.Text.DateTimeFormat);
             var sb = new StringBuilder();
             if (RefNames != null) sb.AppendFormat("{0} ", String.Concat(RefNames));
             
-            sb.Append(text.CommitFormat.FormatWith(new
+            sb.Append(bot.Text.CommitFormat.FormatWith(new
             {
-                Action = Type == CommitRowType.Commit ? text.Commit : text.RefPointer,
+                Action = Type == CommitRowType.Commit ? bot.Text.Commit : bot.Text.RefPointer,
                 CommitUri = CommitUri,
                 CommitId = CommitId.ToHexString(settings.HashLength),
-                ChangeCounts = (ChangeCounts != null) ? String.Join(", ", ChangeCounts.Select(c => ChangeCountToString(c))) : "",
+                ChangeCounts = (ChangeCounts != null) ? String.Join(", ", ChangeCounts.Select(c => ChangeCountToString(bot, c))) : "",
                 AuthorTime = formattedTime,
                 Author = Author,
                 AuthorName = AuthorName,
@@ -56,19 +56,19 @@ namespace DevCore.Tfs2Slack.Notifications.GitPush
             return sb.ToString();
         }
 
-        private static string ChangeCountToString(KeyValuePair<TfsGitChangeType, int> changeCount)
+        private static string ChangeCountToString(BotElement bot, KeyValuePair<TfsGitChangeType, int> changeCount)
         {
             string format = null;
             switch (changeCount.Key)
             {
-                case TfsGitChangeType.Add: format = text.ChangeCountAddFormat; break;
-                case TfsGitChangeType.Delete: format = text.ChangeCountDeleteFormat; break;
-                case TfsGitChangeType.Edit: format = text.ChangeCountEditFormat; break;
-                case TfsGitChangeType.Rename: format = text.ChangeCountRenameFormat; break;
-                case TfsGitChangeType.SourceRename: format = text.ChangeCountSourceRenameFormat; break;
+                case TfsGitChangeType.Add: format = bot.Text.ChangeCountAddFormat; break;
+                case TfsGitChangeType.Delete: format = bot.Text.ChangeCountDeleteFormat; break;
+                case TfsGitChangeType.Edit: format = bot.Text.ChangeCountEditFormat; break;
+                case TfsGitChangeType.Rename: format = bot.Text.ChangeCountRenameFormat; break;
+                case TfsGitChangeType.SourceRename: format = bot.Text.ChangeCountSourceRenameFormat; break;
                 default: 
                     Logger.Log("Unknown combo: " + changeCount.Key);
-                    format = text.ChangeCountUnknownFormat;
+                    format = bot.Text.ChangeCountUnknownFormat;
                     break;
             }
             return format.FormatWith(new { Count = changeCount.Value });

@@ -20,8 +20,16 @@ using System.Threading.Tasks;
 
 namespace DevCore.Tfs2Slack.Configuration
 {
-    public class TextElement : ConfigurationElement
+    public class TextElement : ConfigurationElement, IKeyedConfigurationElement
     {
+        public object Key { get { return Id; } }
+
+        [ConfigurationProperty("id", IsRequired= true)]
+        public string Id
+        {
+            get { return (string)this["id"]; }
+        }
+
         [ConfigurationProperty("pushFormat")]
         public string PushFormat
         {
