@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B42FE02C-24B3-4D93-B27B-DF3A352E8504}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DevCore.TfsNotificationRelay</RootNamespace>
+    <AssemblyName>DevCore.TfsNotificationRelay</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.TeamFoundation.Build.Server">
+      <HintPath>..\lib\Microsoft.TeamFoundation.Build.Server.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Common, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.TeamFoundation.Framework.Server">
+      <HintPath>..\lib\Microsoft.TeamFoundation.Framework.Server.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Git.Common, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Microsoft.TeamFoundation.Git.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Git.Server">
+      <HintPath>..\lib\Microsoft.TeamFoundation.Git.Server.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Server.Core">
+      <HintPath>..\lib\Microsoft.TeamFoundation.Server.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.VersionControl.Server">
+      <HintPath>..\lib\Microsoft.TeamFoundation.VersionControl.Server.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Server">
+      <HintPath>..\lib\Microsoft.TeamFoundation.WorkItemTracking.Server.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Services.WebApi, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Configuration\ConfigurationElementCollectionOfT.cs" />
+    <Compile Include="Configuration\ConfigurationHelper.cs" />
+    <Compile Include="Configuration\BotElement.cs" />
+    <Compile Include="Configuration\EventRuleCollection.cs" />
+    <Compile Include="Configuration\EventRuleElement.cs" />
+    <Compile Include="Configuration\IKeyedConfigurationElement.cs" />
+    <Compile Include="Configuration\SettingsElement.cs" />
+    <Compile Include="Configuration\StringElement.cs" />
+    <Compile Include="Configuration\TextElement.cs" />
+    <Compile Include="Configuration\TfsNotificationRelaySection.cs" />
+    <Compile Include="EventHandlers\BaseHandler.cs" />
+    <Compile Include="EventHandlers\BuildCompletionHandler.cs" />
+    <Compile Include="ByteArrayComparer.cs" />
+    <Compile Include="EventHandlers\CheckinHandler.cs" />
+    <Compile Include="EventHandlers\PullRequestCreatedHandler.cs" />
+    <Compile Include="EventHandlers\PullRequestReviewerVoteHandler.cs" />
+    <Compile Include="EventHandlers\PullRequestStatusUpdateHandler.cs" />
+    <Compile Include="INotifier.cs" />
+    <Compile Include="Notifications\BaseNotification.cs" />
+    <Compile Include="Notifications\BuildCompletionNotification.cs" />
+    <Compile Include="Notifications\CheckinNotification.cs" />
+    <Compile Include="Notifications\GitPush\CommitRow.cs" />
+    <Compile Include="Notifications\GitPush\DeleteRow.cs" />
+    <Compile Include="Notifications\GitPush\GitPushNotification.cs" />
+    <Compile Include="Notifications\GitPush\RefUpdateRow.cs" />
+    <Compile Include="Notifications\INotification.cs" />
+    <Compile Include="Notifications\MultiRowNotification.cs" />
+    <Compile Include="Notifications\NotificationRow.cs" />
+    <Compile Include="EventHandlers\ProjectCreatedHandler.cs" />
+    <Compile Include="EventHandlers\ProjectDeletedHandler.cs" />
+    <Compile Include="Notifications\GitPush\PushRow.cs" />
+    <Compile Include="Notifications\ProjectCreatedNotification.cs" />
+    <Compile Include="Notifications\ProjectDeletedNotification.cs" />
+    <Compile Include="Notifications\PullRequestCreatedNotification.cs" />
+    <Compile Include="Notifications\PullRequestReviewerVoteNotification.cs" />
+    <Compile Include="Notifications\PullRequestStatusUpdateNotification.cs" />
+    <Compile Include="Notifications\StringRow.cs" />
+    <Compile Include="EventHandlers\WorkItemChangedHandler.cs" />
+    <Compile Include="Logger.cs" />
+    <Compile Include="Notifications\WorkItemChangedNotification.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="EventHandlers\GitPushHandler.cs" />
+    <Compile Include="TfsNotificationRelayException.cs" />
+    <Compile Include="TfsEvents.cs" />
+    <Compile Include="TfsHelper.cs" />
+    <Compile Include="Utils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="TfsNotificationRelay.xsd">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
