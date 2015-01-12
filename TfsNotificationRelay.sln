@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsNotificationRelay", "Tfs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsNotificationRelay.Slack", "TfsNotificationRelay.Slack\TfsNotificationRelay.Slack.csproj", "{1B7CD662-6B07-47FE-8A83-A9201631377A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsNotificationRelay.HipChat", "TfsNotificationRelay.HipChat\TfsNotificationRelay.HipChat.csproj", "{6CFA1BAD-4E12-42C8-BC97-9C860D08C502}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1B7CD662-6B07-47FE-8A83-A9201631377A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B7CD662-6B07-47FE-8A83-A9201631377A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B7CD662-6B07-47FE-8A83-A9201631377A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CFA1BAD-4E12-42C8-BC97-9C860D08C502}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CFA1BAD-4E12-42C8-BC97-9C860D08C502}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CFA1BAD-4E12-42C8-BC97-9C860D08C502}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CFA1BAD-4E12-42C8-BC97-9C860D08C502}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
