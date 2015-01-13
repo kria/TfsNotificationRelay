@@ -43,7 +43,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
     public abstract class BaseHandler : ISubscriber
     {
-        protected static Configuration.SettingsElement settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
+        protected static Configuration.SettingsElement settings;
         private static IDictionary<string, string> projectsNames;
 
         public string Name
@@ -68,6 +68,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
         public virtual EventNotificationStatus ProcessEvent(TeamFoundationRequestContext requestContext, NotificationType notificationType,
             object notificationEventArgs, out int statusCode, out string statusMessage, out Microsoft.TeamFoundation.Common.ExceptionPropertyCollection properties)
         {
+            settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
             statusCode = 0;
             statusMessage = string.Empty;
             properties = null;

@@ -23,11 +23,16 @@ namespace DevCore.TfsNotificationRelay.Configuration
 {
     public class TfsNotificationRelaySection : ConfigurationSection
     {
-        private static TfsNotificationRelaySection instance = ConfigurationHelper.GetConfigurationSection<TfsNotificationRelaySection>(Assembly.GetExecutingAssembly(), "applicationSettings/tfsNotificationRelay");
+        private static TfsNotificationRelaySection instance;
 
         public static TfsNotificationRelaySection Instance
         {
-            get { return instance; }
+            get 
+            {
+                if (instance == null) instance = ConfigurationHelper.GetConfigurationSection<TfsNotificationRelaySection>(Assembly.GetExecutingAssembly(), "applicationSettings/tfsNotificationRelay");
+                               
+                return instance;
+            }
         }
         [ConfigurationProperty("settings")]
         public SettingsElement Settings

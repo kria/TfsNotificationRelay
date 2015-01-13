@@ -71,6 +71,12 @@ namespace DevCore.TfsNotificationRelay.Configuration
             return BotSettingsConfigurationCollection[name].Value;
         }
 
+        public string GetSetting(string name, string fallback)
+        {
+            if (!BotSettingsConfigurationCollection.AllKeys.Contains(name)) return fallback;
+            return BotSettingsConfigurationCollection[name].Value;
+        }
+
         [ConfigurationProperty("eventRules")]
         [ConfigurationCollection(typeof(EventRuleCollection),
             AddItemName = "rule")]
