@@ -6,10 +6,10 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("TfsNotificationRelay.HipChat")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("HipChat notifier for TfsNotificationRelay")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TfsNotificationRelay.HipChat")]
+[assembly: AssemblyProduct("TfsNotificationRelay")]
 [assembly: AssemblyCopyright("Copyright ©  2015 Kristian Adrup")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -34,3 +34,4 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyInformationalVersion("1.8.0.0")]

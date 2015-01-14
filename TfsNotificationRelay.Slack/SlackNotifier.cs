@@ -41,16 +41,10 @@ namespace DevCore.TfsNotificationRelay.Slack
 
         private async void SendToSlack(Slack.Message message, string webhookUrl)
         {
-            try
+            using (var slackClient = new SlackClient())
             {
-                using (var slackClient = new SlackClient())
-                {
-                    var result = await slackClient.SendMessageAsync(message, webhookUrl);
-                    result.EnsureSuccessStatusCode();
-                }
-            }
-            catch (Exception ex)
-            {
+                var result = await slackClient.SendMessageAsync(message, webhookUrl);
+                result.EnsureSuccessStatusCode();
             }
         }
 

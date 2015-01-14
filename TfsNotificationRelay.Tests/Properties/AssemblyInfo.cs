@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TfsNotificationRelay.Tests")]
+[assembly: AssemblyProduct("TfsNotificationRelay")]
 [assembly: AssemblyCopyright("Copyright ©  2015 Kristian Adrup")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
