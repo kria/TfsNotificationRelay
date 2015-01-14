@@ -85,7 +85,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 {
                     if (collection.IsMatchOrNoPattern(rule.TeamProjectCollection)
                         && ProjectName.IsMatchOrNoPattern(rule.TeamProject) 
-                        && BuildNumber.IsMatchOrNoPattern(rule.BuildDefinition))
+                        && BuildDefinition.IsMatchOrNoPattern(rule.BuildDefinition))
                     {
                         return rule.Notify;
                     }
