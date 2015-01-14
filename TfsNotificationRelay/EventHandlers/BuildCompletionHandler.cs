@@ -53,13 +53,12 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     StartTime =  build.StartTime,
                     FinishTime = build.FinishTime,
                     RequestedFor = qb.RequestedFor,
-                    RequestedForDisplayName = qb.RequestedForDisplayName
+                    RequestedForDisplayName = qb.RequestedForDisplayName,
+                    BuildDefinition = build.Definition.Name
                 };
 
                 return notification;
             }
-
-            
         }
     }
 }
