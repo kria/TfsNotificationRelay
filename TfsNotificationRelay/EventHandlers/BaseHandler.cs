@@ -73,44 +73,41 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             statusMessage = string.Empty;
             properties = null;
 
-            Stopwatch timer = new Stopwatch();
-            timer.Start();
-
-            try
+            if (projectsNames == null)
             {
-                Logger.Log("notificationType={0}, notificationEventArgs={1}", notificationType, notificationEventArgs);
-                IEnumerable<int> l = new List<int>();
-                
-                if (projectsNames == null)
+                var commonService = requestContext.GetService<CommonStructureService>();
+                projectsNames = commonService.GetProjects(requestContext).ToDictionary(p => p.Uri, p => p.Name);
+            }
+
+            var config = Configuration.TfsNotificationRelaySection.Instance;
+
+            if (notificationType == NotificationType.Notification)
+            {
+                var notification = CreateNotification(requestContext, notificationEventArgs, settings.MaxLines);
+
+                foreach (var bot in config.Bots)
                 {
-                    var commonService = requestContext.GetService<CommonStructureService>();
-                    projectsNames = commonService.GetProjects(requestContext).ToDictionary(p => p.Uri, p => p.Name);
-                }
+                    if (!notification.IsMatch(requestContext.ServiceHost.Name, bot.EventRules)) continue;
 
-                var config = Configuration.TfsNotificationRelaySection.Instance;                
-
-                if (notificationType == NotificationType.Notification)
-                {
-                    var notification = CreateNotification(requestContext, notificationEventArgs, settings.MaxLines);
-
-                    foreach (var bot in config.Bots)
+                    var botType = Type.GetType(bot.Type);
+                    if (botType != null)
                     {
-                        if (!notification.IsMatch(requestContext.ServiceHost.Name, bot.EventRules)) continue;
-                        
-                        var notifier = (INotifier)Activator.CreateInstance(Type.GetType(bot.Type));
-                        notifier.Notify(notification, bot);
+                        try
+                        {
+                            var notifier = (INotifier)Activator.CreateInstance(botType);
+                            notifier.Notify(notification, bot);
+                        }
+                        catch (Exception ex)
+                        {
+                            TeamFoundationApplicationCore.LogException(requestContext, "TfsNotificationRelay: Problem notifying bot: " + bot.Id, ex);
+                        }
+                    }
+                    else
+                    {
+                        string errmsg = String.Format("TfsNotificationRelay: Unknown bot type: {0}, Skipping bot: {1}", bot.Type, bot.Id);
+                        TeamFoundationApplicationCore.Log(requestContext, errmsg, 0, EventLogEntryType.Error);
                     }
                 }
-
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(ex);
-            }
-            finally
-            {
-                timer.Stop();
-                Logger.Log("Time spent in ProcessEvent: " + timer.Elapsed);
             }
 
             return EventNotificationStatus.ActionPermitted;
