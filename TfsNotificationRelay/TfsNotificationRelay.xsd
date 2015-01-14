@@ -81,6 +81,7 @@
                   <xs:attribute name="projectCreatedFormat" type="xs:string" use="required" />
                   <xs:attribute name="projectDeletedFormat" type="xs:string" use="required" />
                   <xs:attribute name="checkinFormat" type="xs:string" use="required" />
+                  <xs:attribute name="projectLinkFormat" type="xs:string" use="required" />
                   <xs:attribute name="changeCountAddFormat" type="xs:string" use="required" />
                   <xs:attribute name="changeCountDeleteFormat" type="xs:string" use="required" />
                   <xs:attribute name="changeCountEditFormat" type="xs:string" use="required" />

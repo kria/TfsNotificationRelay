@@ -114,6 +114,12 @@ namespace DevCore.TfsNotificationRelay.Configuration
             get { return (string)this["checkinFormat"]; }
         }
 
+        [ConfigurationProperty("projectLinkFormat")]
+        public string ProjectLinkFormat
+        {
+            get { return (string)this["projectLinkFormat"]; }
+        }
+
         [ConfigurationProperty("changeCountAddFormat")]
         public string ChangeCountAddFormat
         {

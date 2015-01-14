@@ -30,9 +30,9 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public int ChangesetId { get; set; }
         public Dictionary<string, string> Projects { get; set; }
         public string Comment { get; set; }
-        public string ProjectLinks 
+        private string FormatProjectLinks(Configuration.BotElement bot)
         {
-            get { return String.Join(", ", Projects.Select(x => String.Format("<{0}|{1}>", x.Value, x.Key))); }
+            return String.Join(", ", Projects.Select(x => bot.Text.ProjectLinkFormat.FormatWith(new { ProjectName = x.Key, ProjectUrl = x.Value })));
         }
         public string UserName
         {
@@ -41,7 +41,17 @@ namespace DevCore.TfsNotificationRelay.Notifications
 
         public override IList<string> ToMessage(Configuration.BotElement bot)
         {
-            return new[] { bot.Text.CheckinFormat.FormatWith(this) };
+            var formatter = new
+            {
+                TeamProjectCollection = this.TeamProjectCollection,
+                DisplayName = this.DisplayName,
+                ChangesetUrl = this.ChangesetUrl,
+                ChangesetId = this.ChangesetId,
+                Comment = this.Comment,
+                UserName = this.UserName,
+                ProjectLinks = FormatProjectLinks(bot)
+            };
+            return new[] { bot.Text.CheckinFormat.FormatWith(formatter) };
         }
 
         public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)
