@@ -29,7 +29,7 @@ namespace DevCore.TfsNotificationRelay.Configuration
         {
             get 
             {
-                if (instance == null) instance = ConfigurationHelper.GetConfigurationSection<TfsNotificationRelaySection>(Assembly.GetExecutingAssembly(), "applicationSettings/tfsNotificationRelay");
+                if (instance == null) instance = ConfigurationHelper.GetConfigurationSection<TfsNotificationRelaySection>(Assembly.GetExecutingAssembly(), "tfsNotificationRelay");
                                
                 return instance;
             }

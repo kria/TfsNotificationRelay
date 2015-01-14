@@ -24,7 +24,7 @@ namespace TfsNotificationRelay.Tests
         [TestMethod]
         public void Load_DefaultConfiguration_ShouldSucceed()
         {
-            var config = ConfigurationManager.GetSection("applicationSettings/tfsNotificationRelay") as TfsNotificationRelaySection;
+            var config = ConfigurationManager.GetSection("tfsNotificationRelay") as TfsNotificationRelaySection;
             
             Assert.IsNotNull(config, "Unable to load section");
             Assert.IsTrue(config.Settings.MaxLines > 0, "Too low MaxLines");
