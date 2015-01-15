@@ -54,7 +54,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     FinishTime = build.FinishTime,
                     RequestedFor = qb.RequestedFor,
                     RequestedForDisplayName = qb.RequestedForDisplayName,
-                    BuildDefinition = build.Definition.Name
+                    BuildDefinition = build.Definition.Name,
+                    DropLocation = build.DropLocation
                 };
 
                 return notification;

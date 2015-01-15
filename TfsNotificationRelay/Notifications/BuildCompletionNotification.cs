@@ -27,6 +27,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
 
         public string ProjectName { get; set; }
         public string BuildDefinition { get; set; }
+        public string DropLocation { get; set; }
         public BuildStatus BuildStatus { get; set; }
         public string BuildUrl { get; set; }
         public string BuildNumber { get; set; }
@@ -71,7 +72,8 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 StartTime = this.StartTime,
                 FinishTime = this.FinishTime,
                 UserName = this.UserName,
-                BuildDuration = GetBuildDuration(bot)
+                BuildDuration = GetBuildDuration(bot),
+                DropLocation = this.DropLocation
             };
             return new[] { bot.Text.BuildFormat.FormatWith(formatter), BuildStatus.ToString() };
         }
