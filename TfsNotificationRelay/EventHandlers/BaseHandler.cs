@@ -28,6 +28,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     public abstract class BaseHandler<T> : BaseHandler
     {
+        private const string area = "TfsNotificationRelay";
+
         public override Type[] SubscribedTypes()
         {
             return new Type[] { typeof(T) };
@@ -48,7 +50,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
         public string Name
         {
-            get { return "TfsNotificationRelay handler"; }
+            get { return "TfsNotificationRelay"; }
         }
 
         public SubscriberPriority Priority
@@ -68,53 +70,67 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
         public virtual EventNotificationStatus ProcessEvent(TeamFoundationRequestContext requestContext, NotificationType notificationType,
             object notificationEventArgs, out int statusCode, out string statusMessage, out Microsoft.TeamFoundation.Common.ExceptionPropertyCollection properties)
         {
-            settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
-            statusCode = 0;
-            statusMessage = string.Empty;
-            properties = null;
+            requestContext.Trace(0, TraceLevel.Verbose, Constants.TraceArea, "BaseHandler", 
+                "ProcessEvent: notificationType={0}, notificationEventArgs={1}", notificationType, notificationEventArgs);
+            Stopwatch timer = new Stopwatch();
+            timer.Start();
 
-            if (projectsNames == null)
+            try
             {
-                var commonService = requestContext.GetService<CommonStructureService>();
-                projectsNames = commonService.GetProjects(requestContext).ToDictionary(p => p.Uri, p => p.Name);
-            }
+                settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
+                statusCode = 0;
+                statusMessage = string.Empty;
+                properties = null;
 
-            var config = Configuration.TfsNotificationRelaySection.Instance;
-
-            if (notificationType == NotificationType.Notification)
-            {
-                var notification = CreateNotification(requestContext, notificationEventArgs, settings.MaxLines);
-
-                var tasks = new List<Task>();
-
-                foreach (var bot in config.Bots)
+                if (projectsNames == null)
                 {
-                    if (!notification.IsMatch(requestContext.ServiceHost.Name, bot.EventRules)) continue;
-
-                    var botType = Type.GetType(bot.Type);
-                    if (botType != null)
-                    {
-                        try
-                        {
-                            var notifier = (INotifier)Activator.CreateInstance(botType);
-                            tasks.Add(NotifyAsync(requestContext, notifier, notification, bot));
-                        }
-                        catch (Exception ex)
-                        {
-                            TeamFoundationApplicationCore.LogException(requestContext, String.Format("TfsNotificationRelay: Can't create bot {0}.", bot.Id), ex);
-                        }
-                    }
-                    else
-                    {
-                        string errmsg = String.Format("TfsNotificationRelay: Unknown bot type: {0}, Skipping bot: {1}.", bot.Type, bot.Id);
-                        TeamFoundationApplicationCore.Log(requestContext, errmsg, 0, EventLogEntryType.Error);
-                    }
+                    var commonService = requestContext.GetService<CommonStructureService>();
+                    projectsNames = commonService.GetProjects(requestContext).ToDictionary(p => p.Uri, p => p.Name);
                 }
 
-                Task.WaitAll(tasks.ToArray());
-            }
+                var config = Configuration.TfsNotificationRelaySection.Instance;
 
-            return EventNotificationStatus.ActionPermitted;
+                if (notificationType == NotificationType.Notification)
+                {
+                    var notification = CreateNotification(requestContext, notificationEventArgs, settings.MaxLines);
+
+                    var tasks = new List<Task>();
+
+                    foreach (var bot in config.Bots)
+                    {
+                        if (!notification.IsMatch(requestContext.ServiceHost.Name, bot.EventRules)) continue;
+
+                        var botType = Type.GetType(bot.Type);
+                        if (botType != null)
+                        {
+                            try
+                            {
+                                var notifier = (INotifier)Activator.CreateInstance(botType);
+                                tasks.Add(NotifyAsync(requestContext, notifier, notification, bot));
+                            }
+                            catch (Exception ex)
+                            {
+                                TeamFoundationApplicationCore.LogException(requestContext, String.Format("TfsNotificationRelay: Can't create bot {0}.", bot.Id), ex);
+                            }
+                        }
+                        else
+                        {
+                            string errmsg = String.Format("TfsNotificationRelay: Unknown bot type: {0}, Skipping bot: {1}.", bot.Type, bot.Id);
+                            TeamFoundationApplicationCore.Log(requestContext, errmsg, 0, EventLogEntryType.Error);
+                        }
+                    }
+
+                    Task.WaitAll(tasks.ToArray());
+                }
+
+                return EventNotificationStatus.ActionPermitted;
+            }
+            finally
+            {
+                timer.Stop();
+                requestContext.Trace(0, TraceLevel.Verbose, Constants.TraceArea, "BaseHandler", "Time spent in ProcessEvent: {0}", timer.Elapsed);
+            }
+            
         }
 
         private async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotifier notifier, INotification notification, Configuration.BotElement bot)

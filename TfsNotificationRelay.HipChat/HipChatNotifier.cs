@@ -42,8 +42,12 @@ namespace DevCore.TfsNotificationRelay.HipChat
             jobject.color = bot.GetSetting("standardColor");
             jobject.message = String.Join(messageFormat.Equals("text") ? "\n" : "<br/>", notification.ToMessage(bot));
 
-            var content = new StringContent(jobject.ToString(), Encoding.UTF8, "application/json");
-            await httpClient.PostAsync(baseUrl + "/room/" + room + "/notification", content).ContinueWith(t => t.Result.EnsureSuccessStatusCode());
+            string json = jobject.ToString();
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            string url = baseUrl + "/room/" + room + "/notification";
+            requestContext.Trace(0, System.Diagnostics.TraceLevel.Verbose, Constants.TraceArea, "HipChatNotifier", "Sending notification to {0}\n{1}", url, json);
+
+            await httpClient.PostAsync(url, content).ContinueWith(t => t.Result.EnsureSuccessStatusCode());           
         }
     }
 }
