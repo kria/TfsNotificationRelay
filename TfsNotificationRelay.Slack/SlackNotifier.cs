@@ -22,30 +22,28 @@ using System.Text;
 using System.Threading.Tasks;
 using DevCore.TfsNotificationRelay.Configuration;
 using DevCore.TfsNotificationRelay.Notifications.GitPush;
+using Microsoft.TeamFoundation.Framework.Server;
 
 namespace DevCore.TfsNotificationRelay.Slack
 {
     public class SlackNotifier : INotifier
     {
-        public void Notify(INotification notification, BotElement bot)
+        public async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot)
         {
             var channels = bot.GetSetting("channels").Split(',').Select(chan => chan.Trim());
+            var tasks = new List<Task>();
+            var slackClient = new SlackClient();
 
             foreach (string channel in channels)
             {
-                var slackMessage = ToSlackMessage((dynamic)notification, bot, channel);
+                Message slackMessage = ToSlackMessage((dynamic)notification, bot, channel);
                 if (slackMessage != null)
-                    SendToSlack(slackMessage, bot.GetSetting("webhookUrl"));
+                {
+                    tasks.Add(slackClient.SendMessageAsync(slackMessage, bot.GetSetting("webhookUrl")).ContinueWith(t => t.Result.EnsureSuccessStatusCode()));
+                }
             }
-        }
 
-        private async void SendToSlack(Slack.Message message, string webhookUrl)
-        {
-            using (var slackClient = new SlackClient())
-            {
-                var result = await slackClient.SendMessageAsync(message, webhookUrl);
-                result.EnsureSuccessStatusCode();
-            }
+            await Task.WhenAll(tasks);
         }
 
         public Message ToSlackMessage(INotification notification, BotElement bot, string channel)

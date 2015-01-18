@@ -14,6 +14,7 @@
 using DevCore.TfsNotificationRelay;
 using DevCore.TfsNotificationRelay.Configuration;
 using DevCore.TfsNotificationRelay.Notifications;
+using Microsoft.TeamFoundation.Framework.Server;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace DevCore.TfsNotificationRelay.HipChat
 {
     public class HipChatNotifier : INotifier
     {
-        public void Notify(INotification notification, BotElement bot)
+        public async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot)
         {
             string room = bot.GetSetting("room");
             string baseUrl = bot.GetSetting("apiBaseUrl");
@@ -42,7 +43,7 @@ namespace DevCore.TfsNotificationRelay.HipChat
             jobject.message = String.Join(messageFormat.Equals("text") ? "\n" : "<br/>", notification.ToMessage(bot));
 
             var content = new StringContent(jobject.ToString(), Encoding.UTF8, "application/json");
-            var res = httpClient.PostAsync(baseUrl + "/room/" + room + "/notification", content).Result;
+            await httpClient.PostAsync(baseUrl + "/room/" + room + "/notification", content).ContinueWith(t => t.Result.EnsureSuccessStatusCode());
         }
     }
 }

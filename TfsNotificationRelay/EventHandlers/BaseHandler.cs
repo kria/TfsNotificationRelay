@@ -85,6 +85,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             {
                 var notification = CreateNotification(requestContext, notificationEventArgs, settings.MaxLines);
 
+                var tasks = new List<Task>();
+
                 foreach (var bot in config.Bots)
                 {
                     if (!notification.IsMatch(requestContext.ServiceHost.Name, bot.EventRules)) continue;
@@ -95,24 +97,37 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                         try
                         {
                             var notifier = (INotifier)Activator.CreateInstance(botType);
-                            notifier.Notify(notification, bot);
+                            tasks.Add(NotifyAsync(requestContext, notifier, notification, bot));
                         }
                         catch (Exception ex)
                         {
-                            TeamFoundationApplicationCore.LogException(requestContext, "TfsNotificationRelay: Problem notifying bot: " + bot.Id, ex);
+                            TeamFoundationApplicationCore.LogException(requestContext, String.Format("TfsNotificationRelay: Can't create bot {0}.", bot.Id), ex);
                         }
                     }
                     else
                     {
-                        string errmsg = String.Format("TfsNotificationRelay: Unknown bot type: {0}, Skipping bot: {1}", bot.Type, bot.Id);
+                        string errmsg = String.Format("TfsNotificationRelay: Unknown bot type: {0}, Skipping bot: {1}.", bot.Type, bot.Id);
                         TeamFoundationApplicationCore.Log(requestContext, errmsg, 0, EventLogEntryType.Error);
                     }
                 }
+
+                Task.WaitAll(tasks.ToArray());
             }
 
             return EventNotificationStatus.ActionPermitted;
         }
 
+        private async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotifier notifier, INotification notification, Configuration.BotElement bot)
+        {
+            try
+            {
+                await notifier.NotifyAsync(requestContext, notification, bot);
+            }
+            catch (Exception ex)
+            {
+                TeamFoundationApplicationCore.LogException(requestContext, String.Format("TfsNotificationRelay: Notify failed for bot {0}.", bot.Id), ex, 0, EventLogEntryType.Error);
+            }
+        }
 
     }
 

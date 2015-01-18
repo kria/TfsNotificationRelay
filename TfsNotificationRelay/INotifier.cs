@@ -13,6 +13,7 @@
 
 using DevCore.TfsNotificationRelay.Configuration;
 using DevCore.TfsNotificationRelay.Notifications;
+using Microsoft.TeamFoundation.Framework.Server;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -24,6 +25,6 @@ namespace DevCore.TfsNotificationRelay
 {
     public interface INotifier
     {
-        void Notify(INotification notification, BotElement bot);
+        Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot);
     }
 }
