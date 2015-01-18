@@ -26,11 +26,11 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
         public byte[] NewObjectId { get; set; }
         public TfsGitObjectType ObjectType { get; set; }
         public IList<string> RefNames { get; set; }
-        
-        public override string ToString(BotElement bot)
+
+        public override string ToString(BotElement bot, Func<string, string> transform)
         {
-            return String.Format("{0} {1} {2} {3}", 
-                String.Concat(RefNames), bot.Text.RefPointer, ObjectType, NewObjectId.ToHexString());
+            return String.Format("{0} {1} {2} {3}",
+                transform(String.Concat(RefNames)), bot.Text.RefPointer, transform(ObjectType.ToString()), transform(NewObjectId.ToHexString()));
         }
     }
 }

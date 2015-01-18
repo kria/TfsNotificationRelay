@@ -47,23 +47,23 @@ namespace DevCore.TfsNotificationRelay.Notifications
             return IsNew ? bot.Text.Created : bot.Text.Updated;
         }
 
-        public override IList<string> ToMessage(Configuration.BotElement bot)
+        public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
         {
             var lines = new List<string>();
             var formatter = new
             {
-                TeamProjectCollection = this.TeamProjectCollection,
-                DisplayName = this.DisplayName,
-                ProjectName = this.ProjectName,
+                TeamProjectCollection = transform(this.TeamProjectCollection),
+                DisplayName = transform(this.DisplayName),
+                ProjectName = transform(this.ProjectName),
                 WiUrl = this.WiUrl,
-                WiType = this.WiType,
+                WiType = transform(this.WiType),
                 WiId = this.WiId,
-                WiTitle = this.WiTitle,
+                WiTitle = transform(this.WiTitle),
                 IsStateChanged = this.IsStateChanged,
                 IsAssignmentChanged = this.IsAssignmentChanged,
-                AssignedTo = this.AssignedTo,
-                State = this.State,
-                UserName = this.UserName,
+                AssignedTo = transform(this.AssignedTo),
+                State = transform(this.State),
+                UserName = transform(this.UserName),
                 Action = FormatAction(bot)
             };
             lines.Add(bot.Text.WorkItemchangedFormat.FormatWith(formatter));

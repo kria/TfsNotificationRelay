@@ -37,9 +37,22 @@ namespace DevCore.TfsNotificationRelay.Notifications
             get { return settings.StripUserDomain ? Utils.StripDomain(UniqueName) : UniqueName; }
         }
 
-        public override IList<string> ToMessage(Configuration.BotElement bot)
+        public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
         {
-            return new[] { bot.Text.PullRequestCreatedFormat.FormatWith(this) };
+            var formatter = new
+            {
+                TeamProjectCollection = transform(this.TeamProjectCollection),
+                DisplayName = transform(this.DisplayName),
+                ProjectName = transform(this.ProjectName),
+                RepoUri = this.RepoUri,
+                RepoName = transform(this.RepoName),
+                PrId = this.PrId,
+                PrUrl = this.PrUrl,
+                PrTitle = transform(this.PrTitle),
+                UserName = transform(this.UserName),
+            };
+
+            return new[] { bot.Text.PullRequestCreatedFormat.FormatWith(formatter) };
         }
 
         public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)

@@ -30,26 +30,27 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public int ChangesetId { get; set; }
         public Dictionary<string, string> Projects { get; set; }
         public string Comment { get; set; }
-        private string FormatProjectLinks(Configuration.BotElement bot)
+        private string FormatProjectLinks(Configuration.BotElement bot, Func<string, string> transform)
         {
-            return String.Join(", ", Projects.Select(x => bot.Text.ProjectLinkFormat.FormatWith(new { ProjectName = x.Key, ProjectUrl = x.Value })));
+            return String.Join(", ", Projects.Select(x => bot.Text.ProjectLinkFormat
+                .FormatWith(new { ProjectName = transform(x.Key), ProjectUrl = x.Value })));
         }
         public string UserName
         {
             get { return settings.StripUserDomain ? Utils.StripDomain(UniqueName) : UniqueName; }
         }
 
-        public override IList<string> ToMessage(Configuration.BotElement bot)
+        public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
         {
             var formatter = new
             {
-                TeamProjectCollection = this.TeamProjectCollection,
-                DisplayName = this.DisplayName,
+                TeamProjectCollection = transform(this.TeamProjectCollection),
+                DisplayName = transform(this.DisplayName),
                 ChangesetUrl = this.ChangesetUrl,
                 ChangesetId = this.ChangesetId,
-                Comment = this.Comment,
-                UserName = this.UserName,
-                ProjectLinks = FormatProjectLinks(bot)
+                Comment = transform(this.Comment),
+                UserName = transform(this.UserName),
+                ProjectLinks = FormatProjectLinks(bot, transform)
             };
             return new[] { bot.Text.CheckinFormat.FormatWith(formatter) };
         }

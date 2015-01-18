@@ -48,14 +48,14 @@ namespace DevCore.TfsNotificationRelay.Slack
 
         public Message ToSlackMessage(INotification notification, BotElement bot, string channel)
         {
-            var lines = notification.ToMessage(bot);
+            var lines = notification.ToMessage(bot, s => s);
 
             return SlackHelper.CreateSlackMessage(lines, bot, channel, bot.GetSetting("standardColor"));
         }
 
         public Message ToSlackMessage(BuildCompletionNotification notification, BotElement bot, string channel)
         {
-            var lines = notification.ToMessage(bot);
+            var lines = notification.ToMessage(bot, s => s);
             var color = notification.IsSuccessful ? bot.GetSetting("successColor") : bot.GetSetting("errorColor");
 
             return SlackHelper.CreateSlackMessage(lines, bot, channel, color);
@@ -63,7 +63,7 @@ namespace DevCore.TfsNotificationRelay.Slack
 
         public Message ToSlackMessage(WorkItemChangedNotification notification, BotElement bot, string channel)
         {
-            string header = notification.ToMessage(bot).First();
+            string header = notification.ToMessage(bot, s => s).First();
             var fields = new[] { 
                 new AttachmentField(bot.Text.State, notification.State, true), 
                 new AttachmentField(bot.Text.AssignedTo, notification.AssignedTo, true) 

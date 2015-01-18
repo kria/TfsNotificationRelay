@@ -18,11 +18,14 @@ using Microsoft.TeamFoundation.Framework.Server;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
+
 
 namespace DevCore.TfsNotificationRelay.HipChat
 {
@@ -37,17 +40,47 @@ namespace DevCore.TfsNotificationRelay.HipChat
 
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
-            dynamic jobject = new JObject();
-            jobject.message_format = messageFormat;
-            jobject.color = bot.GetSetting("standardColor");
-            jobject.message = String.Join(messageFormat.Equals("text") ? "\n" : "<br/>", notification.ToMessage(bot));
 
-            string json = jobject.ToString();
+            string json = ToJson((dynamic)notification, bot);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             string url = baseUrl + "/room/" + room + "/notification";
             requestContext.Trace(0, System.Diagnostics.TraceLevel.Verbose, Constants.TraceArea, "HipChatNotifier", "Sending notification to {0}\n{1}", url, json);
 
-            await httpClient.PostAsync(url, content).ContinueWith(t => t.Result.EnsureSuccessStatusCode());           
+            await httpClient.PostAsync(url, content).ContinueWith(t => t.Result.EnsureSuccessStatusCode());
+        }
+
+        private string ToJson(INotification notification, BotElement bot)
+        {
+            return CreateHipChatMessage(notification, bot, bot.GetSetting("standardColor")).ToString();
+        }
+
+        private string ToJson(BuildCompletionNotification notification, BotElement bot)
+        {
+            var color = notification.IsSuccessful ? bot.GetSetting("successColor") : bot.GetSetting("errorColor");
+
+            return CreateHipChatMessage(notification, bot, color).ToString();
+        }
+
+        private JObject CreateHipChatMessage(INotification notification, BotElement bot, string color)
+        {
+            dynamic jobject = new JObject();
+
+            if (bot.GetSetting("messageFormat") == "text")
+            {
+                var lines = notification.ToMessage(bot, s => s);
+                if (lines == null || lines.Count() == 0) return null;
+                jobject.message_format = "text";
+                jobject.message = String.Join("\n", lines);
+            } else {
+                var lines = notification.ToMessage(bot, s => HttpUtility.HtmlEncode(s));
+                if (lines == null || lines.Count() == 0) return null;
+                jobject.message_format = "html";
+                jobject.message = String.Join("<br/>", lines);
+            }
+            jobject.color = color;
+            jobject.notify = bot.GetSetting("notify").Equals("true", StringComparison.OrdinalIgnoreCase);
+
+            return jobject;
         }
     }
 }

@@ -23,7 +23,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
     {
         public string TeamProjectCollection { get; set; }
 
-        public abstract IList<string> ToMessage(Configuration.BotElement bot);
+        public abstract IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform);
 
         public abstract bool IsMatch(string collection, Configuration.EventRuleCollection eventRules);
     }

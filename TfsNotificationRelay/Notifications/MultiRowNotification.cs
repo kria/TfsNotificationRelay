@@ -25,9 +25,9 @@ namespace DevCore.TfsNotificationRelay.Notifications
 
         public int TotalLineCount { get; set; }
 
-        public IList<string> ToMessage(Configuration.BotElement bot)
+        public IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
         {
-            var lines = this.Select(r => r.ToString(bot)).ToList();
+            var lines = this.Select(r => r.ToString(bot, transform)).ToList();
             if (lines != null && lines.Count > 0)
             {
                 if (lines.Count < TotalLineCount)

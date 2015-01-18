@@ -48,20 +48,20 @@ namespace DevCore.TfsNotificationRelay.Notifications
             get { return settings.StripUserDomain ? Utils.StripDomain(UniqueName) : UniqueName; }
         }
 
-        public override IList<string> ToMessage(Configuration.BotElement bot)
+        public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
         {
             var formatter = new
             {
-                TeamProjectCollection = this.TeamProjectCollection,
+                TeamProjectCollection = transform(this.TeamProjectCollection),
                 Vote = this.Vote,
-                DisplayName = this.DisplayName,
-                ProjectName = this.ProjectName,
+                DisplayName = transform(this.DisplayName),
+                ProjectName = transform(this.ProjectName),
                 RepoUri = this.RepoUri,
-                RepoName = this.RepoName,
+                RepoName = transform(this.RepoName),
                 PrId = this.PrId,
                 PrUrl = this.PrUrl,
-                PrTitle = this.PrTitle,
-                UserName = this.UserName,
+                PrTitle = transform(this.PrTitle),
+                UserName = transform(this.UserName),
                 Action = FormatAction(bot)
             };
             return new[] { bot.Text.PullRequestReviewerVoteFormat.FormatWith(formatter) };

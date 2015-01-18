@@ -115,6 +115,7 @@
     <Compile Include="Notifications\WorkItemChangedNotification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EventHandlers\GitPushHandler.cs" />
+    <Compile Include="StringTransformFormatProvider.cs" />
     <Compile Include="TfsNotificationRelayException.cs" />
     <Compile Include="TfsEvents.cs" />
     <Compile Include="TfsHelper.cs" />

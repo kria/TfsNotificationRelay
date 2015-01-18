@@ -34,23 +34,23 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
         public string Comment { get; set; }
         public IList<string> RefNames { get; set; }
 
-        public override string ToString(BotElement bot)
+        public override string ToString(BotElement bot, Func<string, string> transform)
         {
             string formattedTime = String.IsNullOrEmpty(bot.Text.DateTimeFormat) ? AuthorTime.ToString() : AuthorTime.ToString(bot.Text.DateTimeFormat);
             var sb = new StringBuilder();
-            if (RefNames != null) sb.AppendFormat("{0} ", String.Concat(RefNames));
+            if (RefNames != null) sb.AppendFormat("{0} ", transform(String.Concat(RefNames)));
             
             sb.Append(bot.Text.CommitFormat.FormatWith(new
             {
                 Action = Type == CommitRowType.Commit ? bot.Text.Commit : bot.Text.RefPointer,
                 CommitUri = CommitUri,
-                CommitId = CommitId.ToHexString(settings.HashLength),
+                CommitId = transform(CommitId.ToHexString(settings.HashLength)),
                 ChangeCounts = (ChangeCounts != null) ? String.Join(", ", ChangeCounts.Select(c => ChangeCountToString(bot, c))) : "",
                 AuthorTime = formattedTime,
-                Author = Author,
-                AuthorName = AuthorName,
-                AuthorEmail = AuthorEmail,
-                Comment = Comment.Truncate(settings.CommentMaxLength)
+                Author = transform(Author),
+                AuthorName = transform(AuthorName),
+                AuthorEmail = transform(AuthorEmail),
+                Comment = transform(Comment.Truncate(settings.CommentMaxLength))
             }));
 
             return sb.ToString();

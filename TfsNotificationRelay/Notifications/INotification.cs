@@ -23,7 +23,14 @@ namespace DevCore.TfsNotificationRelay.Notifications
     {
         string TeamProjectCollection { get; set; }
 
-        IList<string> ToMessage(Configuration.BotElement bot);
+        /// <summary>
+        /// Returns the message formatted according the text settings of the bot.
+        /// The transform function will be applied to all text from TFS.
+        /// </summary>
+        /// <param name="bot"></param>
+        /// <param name="transform"></param>
+        /// <returns></returns>
+        IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform);
 
         bool IsMatch(string collection, Configuration.EventRuleCollection eventRules);
     }

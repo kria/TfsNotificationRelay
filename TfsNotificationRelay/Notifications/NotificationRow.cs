@@ -24,6 +24,6 @@ namespace DevCore.TfsNotificationRelay.Notifications
     {
         protected readonly static Configuration.SettingsElement settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
 
-        public abstract string ToString(BotElement bot);
+        public abstract string ToString(BotElement bot, Func<string, string> transform);
     }
 }

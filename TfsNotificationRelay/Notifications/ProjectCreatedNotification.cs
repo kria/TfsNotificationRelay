@@ -27,9 +27,16 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string ProjectUrl { get; set; }
         public string ProjectName { get; set; }
 
-        public override IList<string> ToMessage(Configuration.BotElement bot)
+        public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
         {
-            return new[] { bot.Text.ProjectCreatedFormat.FormatWith(this) };
+            var formatter = new
+            {
+                TeamProjectCollection = transform(this.TeamProjectCollection),
+                ProjectUrl = this.ProjectUrl,
+                ProjectName = transform(this.ProjectName),
+            };
+
+            return new[] { bot.Text.ProjectCreatedFormat.FormatWith(formatter) };
         }
 
         public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)

@@ -44,7 +44,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
         {
             get { return RequestedForDisplayName; }
         }
-        private string GetBuildDuration(Configuration.BotElement bot)
+        private string FormatBuildDuration(Configuration.BotElement bot)
         {
             var duration = FinishTime - StartTime;
             return String.IsNullOrEmpty(bot.Text.TimeSpanFormat) ? duration.ToString(@"hh\:mm\:ss") : duration.ToString(bot.Text.TimeSpanFormat);
@@ -55,27 +55,27 @@ namespace DevCore.TfsNotificationRelay.Notifications
             get { return BuildStatus.HasFlag(BuildStatus.Succeeded); }
         }
 
-        public override IList<string> ToMessage(Configuration.BotElement bot)
+        public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
         {
             var formatter = new
             {
-                TeamProjectCollection = this.TeamProjectCollection,
-                ProjectName = this.ProjectName,
-                BuildDefinition = this.BuildDefinition,
-                BuildStatus = this.BuildStatus,
+                TeamProjectCollection = transform(this.TeamProjectCollection),
+                ProjectName = transform(this.ProjectName),
+                BuildDefinition = transform(this.BuildDefinition),
+                BuildStatus = transform(this.BuildStatus.ToString()),
                 BuildUrl = this.BuildUrl,
-                BuildNumber = this.BuildNumber,
-                BuildReason = this.BuildReason,
-                RequestedFor = this.RequestedFor,
-                RequestedForDisplayName = this.RequestedForDisplayName,
-                DisplayName = this.RequestedForDisplayName,
+                BuildNumber = transform(this.BuildNumber),
+                BuildReason = transform(this.BuildReason.ToString()),
+                RequestedFor = transform(this.RequestedFor),
+                RequestedForDisplayName = transform(this.RequestedForDisplayName),
+                DisplayName = transform(this.RequestedForDisplayName),
                 StartTime = this.StartTime,
                 FinishTime = this.FinishTime,
-                UserName = this.UserName,
-                BuildDuration = GetBuildDuration(bot),
+                UserName = transform(this.UserName),
+                BuildDuration = FormatBuildDuration(bot),
                 DropLocation = this.DropLocation
             };
-            return new[] { bot.Text.BuildFormat.FormatWith(formatter), BuildStatus.ToString() };
+            return new[] { bot.Text.BuildFormat.FormatWith(formatter), transform(BuildStatus.ToString()) };
         }
 
         public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)

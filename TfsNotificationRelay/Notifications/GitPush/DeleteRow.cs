@@ -24,9 +24,9 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
     {
         public List<string> RefNames { get; set; }
 
-        public override string ToString(BotElement bot)
+        public override string ToString(BotElement bot, Func<string, string> transform)
         {
-            return String.Format("{0} {1}", String.Concat(RefNames), bot.Text.Deleted);
+            return String.Format("{0} {1}", transform(String.Concat(RefNames)), bot.Text.Deleted);
         }
     }
 }
