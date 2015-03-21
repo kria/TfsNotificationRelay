@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
-    class PullRequestCreatedNotification : BaseNotification
+    public class PullRequestCreatedNotification : BaseNotification
     {
         protected readonly static Configuration.SettingsElement settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
 

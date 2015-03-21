@@ -2,7 +2,7 @@
 
 TfsNotificationRelay is an extensible plugin for Team Foundation Server 2013 that sends notifications to Slack, HipChat and IRC.
 
-[![Build status](https://ci.appveyor.com/api/projects/status/6jo9qqoqxjrgpwrp)](https://ci.appveyor.com/project/kria/tfs2slack)
+[![Build status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay)
 
 ## Features
 - [x] Notify multiple targets
@@ -15,6 +15,7 @@ TfsNotificationRelay is an extensible plugin for Team Foundation Server 2013 tha
 ### Events
 
 - [x] Build completion
+- [x] Build quality change
 - [x] Work item update
 - [x] Team project creation/deletion
 - Git
@@ -56,6 +57,10 @@ TfsNotificationRelay is an extensible plugin for Team Foundation Server 2013 tha
 ### IRC
 
 See [TfsBot](https://github.com/kria/TfsBot).
+
+## Configuration
+
+See the [wiki](https://github.com/kria/TfsNotificationRelay/wiki) for more information.
 
 ## Extending TfsNotificationRelay
 

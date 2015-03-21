@@ -86,6 +86,7 @@
     <Compile Include="EventHandlers\BaseHandler.cs" />
     <Compile Include="EventHandlers\BuildCompletionHandler.cs" />
     <Compile Include="ByteArrayComparer.cs" />
+    <Compile Include="EventHandlers\BuildQualityChangedHandler.cs" />
     <Compile Include="EventHandlers\CheckinHandler.cs" />
     <Compile Include="EventHandlers\PullRequestCreatedHandler.cs" />
     <Compile Include="EventHandlers\PullRequestReviewerVoteHandler.cs" />
@@ -93,6 +94,8 @@
     <Compile Include="INotifier.cs" />
     <Compile Include="Notifications\BaseNotification.cs" />
     <Compile Include="Notifications\BuildCompletionNotification.cs" />
+    <Compile Include="Notifications\BuildNotification.cs" />
+    <Compile Include="Notifications\BuildQualityChangedNotification.cs" />
     <Compile Include="Notifications\CheckinNotification.cs" />
     <Compile Include="Notifications\GitPush\CommitRow.cs" />
     <Compile Include="Notifications\GitPush\DeleteRow.cs" />

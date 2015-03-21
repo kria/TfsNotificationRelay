@@ -20,7 +20,7 @@ using Microsoft.TeamFoundation.Git.Common;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
-    class PullRequestStatusUpdateNotification : BaseNotification
+    public class PullRequestStatusUpdateNotification : BaseNotification
     {
         protected readonly static Configuration.SettingsElement settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
 

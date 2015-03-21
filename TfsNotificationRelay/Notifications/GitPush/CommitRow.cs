@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Notifications.GitPush
 {
-    class CommitRow : NotificationRow
+    public class CommitRow : NotificationRow
     {
         public byte[] CommitId { get; set; }
         public CommitRowType Type { get; set; }

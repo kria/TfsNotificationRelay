@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Notifications.GitPush
 {
-    class DeleteRow : NotificationRow
+    public class DeleteRow : NotificationRow
     {
         public List<string> RefNames { get; set; }
 

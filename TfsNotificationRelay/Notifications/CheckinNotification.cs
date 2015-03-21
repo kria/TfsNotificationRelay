@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
-    class CheckinNotification : BaseNotification
+    public class CheckinNotification : BaseNotification
     {
         protected static Configuration.SettingsElement settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
 

@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
-    class StringRow : NotificationRow
+    public class StringRow : NotificationRow
     {
         public string Text { get; set; }
 

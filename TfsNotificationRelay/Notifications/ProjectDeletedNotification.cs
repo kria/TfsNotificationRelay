@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
-    class ProjectDeletedNotification : BaseNotification
+    public class ProjectDeletedNotification : BaseNotification
     {
         public string ProjectUri { get; set; }
 

@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Notifications.GitPush
 {
-    class PushRow : NotificationRow
+    public class PushRow : NotificationRow
     {
         public string UniqueName { get; set; }
         public string DisplayName { get; set; }

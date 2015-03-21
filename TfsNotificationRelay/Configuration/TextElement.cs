@@ -96,6 +96,18 @@ namespace DevCore.TfsNotificationRelay.Configuration
             get { return (string)this["buildFormat"]; }
         }
 
+        [ConfigurationProperty("buildQualityChangedFormat")]
+        public string BuildQualityChangedFormat
+        {
+            get { return (string)this["buildQualityChangedFormat"]; }
+        }
+
+        [ConfigurationProperty("buildQualityNotSet")]
+        public string BuildQualityNotSet
+        {
+            get { return (string)this["buildQualityNotSet"]; }
+        }
+
         [ConfigurationProperty("projectCreatedFormat")]
         public string ProjectCreatedFormat
         {

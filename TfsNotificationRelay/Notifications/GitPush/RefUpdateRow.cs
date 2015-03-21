@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Notifications.GitPush
 {
-    class RefUpdateRow : NotificationRow
+    public class RefUpdateRow : NotificationRow
     {
         public byte[] NewObjectId { get; set; }
         public TfsGitObjectType ObjectType { get; set; }

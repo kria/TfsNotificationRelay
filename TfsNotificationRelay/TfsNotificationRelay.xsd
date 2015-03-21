@@ -78,6 +78,8 @@
                   <xs:attribute name="dateTimeFormat" type="xs:string" use="required" />
                   <xs:attribute name="timeSpanFormat" type="xs:string" use="required" />
                   <xs:attribute name="buildFormat" type="xs:string" use="required" />
+                  <xs:attribute name="buildQualityChangedFormat" type="xs:string" use="required" />
+                  <xs:attribute name="buildQualityNotSet" type="xs:string" use="required" />
                   <xs:attribute name="projectCreatedFormat" type="xs:string" use="required" />
                   <xs:attribute name="projectDeletedFormat" type="xs:string" use="required" />
                   <xs:attribute name="checkinFormat" type="xs:string" use="required" />
