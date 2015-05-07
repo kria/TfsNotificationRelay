@@ -12,20 +12,20 @@
  */
 
 using Microsoft.TeamFoundation.Framework.Server;
+using Microsoft.TeamFoundation.Git.Common;
 using Microsoft.TeamFoundation.Git.Server;
-using System;
+using Microsoft.TeamFoundation.SourceControl.WebApi;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace DevCore.TfsNotificationRelay
 {
     public static class TfsHelper
     {
-        public static bool IsDescendantOf(this TfsGitCommit commit, TeamFoundationRequestContext requestContext, byte[] ancestorId)
+        public static bool IsDescendantOf(this TfsGitCommit commit, TeamFoundationRequestContext requestContext, Sha1Id ancestorId)
         {
             Queue<TfsGitCommit> q = new Queue<TfsGitCommit>();
-            HashSet<byte[]> visited = new HashSet<byte[]>(new ByteArrayComparer());
+            HashSet<Sha1Id> visited = new HashSet<Sha1Id>();
 
             q.Enqueue(commit);
 
@@ -35,7 +35,7 @@ namespace DevCore.TfsNotificationRelay
                 if (!visited.Add(current.ObjectId))
                     continue;
 
-                if (current.ObjectId.SequenceEqual(ancestorId)) return true;
+                if (current.ObjectId.Equals(ancestorId)) return true;
 
                 foreach (var c in current.GetParents(requestContext))
                     q.Enqueue(c);
@@ -49,10 +49,10 @@ namespace DevCore.TfsNotificationRelay
             foreach (var refUpdateResult in pushNotification.RefUpdateResults.Where(r => r.Succeeded))
             {
                 // Don't bother with new or deleted refs
-                if (refUpdateResult.OldObjectId.IsZero() || refUpdateResult.NewObjectId.IsZero()) continue;
+                if (refUpdateResult.OldObjectId.IsEmpty || refUpdateResult.NewObjectId.IsEmpty) continue;
 
                 TfsGitObject gitObject = repository.LookupObject(requestContext, refUpdateResult.NewObjectId);
-                if (gitObject.ObjectType != TfsGitObjectType.Commit) continue;
+                if (gitObject.ObjectType != GitObjectType.Commit) continue;
                 TfsGitCommit gitCommit = (TfsGitCommit)gitObject;
 
                 if (!gitCommit.IsDescendantOf(requestContext, refUpdateResult.OldObjectId))

@@ -12,18 +12,18 @@
  */
 
 using DevCore.TfsNotificationRelay.Configuration;
+using Microsoft.TeamFoundation.Git.Common;
 using Microsoft.TeamFoundation.Git.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Notifications.GitPush
 {
     public class CommitRow : NotificationRow
     {
-        public byte[] CommitId { get; set; }
+        public Sha1Id CommitId { get; set; }
         public CommitRowType Type { get; set; }
         public string CommitUri { get; set; }
         public Dictionary<TfsGitChangeType, int> ChangeCounts { get; set; }

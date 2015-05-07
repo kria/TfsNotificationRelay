@@ -12,19 +12,17 @@
  */
 
 using DevCore.TfsNotificationRelay.Configuration;
-using Microsoft.TeamFoundation.Git.Server;
+using Microsoft.TeamFoundation.Git.Common;
+using Microsoft.TeamFoundation.SourceControl.WebApi;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Notifications.GitPush
 {
     public class RefUpdateRow : NotificationRow
     {
-        public byte[] NewObjectId { get; set; }
-        public TfsGitObjectType ObjectType { get; set; }
+        public Sha1Id NewObjectId { get; set; }
+        public GitObjectType ObjectType { get; set; }
         public IList<string> RefNames { get; set; }
 
         public override string ToString(BotElement bot, Func<string, string> transform)

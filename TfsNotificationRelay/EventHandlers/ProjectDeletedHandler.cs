@@ -11,15 +11,9 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
-using DevCore.TfsNotificationRelay.Configuration;
 using DevCore.TfsNotificationRelay.Notifications;
 using Microsoft.TeamFoundation.Framework.Server;
-using Microsoft.TeamFoundation.Integration.Server;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.TeamFoundation.Server.Core;
 
 namespace DevCore.TfsNotificationRelay.EventHandlers
 {

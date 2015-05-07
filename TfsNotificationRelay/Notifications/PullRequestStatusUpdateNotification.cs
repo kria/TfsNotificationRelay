@@ -11,12 +11,10 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
+using Microsoft.TeamFoundation.SourceControl.WebApi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.TeamFoundation.Git.Common;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {

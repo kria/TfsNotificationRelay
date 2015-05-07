@@ -11,6 +11,7 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
+using Microsoft.TeamFoundation.Git.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,16 @@ namespace DevCore.TfsNotificationRelay
         public static string ToShortHexString(this byte[] buffer)
         {
             return buffer.ToHexString().Substring(0, 7);
+        }
+
+        public static string ToHexString(this Sha1Id id)
+        {
+            return id.ToByteArray().ToHexString();
+        }
+
+        public static string ToHexString(this Sha1Id id, int length)
+        {
+            return id.ToByteArray().ToHexString(length);
         }
 
         public static bool IsZero(this byte[] buffer)
