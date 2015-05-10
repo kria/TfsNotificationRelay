@@ -21,6 +21,7 @@ TfsNotificationRelay is an extensible plugin for Team Foundation Server 2013 tha
 - Git
   - [x] Push
   - [x] Pull request
+  - [x] New repository
   - [x] New branch/tag
   - [x] Deleted branch/tag
   - [x] Updated ref
@@ -72,14 +73,19 @@ TfsNotificationRelay can easily be extended to send notifications to other servi
 4. Build and drop in your new dll in the Plugins directory on the server.
 5. Add a new bot element in `DevCore.TfsNotificationRelay.dll.config` with the correct assembly-qualified type name and settings.
 
-## TFS 2013 version support
+## TFS version support
 
-I'm referencing 2013.4 assemblies and testing primarily on a TFS 2013.4 server, so the plugin is most likely to work as intended on that version.
-The development did start on TFS 2013.2 and the plugin probably still works on 2013.2 and 2013.3.
-Because of a few breaking API changes in TFS 2013.2, the plugin won't work on previous versions without some minor modifications.
-These are the API changes I know of in Update 2 that affect the plugin:
-- Spelling fixed for PushNotification.AuthenticatedUserName in `Microsoft.TeamFoundation.Git.Server.dll`
-- WorkItemChangedEvent moved from `Microsoft.TeamFoundation.WorkItemTracking.Server.DataAccessLayer.dll` to `Microsoft.TeamFoundation.WorkItemTracking.Server.dll`
+There are two separate [releases][0]  of TfsNotificationRelay:
+
+* **TfsNotificationRelay for TFS 2013** - Should work on TFS 2013.2 and up. Because of a few breaking API changes in TFS 2013.2, the plugin won't work on previous versions without some minor modifications.
+* **TfsNotificationRelay for TFS 2015**
+
+## Branches
+
+Branch    | Decription
+----------|----------------------------------
+`master`  | TfsNotificationRelay for TFS 2013
+`tfs2015` | TfsNotificationRelay for TFS 2015
 
 ## License
 
