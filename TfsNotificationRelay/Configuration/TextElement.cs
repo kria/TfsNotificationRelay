@@ -251,7 +251,11 @@ namespace DevCore.TfsNotificationRelay.Configuration
         {
             get { return (string)this["reactivated"]; }
         }
-        
-        
+
+        [ConfigurationProperty("repositoryCreatedFormat")]
+        public string RepositoryCreatedFormat
+        {
+            get { return (string)this["repositoryCreatedFormat"]; }
+        }
     }
 }

@@ -91,6 +91,7 @@
     <Compile Include="EventHandlers\PullRequestCreatedHandler.cs" />
     <Compile Include="EventHandlers\PullRequestReviewerVoteHandler.cs" />
     <Compile Include="EventHandlers\PullRequestStatusUpdateHandler.cs" />
+    <Compile Include="EventHandlers\RepositoryCreatedHandler.cs" />
     <Compile Include="INotifier.cs" />
     <Compile Include="Notifications\BaseNotification.cs" />
     <Compile Include="Notifications\BuildCompletionNotification.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Notifications\PullRequestCreatedNotification.cs" />
     <Compile Include="Notifications\PullRequestReviewerVoteNotification.cs" />
     <Compile Include="Notifications\PullRequestStatusUpdateNotification.cs" />
+    <Compile Include="Notifications\RepositoryCreatedNotification.cs" />
     <Compile Include="Notifications\StringRow.cs" />
     <Compile Include="EventHandlers\WorkItemChangedHandler.cs" />
     <Compile Include="Logger.cs" />
