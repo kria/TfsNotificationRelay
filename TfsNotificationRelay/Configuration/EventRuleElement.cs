@@ -59,5 +59,11 @@ namespace DevCore.TfsNotificationRelay.Configuration
         {
             get { return (string)this["buildDefinition"]; }
         }
+
+        [ConfigurationProperty("teamName")]
+        public string TeamName
+        {
+            get { return (string)this["teamName"]; }
+        }
     }
 }

@@ -40,6 +40,8 @@ namespace DevCore.TfsNotificationRelay.Notifications
             get { return settings.StripUserDomain ? Utils.StripDomain(UniqueName) : UniqueName; }
         }
 
+        public Dictionary<string, string> Teams { get; set; }
+
         public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
         {
             var formatter = new
@@ -59,7 +61,8 @@ namespace DevCore.TfsNotificationRelay.Notifications
         {
             var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.Checkin)
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
-                && (String.IsNullOrEmpty(r.TeamProject) || Projects.Keys.Any(n => Regex.IsMatch(n, r.TeamProject))));
+                && (String.IsNullOrEmpty(r.TeamProject) || Projects.Keys.Any(n => Regex.IsMatch(n, r.TeamProject)))
+                && (String.IsNullOrEmpty(r.TeamName) || Teams.Keys.Any(n => Regex.IsMatch(n, r.TeamName))));
 
             if (rule != null) return rule.Notify;
 
