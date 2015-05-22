@@ -79,7 +79,8 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 (r.Events.HasFlag(TfsEvents.WorkItemStateChange) && IsStateChanged
                 || r.Events.HasFlag(TfsEvents.WorkItemAssignmentChange) && IsAssignmentChanged)
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
-                && ProjectName.IsMatchOrNoPattern(r.TeamProject));
+                && ProjectName.IsMatchOrNoPattern(r.TeamProject)
+                && WiType.IsMatchOrNoPattern(r.WorkItemType));
 
             if (rule != null) return rule.Notify;
 

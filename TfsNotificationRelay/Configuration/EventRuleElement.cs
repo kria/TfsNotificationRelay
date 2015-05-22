@@ -59,5 +59,11 @@ namespace DevCore.TfsNotificationRelay.Configuration
         {
             get { return (string)this["buildDefinition"]; }
         }
+
+        [ConfigurationProperty("workItemType")]
+        public string WorkItemType
+        {
+          get { return (string)this["workItemType"]; }
+        }
     }
 }
