@@ -47,6 +47,7 @@
                               <xs:attribute name="teamProject" type="xs:string" />
                               <xs:attribute name="gitRepository" type="xs:string" />
                               <xs:attribute name="buildDefinition" type="xs:string" />
+                              <xs:attribute name="teamName" type="xs:string" />
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>
