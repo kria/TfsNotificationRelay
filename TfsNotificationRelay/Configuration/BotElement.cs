@@ -77,6 +77,16 @@ namespace DevCore.TfsNotificationRelay.Configuration
             return BotSettingsConfigurationCollection[name].Value;
         }
 
+        public IEnumerable<string> GetCsvSetting(string name, string fallback)
+        {
+            return TextHelper.SplitCsv(GetSetting(name, fallback));
+        }
+
+        public IEnumerable<string> GetCsvSetting(string name)
+        {
+            return TextHelper.SplitCsv(GetSetting(name));
+        }
+
         [ConfigurationProperty("eventRules")]
         [ConfigurationCollection(typeof(EventRuleCollection),
             AddItemName = "rule")]

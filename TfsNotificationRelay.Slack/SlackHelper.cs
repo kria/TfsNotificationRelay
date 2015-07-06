@@ -29,10 +29,10 @@ namespace DevCore.TfsNotificationRelay.Slack
             string header = lines.First();
             var fields = from line in lines.Skip(1) select new AttachmentField() { Value = line, IsShort = false };
 
-            return CreateSlackMessage(header, fields.ToList(), bot, channel, color);
+            return CreateSlackMessage(header, fields, bot, channel, color);
         }
 
-        public static Slack.Message CreateSlackMessage(string header, IList<AttachmentField> fields, BotElement bot, string channel, string color)
+        public static Slack.Message CreateSlackMessage(string header, IEnumerable<AttachmentField> fields, BotElement bot, string channel, string color)
         {
             if (header == null) return null;
 

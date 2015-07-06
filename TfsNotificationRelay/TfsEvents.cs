@@ -12,10 +12,6 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay
 {
@@ -23,19 +19,19 @@ namespace DevCore.TfsNotificationRelay
     public enum TfsEvents : uint
     {
         None = 0,
-        GitPush = 1,
-        BuildSucceeded = 2,
-        BuildFailed = 4,
-        ProjectCreated = 8,
-        ProjectDeleted = 16,
-        Checkin = 32,
-        WorkItemStateChange = 64,
-        WorkItemAssignmentChange = 128,
-        PullRequestCreated = 256,
-        PullRequestStatusUpdate = 512,
-        PullRequestReviewerVote = 1024,
-        BuildQualityChanged = 2048,
-        RepositoryCreated = 4096,
+        GitPush = 1 << 0,
+        BuildCompleted = 1 << 1,
+        ProjectCreated = 1 << 2,
+        ProjectDeleted = 1 << 3,
+        Checkin = 1 << 4,
+        WorkItemCreated = 1 << 5,
+        WorkItemChanged = 1 << 6,
+        WorkItemComment = 1 << 7,
+        PullRequestCreated = 1 << 8,
+        PullRequestStatusUpdate = 1 << 9,
+        PullRequestReviewerVote = 1 << 10,
+        BuildQualityChanged = 1 << 11,
+        RepositoryCreated = 1 << 12,
 
         All = 0xFFFFFFFF
     }

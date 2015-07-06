@@ -11,6 +11,7 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
+using DevCore.TfsNotificationRelay.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +38,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
         }
         public string UserName
         {
-            get { return settings.StripUserDomain ? Utils.StripDomain(UniqueName) : UniqueName; }
+            get { return settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName; }
         }
 
         public Dictionary<string, string> Teams { get; set; }
@@ -57,16 +58,14 @@ namespace DevCore.TfsNotificationRelay.Notifications
             return new[] { bot.Text.CheckinFormat.FormatWith(formatter) };
         }
 
-        public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)
+        public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
             var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.Checkin)
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
                 && (String.IsNullOrEmpty(r.TeamProject) || Projects.Keys.Any(n => Regex.IsMatch(n, r.TeamProject)))
                 && (String.IsNullOrEmpty(r.TeamName) || Teams.Keys.Any(n => Regex.IsMatch(n, r.TeamName))));
 
-            if (rule != null) return rule.Notify;
-
-            return false;
+            return rule;
         }
 
     }

@@ -25,7 +25,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class ProjectDeletedHandler : BaseHandler<ProjectDeletedEvent>
     {
-        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, ProjectDeletedEvent ev, int maxLines)
+        protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, ProjectDeletedEvent ev, int maxLines)
         {
             string projectName;
             if (this.ProjectsNames.TryGetValue(ev.Uri, out projectName))
@@ -33,7 +33,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 this.ProjectsNames.Remove(ev.Uri);
             }
 
-            return new ProjectDeletedNotification() { TeamProjectCollection = requestContext.ServiceHost.Name, ProjectUri = ev.Uri, ProjectName = projectName };
+            yield return new ProjectDeletedNotification() { TeamProjectCollection = requestContext.ServiceHost.Name, ProjectUri = ev.Uri, ProjectName = projectName };
         }
     }
 }

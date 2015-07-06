@@ -11,11 +11,9 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
+using DevCore.TfsNotificationRelay.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
@@ -32,6 +30,6 @@ namespace DevCore.TfsNotificationRelay.Notifications
         /// <returns></returns>
         IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform);
 
-        bool IsMatch(string collection, Configuration.EventRuleCollection eventRules);
+        EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules);
     }
 }

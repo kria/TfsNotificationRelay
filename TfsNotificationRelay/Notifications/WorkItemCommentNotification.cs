@@ -1,7 +1,7 @@
 ﻿/*
  * TfsNotificationRelay - http://github.com/kria/TfsNotificationRelay
  * 
- * Copyright (C) 2014 Kristian Adrup
+ * Copyright (C) 2015 Kristian Adrup
  * 
  * This file is part of TfsNotificationRelay.
  * 
@@ -15,55 +15,48 @@ using DevCore.TfsNotificationRelay.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
-    public class PullRequestCreatedNotification : BaseNotification
+    public class WorkItemCommentNotification : WorkItemNotification
     {
-        protected readonly static Configuration.SettingsElement settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
-
-        public string UniqueName { get; set; }
-        public string DisplayName { get; set; }
-        public string ProjectName { get; set; }
-        public string RepoUri { get; set; }
-        public string RepoName { get; set; }
-        public int PrId { get; set; }
-        public string PrUrl { get; set; }
-        public string PrTitle { get; set; }
-
-        public string UserName
-        {
-            get { return settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName; }
-        }
+        public string Comment { get; set; }
+        public string CommentHtml { get; set; }
 
         public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
         {
+            var lines = new List<string>();
             var formatter = new
             {
                 TeamProjectCollection = transform(this.TeamProjectCollection),
                 DisplayName = transform(this.DisplayName),
                 ProjectName = transform(this.ProjectName),
-                RepoUri = this.RepoUri,
-                RepoName = transform(this.RepoName),
-                PrId = this.PrId,
-                PrUrl = this.PrUrl,
-                PrTitle = transform(this.PrTitle),
+                AreaPath = transform(this.AreaPath),
+                WiUrl = this.WiUrl,
+                WiType = transform(this.WiType),
+                WiId = this.WiId,
+                WiTitle = transform(this.WiTitle),
                 UserName = transform(this.UserName),
+                Action = bot.Text.CommentedOn
             };
+            lines.Add(bot.Text.WorkItemchangedFormat.FormatWith(formatter));
 
-            return new[] { bot.Text.PullRequestCreatedFormat.FormatWith(formatter) };
+            lines.Add(Comment);
+
+            return lines;
         }
 
         public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
-            var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.PullRequestCreated)
+            var rule = eventRules.FirstOrDefault(r =>
+                r.Events.HasFlag(TfsEvents.WorkItemComment)
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
                 && ProjectName.IsMatchOrNoPattern(r.TeamProject)
-                && RepoName.IsMatchOrNoPattern(r.GitRepository));
+                && WiType.IsMatchOrNoPattern(r.WorkItemType)
+                && AreaPath.IsMatchOrNoPattern(r.AreaPath));
 
             return rule;
         }
+
     }
 }

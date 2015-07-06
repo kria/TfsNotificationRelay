@@ -25,7 +25,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class BuildQualityChangedHandler : BaseHandler<BuildQualityChangedNotificationEvent>
     {
-        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, BuildQualityChangedNotificationEvent buildNotification, int maxLines)
+        protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, BuildQualityChangedNotificationEvent buildNotification, int maxLines)
         {
             BuildDetail build = buildNotification.Build;
             var locationService = requestContext.GetService<TeamFoundationLocationService>();
@@ -59,7 +59,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     NewValue = buildNotification.NewValue
                 };
 
-                return notification;
+                yield return notification;
             }
         }
     }

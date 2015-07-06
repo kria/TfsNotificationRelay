@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.TeamFoundation.Build.Server">
       <HintPath>..\lib\Microsoft.TeamFoundation.Build.Server.dll</HintPath>
       <Private>False</Private>
@@ -60,6 +64,10 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.WebApi, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -72,6 +80,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\Defaults.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Configuration\ConfigurationElementCollectionOfT.cs" />
     <Compile Include="Configuration\ConfigurationHelper.cs" />
@@ -92,6 +101,8 @@
     <Compile Include="EventHandlers\PullRequestReviewerVoteHandler.cs" />
     <Compile Include="EventHandlers\PullRequestStatusUpdateHandler.cs" />
     <Compile Include="EventHandlers\RepositoryCreatedHandler.cs" />
+    <Compile Include="HtmlToText.cs" />
+    <Compile Include="TextHelper.cs" />
     <Compile Include="INotifier.cs" />
     <Compile Include="Notifications\BaseNotification.cs" />
     <Compile Include="Notifications\BuildCompletionNotification.cs" />
@@ -118,6 +129,8 @@
     <Compile Include="EventHandlers\WorkItemChangedHandler.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Notifications\WorkItemChangedNotification.cs" />
+    <Compile Include="Notifications\WorkItemCommentNotification.cs" />
+    <Compile Include="Notifications\WorkItemNotification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EventHandlers\GitPushHandler.cs" />
     <Compile Include="StringTransformFormatProvider.cs" />
@@ -130,6 +143,7 @@
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
     <None Include="TfsNotificationRelay.xsd">
       <SubType>Designer</SubType>
     </None>

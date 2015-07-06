@@ -30,7 +30,7 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
         public bool IsForcePush { get; set; }
         public string UserName
         {
-            get { return settings.StripUserDomain ? Utils.StripDomain(UniqueName) : UniqueName; }
+            get { return settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName; }
         }
         public override string ToString(BotElement bot, Func<string, string> transform)
         {

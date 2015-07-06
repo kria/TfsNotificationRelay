@@ -34,16 +34,14 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
             this.repoName = repoName;
         }
 
-        public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)
+        public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
             var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.GitPush)
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
                 && projectName.IsMatchOrNoPattern(r.TeamProject)
                 && repoName.IsMatchOrNoPattern(r.GitRepository));
 
-            if (rule != null) return rule.Notify;
-
-            return false;
+            return rule;
         }
     }
 

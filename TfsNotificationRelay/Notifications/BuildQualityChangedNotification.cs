@@ -11,12 +11,10 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
-using Microsoft.TeamFoundation.Build.Server;
+using DevCore.TfsNotificationRelay.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
@@ -50,19 +48,14 @@ namespace DevCore.TfsNotificationRelay.Notifications
             return new[] { bot.Text.BuildQualityChangedFormat.FormatWith(formatter) };
         }
 
-        public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)
+        public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
-            foreach (var rule in eventRules)
-            {
-                if (rule.Events.HasFlag(TfsEvents.BuildQualityChanged) 
-                    && collection.IsMatchOrNoPattern(rule.TeamProjectCollection)
-                    && ProjectName.IsMatchOrNoPattern(rule.TeamProject)
-                    && BuildDefinition.IsMatchOrNoPattern(rule.BuildDefinition))
-                {
-                    return rule.Notify;
-                }
-            }
-            return false;
+            var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.BuildQualityChanged)
+                && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
+                && ProjectName.IsMatchOrNoPattern(r.TeamProject)
+                && BuildDefinition.IsMatchOrNoPattern(r.BuildDefinition));
+
+            return rule;
         }
     }
 }

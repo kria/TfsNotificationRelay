@@ -31,7 +31,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
     class CheckinHandler : BaseHandler<TFVC.CheckinNotification>
     {
-        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, TFVC.CheckinNotification checkin, int maxLines)
+        protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, TFVC.CheckinNotification checkin, int maxLines)
         {
             var locationService = requestContext.GetService<TeamFoundationLocationService>();
             
@@ -75,7 +75,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 }
             }
 
-            return notification;   
+            yield return notification;   
         }
 
         /// <summary>

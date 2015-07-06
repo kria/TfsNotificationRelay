@@ -33,38 +33,8 @@ namespace DevCore.TfsNotificationRelay.Slack
                 ContractResolver = new CamelCasePropertyNamesContractResolver()
             });
 
-            //Logger.Log(json);
-
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             return PostAsync(webhookUrl, content);
-        }
-
-        [Obsolete]
-        public Task<HttpResponseMessage> SendMessageAsync(IEnumerable<string> lines, PayloadSettings settings)
-        {
-            dynamic json = JObject.FromObject(new
-            {
-                channel = settings.Channel,
-                username = settings.Username,
-                attachments = new[] {
-                        new {
-                            fallback = lines.First(),
-                            pretext = lines.First(),
-                            color = settings.Color,
-                            mrkdwn_in = new [] { "pretext", "text", "title", "fields", "fallback" },
-                            fields = from line in lines.Skip(1) select new { value = line, @short = false }
-                        }
-                    }
-            });
-            if (!String.IsNullOrEmpty(settings.IconUrl))
-                json.icon_url = settings.IconUrl;
-            else if (!String.IsNullOrEmpty(settings.IconEmoji))
-                json.icon_emoji = settings.IconEmoji;
-
-            //Logger.Log(json.ToString());
-
-            var content = new StringContent(json.ToString(), Encoding.UTF8, "application/json");
-            return PostAsync(settings.WebhookUrl, content);
         }
     }
 }

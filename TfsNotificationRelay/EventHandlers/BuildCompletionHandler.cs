@@ -26,7 +26,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class BuildCompletionHandler : BaseHandler<BuildCompletionNotificationEvent>
     {
-        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, BuildCompletionNotificationEvent buildNotification, int maxLines)
+        protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, BuildCompletionNotificationEvent buildNotification, int maxLines)
         {
             BuildDetail build = buildNotification.Build;
             var locationService = requestContext.GetService<TeamFoundationLocationService>();
@@ -36,12 +36,10 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             {
                 var result = buildReader.Current<BuildQueueQueryResult>();
                 QueuedBuild qb = result.QueuedBuilds.FirstOrDefault();
-
+                
                 string buildUrl = String.Format("{0}/{1}/{2}/_build#buildUri={3}&_a=summary",
                 locationService.GetAccessMapping(requestContext, "PublicAccessMapping").AccessPoint,
-                requestContext.ServiceHost.Name,
-                build.TeamProject,
-                build.Uri);
+                    requestContext.ServiceHost.Name, build.TeamProject, build.Uri);
                 var notification = new BuildCompletionNotification()
                 {
                     TeamProjectCollection = requestContext.ServiceHost.Name,
@@ -58,7 +56,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     DropLocation = build.DropLocation
                 };
 
-                return notification;
+                yield return notification;
             }
         }
     }

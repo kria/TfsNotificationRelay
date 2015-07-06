@@ -30,7 +30,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class GitPushHandler : BaseHandler<PushNotification>
     {
-        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, PushNotification pushNotification, int maxLines)
+        protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, PushNotification pushNotification, int maxLines)
         {
             var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
             var commonService = requestContext.GetService<CommonStructureService>();
@@ -149,7 +149,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     });
                 }
 
-                return notification;
+                yield return notification;
             }
         }
 

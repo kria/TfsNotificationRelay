@@ -23,6 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Configuration;
+using DevCore.TfsNotificationRelay.Configuration;
 
 namespace DevCore.TfsNotificationRelay.EventHandlers
 {
@@ -35,12 +36,12 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             return new Type[] { typeof(T) };
         }
 
-        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines)
+        protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines)
         {
-            return CreateNotification(requestContext, (T)notificationEventArgs, maxLines);
+            return CreateNotifications(requestContext, (T)notificationEventArgs, maxLines);
         }
 
-        protected abstract INotification CreateNotification(TeamFoundationRequestContext requestContext, T notificationEventArgs, int maxLines);
+        protected abstract IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, T notificationEventArgs, int maxLines);
     }
 
     public abstract class BaseHandler : ISubscriber
@@ -65,7 +66,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
         public abstract Type[] SubscribedTypes();
 
-        protected abstract INotification CreateNotification(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines);
+        protected abstract IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines);
 
         public virtual EventNotificationStatus ProcessEvent(TeamFoundationRequestContext requestContext, NotificationType notificationType,
             object notificationEventArgs, out int statusCode, out string statusMessage, out Microsoft.TeamFoundation.Common.ExceptionPropertyCollection properties)
@@ -92,21 +93,25 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
                 if (notificationType == NotificationType.Notification)
                 {
-                    var notification = CreateNotification(requestContext, notificationEventArgs, settings.MaxLines);
+                    var notifications = CreateNotifications(requestContext, notificationEventArgs, settings.MaxLines);
 
                     var tasks = new List<Task>();
 
                     foreach (var bot in config.Bots)
                     {
-                        if (!notification.IsMatch(requestContext.ServiceHost.Name, bot.EventRules)) continue;
-
                         var botType = Type.GetType(bot.Type);
                         if (botType != null)
                         {
                             try
                             {
                                 var notifier = (INotifier)Activator.CreateInstance(botType);
-                                tasks.Add(NotifyAsync(requestContext, notifier, notification, bot));
+                                foreach (var notification in notifications)
+                                {
+                                    var matchingRule = notification.GetRuleMatch(requestContext.ServiceHost.Name, bot.EventRules);
+                                    if (matchingRule != null && matchingRule.Notify)
+                                        tasks.Add(NotifyAsync(requestContext, notifier, notification, bot, matchingRule));
+                                }
+                                
                             }
                             catch (Exception ex)
                             {
@@ -133,11 +138,11 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             
         }
 
-        private async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotifier notifier, INotification notification, Configuration.BotElement bot)
+        private async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotifier notifier, INotification notification, Configuration.BotElement bot, EventRuleElement matchingRule)
         {
             try
             {
-                await notifier.NotifyAsync(requestContext, notification, bot);
+                await notifier.NotifyAsync(requestContext, notification, bot, matchingRule);
             }
             catch (Exception ex)
             {

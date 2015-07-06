@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 namespace DevCore.TfsNotificationRelay
 {
     [Obsolete]
-    class Logger
+    public class Logger
     {
         public static void Log(IEnumerable<string> lines)
         {
