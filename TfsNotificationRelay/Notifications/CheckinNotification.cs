@@ -31,6 +31,8 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public int ChangesetId { get; set; }
         public Dictionary<string, string> Projects { get; set; }
         public string Comment { get; set; }
+        public IEnumerable<string> SubmittedItems { get; set; }
+
         private string FormatProjectLinks(Configuration.BotElement bot, Func<string, string> transform)
         {
             return String.Join(", ", Projects.Select(x => bot.Text.ProjectLinkFormat
@@ -40,8 +42,6 @@ namespace DevCore.TfsNotificationRelay.Notifications
         {
             get { return settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName; }
         }
-
-        public Dictionary<string, string> Teams { get; set; }
 
         public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
         {
@@ -62,8 +62,9 @@ namespace DevCore.TfsNotificationRelay.Notifications
         {
             var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.Checkin)
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
-                && (String.IsNullOrEmpty(r.TeamProject) || Projects.Keys.Any(n => Regex.IsMatch(n, r.TeamProject)))
-                && (String.IsNullOrEmpty(r.TeamName) || Teams.Keys.Any(n => Regex.IsMatch(n, r.TeamName))));
+                && Projects.Keys.IsMatchOrNoPattern(r.TeamProject)
+                && TeamNames.IsMatchOrNoPattern(r.TeamName)
+                && SubmittedItems.IsMatchOrNoPattern(r.SourcePath));
 
             return rule;
         }

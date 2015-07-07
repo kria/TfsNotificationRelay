@@ -97,5 +97,11 @@ namespace DevCore.TfsNotificationRelay.Configuration
                 return TextHelper.SplitCsv(WorkItemfields);
             }
         }
+
+        [ConfigurationProperty("sourcePath")]
+        public string SourcePath
+        {
+            get { return (string)this["sourcePath"]; }
+        }
     }
 }

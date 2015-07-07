@@ -52,6 +52,7 @@
                               <xs:attribute name="areaPath" type="xs:string" />
                               <xs:attribute name="buildStatuses" type="xs:string" />
                               <xs:attribute name="workItemfields" type="xs:string" />
+                              <xs:attribute name="sourcePath" type="xs:string" />
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>
