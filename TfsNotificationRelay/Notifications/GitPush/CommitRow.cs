@@ -45,7 +45,7 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
                 Action = Type == CommitRowType.Commit ? bot.Text.Commit : bot.Text.RefPointer,
                 CommitUri = CommitUri,
                 CommitId = transform(CommitId.ToHexString(settings.HashLength)),
-                ChangeCounts = (ChangeCounts != null) ? String.Join(", ", ChangeCounts.Select(c => ChangeCountToString(bot, c))) : "",
+                ChangeCounts = (ChangeCounts != null) ? ChangeCountsToString(bot, ChangeCounts, CommitId.ToHexString(settings.HashLength)) : "",
                 AuthorTime = formattedTime,
                 Author = transform(Author),
                 AuthorName = transform(AuthorName),
@@ -56,22 +56,28 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
             return sb.ToString();
         }
 
-        private static string ChangeCountToString(BotElement bot, KeyValuePair<TfsGitChangeType, int> changeCount)
+        private string ChangeCountsToString(BotElement bot, Dictionary<TfsGitChangeType, int> changeCounts, string commitId)
         {
-            string format = null;
-            switch (changeCount.Key)
+            var counters = new[] {
+                new ChangeCounter(TfsGitChangeType.Add, bot.Text.ChangeCountAddFormat, 0),
+                new ChangeCounter(TfsGitChangeType.Edit, bot.Text.ChangeCountEditFormat, 0),
+                new ChangeCounter(TfsGitChangeType.Delete, bot.Text.ChangeCountDeleteFormat, 0),
+                new ChangeCounter(TfsGitChangeType.Rename, bot.Text.ChangeCountRenameFormat, 0),
+                new ChangeCounter(TfsGitChangeType.SourceRename, bot.Text.ChangeCountSourceRenameFormat, 0)
+            };
+
+            foreach (var changeCount in changeCounts)
             {
-                case TfsGitChangeType.Add: format = bot.Text.ChangeCountAddFormat; break;
-                case TfsGitChangeType.Delete: format = bot.Text.ChangeCountDeleteFormat; break;
-                case TfsGitChangeType.Edit: format = bot.Text.ChangeCountEditFormat; break;
-                case TfsGitChangeType.Rename: format = bot.Text.ChangeCountRenameFormat; break;
-                case TfsGitChangeType.SourceRename: format = bot.Text.ChangeCountSourceRenameFormat; break;
-                default: 
-                    Logger.Log("Unknown combo: " + changeCount.Key);
-                    format = bot.Text.ChangeCountUnknownFormat;
-                    break;
+                // renamed files will also show up as Rename or Rename+Edit, so don't count them twice
+                if (changeCount.Key == (TfsGitChangeType.Delete | TfsGitChangeType.SourceRename)) continue;
+
+                foreach (var counter in counters)
+                {
+                    if (changeCount.Key.HasFlag(counter.Type)) counter.Count += changeCount.Value;
+                }
             }
-            return format.FormatWith(new { Count = changeCount.Value });
+
+            return String.Join(", ", counters.Where(c => c.Count > 0).Select(c => c.Format.FormatWith(new { Count = c.Count })));
         }
     }
 
@@ -79,5 +85,19 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
     {
         Commit,
         RefUpdate
+    }
+
+    class ChangeCounter
+    {
+        public TfsGitChangeType Type { get; set; }
+        public string Format { get; set; }
+        public int Count { get; set; }
+
+        public ChangeCounter(TfsGitChangeType type, string format, int count)
+        {
+            Type = type;
+            Format = format;
+            Count = count;
+        }
     }
 }

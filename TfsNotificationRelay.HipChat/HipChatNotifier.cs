@@ -31,7 +31,7 @@ namespace DevCore.TfsNotificationRelay.HipChat
 {
     public class HipChatNotifier : INotifier
     {
-        public async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot)
+        public async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
         {
             string room = bot.GetSetting("room");
             string baseUrl = bot.GetSetting("apiBaseUrl");

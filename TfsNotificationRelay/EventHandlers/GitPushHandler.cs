@@ -28,7 +28,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class GitPushHandler : BaseHandler<PushNotification>
     {
-        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, PushNotification pushNotification, int maxLines)
+        protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, PushNotification pushNotification, int maxLines)
         {
             var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
             var commonService = requestContext.GetService<CommonStructureService>();
@@ -36,6 +36,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             var identityService = requestContext.GetService<TeamFoundationIdentityService>();
             
             var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.Identifier, pushNotification.Pusher.Identifier);
+            var teamNames = GetUserTeamsByProjectUri(requestContext, pushNotification.TeamProjectUri, pushNotification.Pusher);
 
             using (TfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, pushNotification.RepositoryId))
             {
@@ -48,7 +49,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     ProjectName = commonService.GetProject(requestContext, pushNotification.TeamProjectUri).Name,
                     IsForcePush = settings.IdentifyForcePush ? pushNotification.IsForceRequired(requestContext, repository) : false
                 };
-                var notification = new GitPushNotification(requestContext.ServiceHost.Name, pushRow.ProjectName, pushRow.RepoName);
+                var notification = new GitPushNotification(requestContext.ServiceHost.Name, pushRow.ProjectName, pushRow.RepoName, teamNames);
                 notification.Add(pushRow);
                 notification.TotalLineCount++;
 
@@ -147,7 +148,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     });
                 }
 
-                return notification;
+                yield return notification;
             }
         }
 

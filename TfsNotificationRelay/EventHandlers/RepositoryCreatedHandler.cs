@@ -16,12 +16,13 @@ using Microsoft.TeamFoundation.Framework.Server;
 using Microsoft.TeamFoundation.Integration.Server;
 using Microsoft.TeamFoundation.Server.Core;
 using Microsoft.TeamFoundation.Git.Server;
+using System.Collections.Generic;
 
 namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class RepositoryCreatedHandler : BaseHandler<RepositoryCreatedNotification>
     {
-        protected override Notifications.INotification CreateNotification(TeamFoundationRequestContext requestContext, RepositoryCreatedNotification ev, int maxLines)
+        protected override IEnumerable<Notifications.INotification> CreateNotifications(TeamFoundationRequestContext requestContext, RepositoryCreatedNotification ev, int maxLines)
         {
             var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
             var identityService = requestContext.GetService<ITeamFoundationIdentityService>();
@@ -40,9 +41,10 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     DisplayName = identity.DisplayName,
                     ProjectName = commonService.GetProject(requestContext, ev.TeamProjectUri).Name,
                     RepoUri = repoUri,
-                    RepoName = ev.RepositoryName
+                    RepoName = ev.RepositoryName,
+                    TeamNames = GetUserTeamsByProjectUri(requestContext, ev.TeamProjectUri, identity.Descriptor)
                 };
-                return notification;
+                yield return notification;
 
             }
         }

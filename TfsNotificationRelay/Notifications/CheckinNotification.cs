@@ -11,6 +11,7 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
+using DevCore.TfsNotificationRelay.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,8 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public int ChangesetId { get; set; }
         public Dictionary<string, string> Projects { get; set; }
         public string Comment { get; set; }
+        public IEnumerable<string> SubmittedItems { get; set; }
+
         private string FormatProjectLinks(Configuration.BotElement bot, Func<string, string> transform)
         {
             return String.Join(", ", Projects.Select(x => bot.Text.ProjectLinkFormat
@@ -37,7 +40,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
         }
         public string UserName
         {
-            get { return settings.StripUserDomain ? Utils.StripDomain(UniqueName) : UniqueName; }
+            get { return settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName; }
         }
 
         public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
@@ -55,15 +58,15 @@ namespace DevCore.TfsNotificationRelay.Notifications
             return new[] { bot.Text.CheckinFormat.FormatWith(formatter) };
         }
 
-        public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)
+        public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
             var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.Checkin)
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
-                && (String.IsNullOrEmpty(r.TeamProject) || Projects.Keys.Any(n => Regex.IsMatch(n, r.TeamProject))));
+                && Projects.Keys.IsMatchOrNoPattern(r.TeamProject)
+                && TeamNames.IsMatchOrNoPattern(r.TeamName)
+                && SubmittedItems.IsMatchOrNoPattern(r.SourcePath));
 
-            if (rule != null) return rule.Notify;
-
-            return false;
+            return rule;
         }
 
     }

@@ -11,12 +11,9 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
-using System;
+using Microsoft.TeamFoundation.Build.Server;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Configuration
 {
@@ -58,6 +55,53 @@ namespace DevCore.TfsNotificationRelay.Configuration
         public string BuildDefinition
         {
             get { return (string)this["buildDefinition"]; }
+        }
+
+        [ConfigurationProperty("teamName")]
+        public string TeamName
+        {
+            get { return (string)this["teamName"]; }
+        }
+
+        [ConfigurationProperty("workItemType")]
+        public string WorkItemType
+        {
+          get { return (string)this["workItemType"]; }
+        }
+
+        [ConfigurationProperty("areaPath")] 
+        public string AreaPath
+        {
+            get { return (string)this["areaPath"]; }
+        }
+
+        [ConfigurationProperty("buildStatuses")]
+        public BuildStatus BuildStatuses
+        {
+            get
+            {
+                if (this["buildStatuses"] == null) return BuildStatus.All;
+                return (BuildStatus)this["buildStatuses"];
+            }
+        }
+
+        [ConfigurationProperty("workItemfields")]
+        public string WorkItemfields
+        {
+            get { return (string)this["workItemfields"]; }
+        }
+
+        public IEnumerable<string> WorkItemFieldItems
+        {
+            get {
+                return TextHelper.SplitCsv(WorkItemfields);
+            }
+        }
+
+        [ConfigurationProperty("sourcePath")]
+        public string SourcePath
+        {
+            get { return (string)this["sourcePath"]; }
         }
     }
 }

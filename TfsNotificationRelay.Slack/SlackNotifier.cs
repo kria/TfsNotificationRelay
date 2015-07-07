@@ -28,9 +28,9 @@ namespace DevCore.TfsNotificationRelay.Slack
 {
     public class SlackNotifier : INotifier
     {
-        public async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot)
+        public async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
         {
-            var channels = bot.GetSetting("channels").Split(',').Select(chan => chan.Trim());
+            var channels = bot.GetCsvSetting("channels");
             var tasks = new List<Task>();
             var slackClient = new SlackClient();
 
@@ -64,9 +64,30 @@ namespace DevCore.TfsNotificationRelay.Slack
         public Message ToSlackMessage(WorkItemChangedNotification notification, BotElement bot, string channel)
         {
             string header = notification.ToMessage(bot, s => s).First();
-            var fields = new[] { 
-                new AttachmentField(bot.Text.State, notification.State, true), 
-                new AttachmentField(bot.Text.AssignedTo, notification.AssignedTo, true) 
+
+            var fields = new List<AttachmentField>();
+
+            var searchType = notification.IsNew ? SearchFieldsType.Core : SearchFieldsType.Changed;
+            var displayFieldsKey = notification.IsNew ? "wiCreatedDisplayFields" : "wiChangedDisplayFields";
+
+            foreach (var fieldId in bot.GetCsvSetting(displayFieldsKey, Defaults.WorkItemFields))
+            {
+                var field = notification.GetUnifiedField(fieldId, searchType);
+                if (field != null)
+                {
+                    var fieldrep = notification.IsNew ? field.NewValue : bot.Text.WorkItemFieldTransitionFormat.FormatWith(field);
+                    fields.Add(new AttachmentField(field.Name, fieldrep, true));
+                }
+            }
+
+            return SlackHelper.CreateSlackMessage(header, fields, bot, channel, bot.GetSetting("standardColor"));
+        }
+
+        public Message ToSlackMessage(WorkItemCommentNotification notification, BotElement bot, string channel)
+        {
+            string header = notification.ToMessage(bot, s => s).First();
+            var fields = new[] {
+                new AttachmentField(bot.Text.Comment, notification.Comment, false)
             };
 
             return SlackHelper.CreateSlackMessage(header, fields, bot, channel, bot.GetSetting("standardColor"));

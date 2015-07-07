@@ -21,7 +21,8 @@ using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay
 {
-    class Logger
+    [Obsolete]
+    public class Logger
     {
         public static void Log(IEnumerable<string> lines)
         {
@@ -49,6 +50,11 @@ namespace DevCore.TfsNotificationRelay
         public static void Log(Exception ex)
         {
             Log(ex.ToString());
+        }
+
+        public static void Log(string arg, object obj)
+        {
+            Log(arg + ":" + Utils.Dump(obj));
         }
     }
 }

@@ -47,6 +47,12 @@
                               <xs:attribute name="teamProject" type="xs:string" />
                               <xs:attribute name="gitRepository" type="xs:string" />
                               <xs:attribute name="buildDefinition" type="xs:string" />
+                              <xs:attribute name="teamName" type="xs:string" />
+                              <xs:attribute name="workItemType" type="xs:string" />
+                              <xs:attribute name="areaPath" type="xs:string" />
+                              <xs:attribute name="buildStatuses" type="xs:string" />
+                              <xs:attribute name="workItemfields" type="xs:string" />
+                              <xs:attribute name="sourcePath" type="xs:string" />
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>
@@ -96,6 +102,8 @@
                   <xs:attribute name="pullRequestReviewerVoteFormat" type="xs:string" use="required" />
                   <xs:attribute name="updated" type="xs:string" use="required" />
                   <xs:attribute name="created" type="xs:string" use="required" />
+                  <xs:attribute name="commentedOn" type="xs:string" use="required" />
+                  <xs:attribute name="comment" type="xs:string" use="required" />
                   <xs:attribute name="voteApproved" type="xs:string" use="required" />
                   <xs:attribute name="voteRejected" type="xs:string" use="required" />
                   <xs:attribute name="voteRescinded" type="xs:string" use="required" />
@@ -105,6 +113,7 @@
                   <xs:attribute name="state" type="xs:string" use="required" />
                   <xs:attribute name="assignedTo" type="xs:string" use="required" />
                   <xs:attribute name="repositoryCreatedFormat" type="xs:string" use="required" />
+                  <xs:attribute name="workItemFieldTransitionFormat" type="xs:string" use="required" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>

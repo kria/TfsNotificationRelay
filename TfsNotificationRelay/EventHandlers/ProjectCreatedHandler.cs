@@ -15,12 +15,13 @@ using DevCore.TfsNotificationRelay.Notifications;
 using Microsoft.TeamFoundation.Framework.Server;
 using Microsoft.TeamFoundation.Server.Core;
 using System;
+using System.Collections.Generic;
 
 namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class ProjectCreatedHandler : BaseHandler<ProjectCreatedEvent>
     {
-        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, ProjectCreatedEvent ev, int maxLines)
+        protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, ProjectCreatedEvent ev, int maxLines)
         {
             var locationService = requestContext.GetService<TeamFoundationLocationService>();
 
@@ -32,7 +33,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             if (!this.ProjectsNames.ContainsKey(ev.Uri))
                 this.ProjectsNames.Add(ev.Uri, ev.Name);
 
-            return new ProjectCreatedNotification() { TeamProjectCollection = requestContext.ServiceHost.Name, ProjectUrl = projectUrl, ProjectName = ev.Name };
+            yield return new ProjectCreatedNotification() { TeamProjectCollection = requestContext.ServiceHost.Name, ProjectUrl = projectUrl, ProjectName = ev.Name };
         }
     }
 }

@@ -26,24 +26,25 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
     {
         private string projectName;
         private string repoName;
+        private IEnumerable<string> teamNames;
 
-        public GitPushNotification(string teamProjecCollection, string projectName, string repoName)
+        public GitPushNotification(string teamProjecCollection, string projectName, string repoName, IEnumerable<string> teamNames)
         {
             this.TeamProjectCollection = teamProjecCollection;
             this.projectName = projectName;
             this.repoName = repoName;
+            this.teamNames = teamNames;
         }
 
-        public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)
+        public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
             var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.GitPush)
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
                 && projectName.IsMatchOrNoPattern(r.TeamProject)
+                && teamNames.IsMatchOrNoPattern(r.TeamName)
                 && repoName.IsMatchOrNoPattern(r.GitRepository));
 
-            if (rule != null) return rule.Notify;
-
-            return false;
+            return rule;
         }
     }
 

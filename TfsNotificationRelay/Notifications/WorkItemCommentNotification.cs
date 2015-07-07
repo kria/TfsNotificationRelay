@@ -1,7 +1,7 @@
 ﻿/*
  * TfsNotificationRelay - http://github.com/kria/TfsNotificationRelay
  * 
- * Copyright (C) 2014 Kristian Adrup
+ * Copyright (C) 2015 Kristian Adrup
  * 
  * This file is part of TfsNotificationRelay.
  * 
@@ -18,43 +18,43 @@ using System.Linq;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
-    public class RepositoryCreatedNotification : BaseNotification
+    public class WorkItemCommentNotification : WorkItemNotification
     {
-        protected static Configuration.SettingsElement settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
-
-        public string UniqueName { get; set; }
-        public string DisplayName { get; set; }
-        public string ProjectName { get; set; }
-        public string RepoUri { get; set; }
-        public string RepoName { get; set; }
-
-        public string UserName
-        {
-            get { return settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName; }
-        }
+        public string Comment { get; set; }
+        public string CommentHtml { get; set; }
 
         public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
         {
+            var lines = new List<string>();
             var formatter = new
             {
                 TeamProjectCollection = transform(this.TeamProjectCollection),
                 DisplayName = transform(this.DisplayName),
-                UserName = transform(this.UserName),
                 ProjectName = transform(this.ProjectName),
-                RepoUri = this.RepoUri,
-                RepoName = transform(this.RepoName)
+                AreaPath = transform(this.AreaPath),
+                WiUrl = this.WiUrl,
+                WiType = transform(this.WiType),
+                WiId = this.WiId,
+                WiTitle = transform(this.WiTitle),
+                UserName = transform(this.UserName),
+                Action = bot.Text.CommentedOn
             };
+            lines.Add(bot.Text.WorkItemchangedFormat.FormatWith(formatter));
 
-            return new[] { bot.Text.RepositoryCreatedFormat.FormatWith(formatter) };
+            lines.Add(Comment);
+
+            return lines;
         }
 
         public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
-            var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.RepositoryCreated)
+            var rule = eventRules.FirstOrDefault(r =>
+                r.Events.HasFlag(TfsEvents.WorkItemComment)
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
                 && ProjectName.IsMatchOrNoPattern(r.TeamProject)
                 && TeamNames.IsMatchOrNoPattern(r.TeamName)
-                && RepoName.IsMatchOrNoPattern(r.GitRepository));
+                && WiType.IsMatchOrNoPattern(r.WorkItemType)
+                && AreaPath.IsMatchOrNoPattern(r.AreaPath));
 
             return rule;
         }

@@ -186,6 +186,18 @@ namespace DevCore.TfsNotificationRelay.Configuration
             get { return (string)this["created"]; }
         }
 
+        [ConfigurationProperty("commentedOn")]
+        public string CommentedOn
+        {
+            get { return (string)this["commentedOn"]; }
+        }
+
+        [ConfigurationProperty("comment")]
+        public string Comment
+        {
+            get { return (string)this["comment"]; }
+        }
+
         [ConfigurationProperty("state")]
         public string State
         {
@@ -256,6 +268,12 @@ namespace DevCore.TfsNotificationRelay.Configuration
         public string RepositoryCreatedFormat
         {
             get { return (string)this["repositoryCreatedFormat"]; }
+        }
+
+        [ConfigurationProperty("workItemFieldTransitionFormat")]
+        public string WorkItemFieldTransitionFormat
+        {
+            get { return (string)this["workItemFieldTransitionFormat"]; }
         }
     }
 }

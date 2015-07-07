@@ -25,6 +25,6 @@ namespace DevCore.TfsNotificationRelay
 {
     public interface INotifier
     {
-        Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot);
+        Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule);
     }
 }

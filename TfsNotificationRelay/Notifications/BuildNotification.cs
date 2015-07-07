@@ -11,13 +11,11 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
+using DevCore.TfsNotificationRelay.Configuration;
 using Microsoft.TeamFoundation.Build.Server;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
@@ -38,7 +36,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public DateTime FinishTime { get; set; }
         public string UserName 
         {
-            get { return settings.StripUserDomain ? Utils.StripDomain(RequestedFor) : RequestedFor; }
+            get { return settings.StripUserDomain ? TextHelper.StripDomain(RequestedFor) : RequestedFor; }
         }
         public string DisplayName
         {
@@ -78,22 +76,16 @@ namespace DevCore.TfsNotificationRelay.Notifications
             return new[] { bot.Text.BuildFormat.FormatWith(formatter), transform(BuildStatus.ToString()) };
         }
 
-        public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)
+        public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
-            foreach (var rule in eventRules)
-            {
-                if (BuildStatus.HasFlag(BuildStatus.Succeeded) && rule.Events.HasFlag(TfsEvents.BuildSucceeded)
-                    || BuildStatus.HasFlag(BuildStatus.Failed) && rule.Events.HasFlag(TfsEvents.BuildFailed))
-                {
-                    if (collection.IsMatchOrNoPattern(rule.TeamProjectCollection)
-                        && ProjectName.IsMatchOrNoPattern(rule.TeamProject) 
-                        && BuildDefinition.IsMatchOrNoPattern(rule.BuildDefinition))
-                    {
-                        return rule.Notify;
-                    }
-                }
-            }
-            return false;
+            var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.BuildCompleted)
+                && (r.BuildStatuses & BuildStatus) != 0
+                && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
+                && ProjectName.IsMatchOrNoPattern(r.TeamProject)
+                && TeamNames.IsMatchOrNoPattern(r.TeamName)
+                && BuildDefinition.IsMatchOrNoPattern(r.BuildDefinition));
+
+            return rule;
         }
     }
 }

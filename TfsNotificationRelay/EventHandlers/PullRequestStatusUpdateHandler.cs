@@ -27,7 +27,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class PullRequestStatusUpdateHandler : BaseHandler<StatusUpdateNotification>
     {
-        protected override Notifications.INotification CreateNotification(TeamFoundationRequestContext requestContext, StatusUpdateNotification ev, int maxLines)
+        protected override IEnumerable<Notifications.INotification> CreateNotifications(TeamFoundationRequestContext requestContext, StatusUpdateNotification ev, int maxLines)
         {
             var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
             var identityService = requestContext.GetService<ITeamFoundationIdentityService>();
@@ -53,9 +53,10 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                         RepoName = ev.RepositoryName,
                         PrId = pullRequest.PullRequestId,
                         PrUrl = string.Format("{0}/pullrequest/{1}#view=discussion", repoUri, ev.PullRequestId),
-                        PrTitle = pullRequest.Title
+                        PrTitle = pullRequest.Title,
+                        TeamNames = GetUserTeamsByProjectUri(requestContext, ev.TeamProjectUri, ev.Updater)
                     };
-                    return notification;
+                    yield return notification;
                 }
                 else
                 {

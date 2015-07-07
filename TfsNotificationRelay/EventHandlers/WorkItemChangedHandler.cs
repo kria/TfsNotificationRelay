@@ -28,28 +28,87 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class WorkItemChangedHandler : BaseHandler<WorkItemChangedEvent>
     {
-        protected override INotification CreateNotification(TeamFoundationRequestContext requestContext, WorkItemChangedEvent ev, int maxLines)
+        protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, WorkItemChangedEvent ev, int maxLines)
         {
+            var notifications = new List<INotification>();
+
             var identityService = requestContext.GetService<TeamFoundationIdentityService>();
             var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.Identifier, ev.ChangerSid);
-            var notification = new WorkItemChangedNotification()
+
+            if (ev.CoreFields == null) throw new TfsNotificationRelayException("ev.CoreFields is null");
+            if (ev.CoreFields.StringFields == null) throw new TfsNotificationRelayException("ev.CoreFields.StringFields is null");
+            if (ev.CoreFields.IntegerFields == null) throw new TfsNotificationRelayException("ev.CoreFields.IntegerFields is null");
+
+            var typeField = ev.CoreFields.StringFields.SingleOrDefault(f => f.ReferenceName == "System.WorkItemType");
+            if (typeField == null) throw new TfsNotificationRelayException("missing System.WorkItemType");
+            string type = typeField.NewValue;
+
+            var idField = ev.CoreFields.IntegerFields.Single(f => f.ReferenceName == "System.Id");
+            if (idField == null) throw new TfsNotificationRelayException("missing System.Id");
+            int id = idField.NewValue;
+
+            var teamNames = GetUserTeamsByProjectUri(requestContext, ev.ProjectNodeId, identity.Descriptor);
+
+            if (ev.TextFields != null)
+            {
+                var comment = ev.TextFields.FirstOrDefault(f => f.ReferenceName == "System.History" && !String.IsNullOrEmpty(f.Value));
+                if (comment != null)
+                {
+                    var commentNotification = new WorkItemCommentNotification()
+                    {
+                        TeamProjectCollection = requestContext.ServiceHost.Name,
+                        UniqueName = identity.UniqueName,
+                        DisplayName = identity.DisplayName,
+                        WiUrl = ev.DisplayUrl,
+                        WiType = type,
+                        WiId = id,
+                        WiTitle = ev.WorkItemTitle,
+                        ProjectName = ev.PortfolioProject,
+                        AreaPath = ev.AreaPath,
+                        CommentHtml = comment.Value,
+                        Comment = TextHelper.HtmlToText(comment.Value),
+                        TeamNames = teamNames
+                    };
+
+                    notifications.Add(commentNotification);
+                }
+            }
+
+            var changeNotification = new WorkItemChangedNotification()
             {
                 TeamProjectCollection = requestContext.ServiceHost.Name,
                 IsNew = ev.ChangeType == ChangeTypes.New,
                 UniqueName = identity.UniqueName,
                 DisplayName = identity.DisplayName,
                 WiUrl = ev.DisplayUrl,
-                WiType = ev.CoreFields.StringFields.Single(f => f.ReferenceName == "System.WorkItemType").NewValue,
-                WiId = ev.CoreFields.IntegerFields.Single(f => f.ReferenceName == "System.Id").NewValue,
+                WiType = type,
+                WiId = id,
                 WiTitle = ev.WorkItemTitle,
                 ProjectName = ev.PortfolioProject,
-                IsStateChanged = ev.ChangedFields.StringFields.Any(f => f.ReferenceName == "System.State"),
-                IsAssignmentChanged = ev.ChangedFields.StringFields.Any(f => f.ReferenceName == "System.AssignedTo"),
-                State = ev.CoreFields.StringFields.Single(f => f.ReferenceName == "System.State").NewValue,
-                AssignedTo = ev.CoreFields.StringFields.Single(f => f.ReferenceName == "System.AssignedTo").NewValue
+                AreaPath = ev.AreaPath,
+                IsStateChanged = ev.ChangedFields != null && ev.ChangedFields.StringFields != null && ev.ChangedFields.StringFields.Any(f => f.ReferenceName == "System.State"),
+                IsAssignmentChanged = ev.ChangedFields != null && ev.ChangedFields.StringFields != null && ev.ChangedFields.StringFields.Any(f => f.ReferenceName == "System.AssignedTo"),
+                State = ev.CoreFields.StringFields.GetFieldValue("System.State", f => f.NewValue),
+                AssignedTo = ev.CoreFields.StringFields.GetFieldValue("System.AssignedTo", f => f.NewValue),
+                CoreFields = ev.CoreFields,
+                ChangedFields = ev.ChangedFields,
+                TeamNames = teamNames
             };
+            notifications.Add(changeNotification);
 
-            return notification;
+            return notifications;
+        }
+
+    }
+
+    static class WorkItemExtensions
+    {
+        public static string GetFieldValue(this StringField[] fields, string key, Func<StringField, string> selector)
+        {
+            var field = fields.SingleOrDefault(f => f.ReferenceName == key);
+            return field != null ? selector(field) : null;
         }
     }
+
+    
 }

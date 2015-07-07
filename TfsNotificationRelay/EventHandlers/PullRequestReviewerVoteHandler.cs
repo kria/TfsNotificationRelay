@@ -26,7 +26,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class PullRequestReviewerVoteHandler : BaseHandler<ReviewerVoteNotification>
     {
-        protected override Notifications.INotification CreateNotification(TeamFoundationRequestContext requestContext, ReviewerVoteNotification ev, int maxLines)
+        protected override IEnumerable<Notifications.INotification> CreateNotifications(TeamFoundationRequestContext requestContext, ReviewerVoteNotification ev, int maxLines)
         {
             var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
             var identityService = requestContext.GetService<ITeamFoundationIdentityService>();
@@ -52,9 +52,10 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                         RepoName = ev.RepositoryName,
                         PrId = pullRequest.PullRequestId,
                         PrUrl = string.Format("{0}/pullrequest/{1}#view=discussion", repoUri, ev.PullRequestId),
-                        PrTitle = pullRequest.Title
+                        PrTitle = pullRequest.Title,
+                        TeamNames = GetUserTeamsByProjectUri(requestContext, ev.TeamProjectUri, ev.Reviewer)
                     };
-                    return notification;
+                    yield return notification;
                 }
                 else
                 {

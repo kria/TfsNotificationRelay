@@ -15,6 +15,7 @@ using Microsoft.TeamFoundation.SourceControl.WebApi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DevCore.TfsNotificationRelay.Configuration;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
@@ -44,7 +45,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
         }
         public string UserName
         {
-            get { return settings.StripUserDomain ? Utils.StripDomain(UniqueName) : UniqueName; }
+            get { return settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName; }
         }
 
         public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
@@ -66,16 +67,15 @@ namespace DevCore.TfsNotificationRelay.Notifications
             return new[] { bot.Text.PullRequestStatusUpdateFormat.FormatWith(formatter) };
         }
 
-        public override bool IsMatch(string collection, Configuration.EventRuleCollection eventRules)
+        public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
             var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.PullRequestStatusUpdate)
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
                 && ProjectName.IsMatchOrNoPattern(r.TeamProject)
+                && TeamNames.IsMatchOrNoPattern(r.TeamName)
                 && RepoName.IsMatchOrNoPattern(r.GitRepository));
 
-            if (rule != null) return rule.Notify;
-
-            return false;
+            return rule;
         }
     }
 }
