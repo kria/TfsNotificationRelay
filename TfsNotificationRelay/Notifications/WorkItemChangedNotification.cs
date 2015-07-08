@@ -94,6 +94,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 || r.Events.HasFlag(TfsEvents.WorkItemChanged) && IsChangedFieldMatchOrNotSet(ChangedFields, r.WorkItemFieldItems))
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
                 && ProjectName.IsMatchOrNoPattern(r.TeamProject)
+                && TeamNames.IsMatchOrNoPattern(r.TeamName)
                 && WiType.IsMatchOrNoPattern(r.WorkItemType)
                 && AreaPath.IsMatchOrNoPattern(r.AreaPath));
 

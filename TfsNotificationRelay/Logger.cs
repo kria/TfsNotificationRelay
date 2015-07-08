@@ -51,5 +51,10 @@ namespace DevCore.TfsNotificationRelay
         {
             Log(ex.ToString());
         }
+
+        public static void Log(string arg, object obj)
+        {
+            Log(arg + ":" + Utils.Dump(obj));
+        }
     }
 }

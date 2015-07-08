@@ -51,8 +51,10 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
             var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.BuildQualityChanged)
+                && (r.BuildStatuses & BuildStatus) != 0
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
                 && ProjectName.IsMatchOrNoPattern(r.TeamProject)
+                && TeamNames.IsMatchOrNoPattern(r.TeamName)
                 && BuildDefinition.IsMatchOrNoPattern(r.BuildDefinition));
 
             return rule;

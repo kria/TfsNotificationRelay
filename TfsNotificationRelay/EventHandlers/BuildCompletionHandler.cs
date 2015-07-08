@@ -31,14 +31,14 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             BuildDetail build = buildNotification.Build;
             var locationService = requestContext.GetService<TeamFoundationLocationService>();
             var buildService = requestContext.GetService<TeamFoundationBuildService>();
-
+            
             using (var buildReader = buildService.QueryQueuedBuildsById(requestContext, build.QueueIds, new[] { "*" }, QueryOptions.None))
             {
                 var result = buildReader.Current<BuildQueueQueryResult>();
                 QueuedBuild qb = result.QueuedBuilds.FirstOrDefault();
                 
                 string buildUrl = String.Format("{0}/{1}/{2}/_build#buildUri={3}&_a=summary",
-                locationService.GetAccessMapping(requestContext, "PublicAccessMapping").AccessPoint,
+                    locationService.GetAccessMapping(requestContext, "PublicAccessMapping").AccessPoint,
                     requestContext.ServiceHost.Name, build.TeamProject, build.Uri);
                 var notification = new BuildCompletionNotification()
                 {
@@ -53,7 +53,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     RequestedFor = qb.RequestedFor,
                     RequestedForDisplayName = qb.RequestedForDisplayName,
                     BuildDefinition = build.Definition.Name,
-                    DropLocation = build.DropLocation
+                    DropLocation = build.DropLocation,
+                    TeamNames = GetUserTeamsByProjectName(requestContext, build.TeamProject, qb.RequestedFor)
                 };
 
                 yield return notification;

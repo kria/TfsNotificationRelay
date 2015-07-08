@@ -52,6 +52,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 r.Events.HasFlag(TfsEvents.WorkItemComment)
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
                 && ProjectName.IsMatchOrNoPattern(r.TeamProject)
+                && TeamNames.IsMatchOrNoPattern(r.TeamName)
                 && WiType.IsMatchOrNoPattern(r.WorkItemType)
                 && AreaPath.IsMatchOrNoPattern(r.AreaPath));
 

@@ -56,7 +56,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     BuildDefinition = build.Definition.Name,
                     DropLocation = build.DropLocation,
                     OldValue = buildNotification.OldValue,
-                    NewValue = buildNotification.NewValue
+                    NewValue = buildNotification.NewValue,
+                    TeamNames = GetUserTeamsByProjectName(requestContext, build.TeamProject, qb.RequestedFor)
                 };
 
                 yield return notification;

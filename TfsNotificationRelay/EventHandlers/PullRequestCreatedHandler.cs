@@ -52,8 +52,9 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                         RepoName = ev.RepositoryName,
                         PrId = pullRequest.PullRequestId,
                         PrUrl = string.Format("{0}/pullrequest/{1}#view=discussion", repoUri, ev.PullRequestId),
-                        PrTitle = pullRequest.Title
-                    };
+                        PrTitle = pullRequest.Title,
+                        TeamNames = GetUserTeamsByProjectUri(requestContext, ev.TeamProjectUri, ev.Creator)
+                };
                     yield return notification;
                 } 
                 else 

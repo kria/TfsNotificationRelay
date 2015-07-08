@@ -38,6 +38,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             var identityService = requestContext.GetService<TeamFoundationIdentityService>();
             
             var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.Identifier, pushNotification.Pusher.Identifier);
+            var teamNames = GetUserTeamsByProjectUri(requestContext, pushNotification.TeamProjectUri, pushNotification.Pusher);
 
             using (TfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, pushNotification.RepositoryId))
             {
@@ -50,7 +51,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     ProjectName = commonService.GetProject(requestContext, pushNotification.TeamProjectUri).Name,
                     IsForcePush = settings.IdentifyForcePush ? pushNotification.IsForceRequired(requestContext, repository) : false
                 };
-                var notification = new GitPushNotification(requestContext.ServiceHost.Name, pushRow.ProjectName, pushRow.RepoName);
+                var notification = new GitPushNotification(requestContext.ServiceHost.Name, pushRow.ProjectName, pushRow.RepoName, teamNames);
                 notification.Add(pushRow);
                 notification.TotalLineCount++;
 

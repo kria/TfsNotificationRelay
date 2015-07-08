@@ -61,6 +61,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
             var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.PullRequestCreated)
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
                 && ProjectName.IsMatchOrNoPattern(r.TeamProject)
+                && TeamNames.IsMatchOrNoPattern(r.TeamName)
                 && RepoName.IsMatchOrNoPattern(r.GitRepository));
 
             return rule;

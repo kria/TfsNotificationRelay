@@ -24,6 +24,9 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Configuration;
 using DevCore.TfsNotificationRelay.Configuration;
+using Microsoft.TeamFoundation.Server.Core;
+using Microsoft.VisualStudio.Services.Identity;
+using Microsoft.TeamFoundation.Framework.Common;
 
 namespace DevCore.TfsNotificationRelay.EventHandlers
 {
@@ -93,7 +96,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
                 if (notificationType == NotificationType.Notification)
                 {
-                    var notifications = CreateNotifications(requestContext, notificationEventArgs, settings.MaxLines);
+                    var notifications = CreateNotifications(requestContext, notificationEventArgs, settings.MaxLines).ToList();
 
                     var tasks = new List<Task>();
 
@@ -148,6 +151,76 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             {
                 TeamFoundationApplicationCore.LogException(requestContext, String.Format("TfsNotificationRelay: Notify failed for bot {0}.", bot.Id), ex, 0, EventLogEntryType.Error);
             }
+        }
+
+
+        /// <summary>
+        /// Gets the team names by project uri and user identity
+        /// </summary>
+        /// <param name="requestContext"></param>
+        /// <param name="projectUri"></param>
+        /// <param name="identity"></param>
+        /// <returns>The teams the user is a member of</returns>
+        protected IEnumerable<string> GetUserTeamsByProjectUri(TeamFoundationRequestContext requestContext, string projectUri, IdentityDescriptor identity)
+        {
+            var teamService = requestContext.GetService<TeamFoundationTeamService>();
+
+            var projectTeams = teamService.QueryTeams(requestContext, projectUri);
+            Trace(requestContext, "Teams in project {0}: {1}", projectUri, String.Join(", ", projectTeams.Select(t => t.Name)));
+
+            var userTeams = teamService.QueryTeams(requestContext, identity);
+            Trace(requestContext, "Teams for user {0}: {1}", identity, String.Join(", ", userTeams.Select(t => t.Name)));
+
+            var teamNames = projectTeams.Join(userTeams,
+                pt => pt.Identity.Descriptor,
+                ut => ut.Identity.Descriptor,
+                (pt, ut) => pt.Name, IdentityDescriptorComparer.Instance);
+
+            return teamNames;
+        }
+
+        /// <summary>
+        /// Gets the team names by project name and user identity
+        /// </summary>
+        /// <param name="requestContext"></param>
+        /// <param name="projectName"></param>
+        /// <param name="identity"></param>
+        /// <returns>The teams the user is a member of</returns>
+        protected IEnumerable<string> GetUserTeamsByProjectName(TeamFoundationRequestContext requestContext, string projectName, IdentityDescriptor identity)
+        {
+            var projectUri = this.ProjectsNames.Where(p => p.Value ==  projectName)
+                .Select(p => p.Key).FirstOrDefault();
+            if (projectUri == null) return Enumerable.Empty<string>();
+
+            return GetUserTeamsByProjectUri(requestContext, projectUri, identity);
+        }
+
+        /// <summary>
+        /// Gets the team names by project name and username
+        /// </summary>
+        /// <param name="requestContext"></param>
+        /// <param name="projectName"></param>
+        /// <param name="username"></param>
+        /// <returns>The teams the user is a member of</returns>
+        protected IEnumerable<string> GetUserTeamsByProjectName(TeamFoundationRequestContext requestContext, string projectName, string username)
+        {
+            var identity = GetIdentyByUsername(requestContext, username);
+            if (identity == null) return Enumerable.Empty<string>();
+
+            return GetUserTeamsByProjectName(requestContext, projectName, identity.Descriptor);
+        }
+
+        protected TeamFoundationIdentity GetIdentyByUsername(TeamFoundationRequestContext requestContext, string username)
+        {
+            var identityService = requestContext.GetService<TeamFoundationIdentityService>();
+            var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.AccountName, username);
+
+            return identity;
+        }
+
+        protected void Trace(TeamFoundationRequestContext requestContext, string format, params object[] args)
+        {
+            requestContext.Trace(0, TraceLevel.Verbose, Constants.TraceArea, this.GetType().Name, format, args);
         }
 
     }

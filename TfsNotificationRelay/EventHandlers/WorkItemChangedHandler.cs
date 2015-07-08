@@ -47,6 +47,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             if (idField == null) throw new TfsNotificationRelayException("missing System.Id");
             int id = idField.NewValue;
 
+            var teamNames = GetUserTeamsByProjectUri(requestContext, ev.ProjectNodeId, identity.Descriptor);
+
             if (ev.TextFields != null)
             {
                 var comment = ev.TextFields.FirstOrDefault(f => f.ReferenceName == "System.History" && !String.IsNullOrEmpty(f.Value));
@@ -64,7 +66,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                         ProjectName = ev.PortfolioProject,
                         AreaPath = ev.AreaPath,
                         CommentHtml = comment.Value,
-                        Comment = TextHelper.HtmlToText(comment.Value)
+                        Comment = TextHelper.HtmlToText(comment.Value),
+                        TeamNames = teamNames
                     };
 
                     notifications.Add(commentNotification);
@@ -88,7 +91,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 State = ev.CoreFields.StringFields.GetFieldValue("System.State", f => f.NewValue),
                 AssignedTo = ev.CoreFields.StringFields.GetFieldValue("System.AssignedTo", f => f.NewValue),
                 CoreFields = ev.CoreFields,
-                ChangedFields = ev.ChangedFields
+                ChangedFields = ev.ChangedFields,
+                TeamNames = teamNames
             };
             notifications.Add(changeNotification);
 

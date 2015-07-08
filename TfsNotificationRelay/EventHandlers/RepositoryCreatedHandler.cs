@@ -41,7 +41,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     DisplayName = identity.DisplayName,
                     ProjectName = commonService.GetProject(requestContext, ev.TeamProjectUri).Name,
                     RepoUri = repoUri,
-                    RepoName = ev.RepositoryName
+                    RepoName = ev.RepositoryName,
+                    TeamNames = GetUserTeamsByProjectUri(requestContext, ev.TeamProjectUri, identity.Descriptor)
                 };
                 yield return notification;
 

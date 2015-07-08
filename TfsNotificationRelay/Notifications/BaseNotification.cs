@@ -23,6 +23,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
     public abstract class BaseNotification : INotification
     {
         public string TeamProjectCollection { get; set; }
+        public IEnumerable<string> TeamNames { get; set; }
 
         public abstract IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform);
 

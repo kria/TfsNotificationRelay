@@ -92,6 +92,11 @@ namespace DevCore.TfsNotificationRelay
             return String.IsNullOrEmpty(pattern) || Regex.IsMatch(input, pattern);
         }
 
+        public static bool IsMatchOrNoPattern(this IEnumerable<string> input, string pattern)
+        {
+            return String.IsNullOrEmpty(pattern) || input.Any(n => Regex.IsMatch(n, pattern));
+        }
+
         public static string HtmlToText(string html)
         {
             var converter = new HtmlToText();
