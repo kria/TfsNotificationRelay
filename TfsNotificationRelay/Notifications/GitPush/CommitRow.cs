@@ -31,13 +31,13 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
         public string AuthorName { get; set; }
         public string AuthorEmail { get; set; }
         public string Comment { get; set; }
-        public IList<string> RefNames { get; set; }
+        public IEnumerable<GitRef> Refs { get; set; }
 
         public override string ToString(BotElement bot, Func<string, string> transform)
         {
             string formattedTime = String.IsNullOrEmpty(bot.Text.DateTimeFormat) ? AuthorTime.ToString() : AuthorTime.ToString(bot.Text.DateTimeFormat);
             var sb = new StringBuilder();
-            if (RefNames != null) sb.AppendFormat("{0} ", transform(String.Concat(RefNames)));
+            if (Refs != null) sb.AppendFormat("{0} ", Refs.ToString(bot, transform));
             
             sb.Append(bot.Text.CommitFormat.FormatWith(new
             {

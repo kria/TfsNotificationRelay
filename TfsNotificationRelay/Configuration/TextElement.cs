@@ -275,5 +275,23 @@ namespace DevCore.TfsNotificationRelay.Configuration
         {
             get { return (string)this["workItemFieldTransitionFormat"]; }
         }
+
+        [ConfigurationProperty("branchFormat")]
+        public string BranchFormat
+        {
+            get { return (string)this["branchFormat"]; }
+        }
+
+        [ConfigurationProperty("tagFormat")]
+        public string TagFormat
+        {
+            get { return (string)this["tagFormat"]; }
+        }
+
+        [ConfigurationProperty("refSeparator")]
+        public string RefSeparator
+        {
+            get { return (string)this["refSeparator"]; }
+        }
     }
 }

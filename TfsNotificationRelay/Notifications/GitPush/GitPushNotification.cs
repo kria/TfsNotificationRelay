@@ -27,13 +27,15 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
         private string projectName;
         private string repoName;
         private IEnumerable<string> teamNames;
+        private IEnumerable<GitRef> refs;
 
-        public GitPushNotification(string teamProjecCollection, string projectName, string repoName, IEnumerable<string> teamNames)
+        public GitPushNotification(string teamProjecCollection, string projectName, string repoName, IEnumerable<string> teamNames, IEnumerable<GitRef> refs)
         {
             this.TeamProjectCollection = teamProjecCollection;
             this.projectName = projectName;
             this.repoName = repoName;
             this.teamNames = teamNames;
+            this.refs = refs;
         }
 
         public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
@@ -42,7 +44,9 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
                 && projectName.IsMatchOrNoPattern(r.TeamProject)
                 && teamNames.IsMatchOrNoPattern(r.TeamName)
-                && repoName.IsMatchOrNoPattern(r.GitRepository));
+                && repoName.IsMatchOrNoPattern(r.GitRepository)
+                && (String.IsNullOrEmpty(r.GitBranch) || refs.Any(n => Regex.IsMatch(n.Name, r.GitBranch)))
+                && (String.IsNullOrEmpty(r.GitTag) || refs.Any(n => Regex.IsMatch(n.Name, r.GitTag))));
 
             return rule;
         }

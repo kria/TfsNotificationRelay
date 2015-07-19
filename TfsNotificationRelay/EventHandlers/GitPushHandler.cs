@@ -51,65 +51,58 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     ProjectName = commonService.GetProject(requestContext, pushNotification.TeamProjectUri).Name,
                     IsForcePush = settings.IdentifyForcePush ? pushNotification.IsForceRequired(requestContext, repository) : false
                 };
-                var notification = new GitPushNotification(requestContext.ServiceHost.Name, pushRow.ProjectName, pushRow.RepoName, teamNames);
+                var notification = new GitPushNotification(requestContext.ServiceHost.Name, pushRow.ProjectName, pushRow.RepoName, teamNames,
+                    pushNotification.RefUpdateResults.Where(r => r.Succeeded).Select(r => new GitRef(r)));
                 notification.Add(pushRow);
                 notification.TotalLineCount++;
 
-                var refNames = new Dictionary<byte[], List<string>>(new ByteArrayComparer());
-                var oldCommits = new HashSet<byte[]>(new ByteArrayComparer());
-                var unknowns = new List<RefUpdateResultGroup>();
+                var refLookup = new Dictionary<byte[], List<GitRef>>(new ByteArrayComparer());
+                var deletedRefs = new List<GitRef>();
+                var oldCommits = new HashSet<TfsGitCommit>(new TfsGitObjectEqualityComparer());
+                var unknowns = new List<TfsGitRefUpdateResult>();
 
                 // Associate refs (branch, lightweight and annotated tag) with corresponding commit
-                var refUpdateResultGroups = pushNotification.RefUpdateResults
-                    .Where(r => r.Succeeded)
-                    .GroupBy(r => r.NewObjectId, (key, items) => new RefUpdateResultGroup(key, items), new ByteArrayComparer());
-
-                foreach (var refUpdateResultGroup in refUpdateResultGroups)
+                foreach (var refUpdateResult in pushNotification.RefUpdateResults.Where(r => r.Succeeded))
                 {
-                    byte[] newObjectId = refUpdateResultGroup.NewObjectId;
-                    byte[] commitId = null;
+                    byte[] newObjectId = refUpdateResult.NewObjectId;
+                    TfsGitCommit commit = null;
 
                     if (newObjectId.IsZero())
                     {
-                        commitId = newObjectId;
-                    }
-                    else
-                    {
-                        TfsGitObject gitObject = repository.LookupObject(requestContext, newObjectId);
-
-                        if (gitObject.ObjectType == TfsGitObjectType.Commit)
-                        {
-                            commitId = newObjectId;
-                        }
-                        else if (gitObject.ObjectType == TfsGitObjectType.Tag)
-                        {
-                            var tag = (TfsGitTag)gitObject;
-                            var commit = tag.TryResolveToCommit(requestContext);
-                            if (commit != null)
-                            {
-                                commitId = commit.ObjectId;
-                            }
-                        }
+                        deletedRefs.Add(new GitRef(refUpdateResult));
+                        continue;
                     }
 
-                    if (commitId != null)
-                    {
-                        List<string> names;
-                        if (!refNames.TryGetValue(commitId, out names))
-                        {
-                            names = new List<string>();
-                            refNames.Add(commitId, names);
-                        }
-                        names.AddRange(RefsToStrings(refUpdateResultGroup.RefUpdateResults));
+                    TfsGitObject gitObject = repository.LookupObject(requestContext, newObjectId);
 
-                        if (commitId.IsZero() || !pushNotification.IncludedCommits.Any(r => r.SequenceEqual(commitId)))
+                    if (gitObject.ObjectType == TfsGitObjectType.Commit)
+                    {
+                        commit = gitObject as TfsGitCommit;
+                    }
+                    else if (gitObject.ObjectType == TfsGitObjectType.Tag)
+                    {
+                        var tag = (TfsGitTag)gitObject;
+                        commit = tag.TryResolveToCommit(requestContext);
+                    }
+
+                    if (commit != null)
+                    {
+                        List<GitRef> refs;
+                        if (!refLookup.TryGetValue(commit.ObjectId, out refs))
                         {
-                            oldCommits.Add(commitId);
+                            refs = new List<GitRef>();
+                            refLookup.Add(commit.ObjectId, refs);
+                        }
+                        refs.Add(new GitRef(refUpdateResult));
+
+                        if (!pushNotification.IncludedCommits.Any(r => r.SequenceEqual(commit.ObjectId)))
+                        {
+                            oldCommits.Add(commit);
                         }
                     }
                     else
                     {
-                        unknowns.Add(refUpdateResultGroup);
+                        unknowns.Add(refUpdateResult);
                     }
 
                 }
@@ -120,33 +113,31 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 foreach (byte[] commitId in pushNotification.IncludedCommits.TakeWhile(c => notification.Count < maxLines))
                 {
                     TfsGitCommit gitCommit = (TfsGitCommit)repository.LookupObject(requestContext, commitId);
-                    notification.Add(CreateCommitRow(requestContext, commitService, gitCommit, CommitRowType.Commit, pushNotification, refNames));
+                    notification.Add(CreateCommitRow(requestContext, commitService, gitCommit, CommitRowType.Commit, pushNotification, refLookup));
                 }
 
                 // Add updated refs to old commits
-                foreach (byte[] commitId in oldCommits.TakeWhile(c => notification.Count < maxLines))
+                foreach (TfsGitCommit gitCommit in oldCommits.OrderByDescending(c => c.GetCommitTime(requestContext)).TakeWhile(c => notification.Count < maxLines))
                 {
-                    if (commitId.IsZero())
-                    {
-                        notification.Add(new DeleteRow() { RefNames = refNames[commitId] });
-                    }
-                    else
-                    {
-                        TfsGitCommit gitCommit = (TfsGitCommit)repository.LookupObject(requestContext, commitId);
-                        notification.Add(CreateCommitRow(requestContext, commitService, gitCommit, CommitRowType.RefUpdate, pushNotification, refNames));
-                    }
+                    notification.Add(CreateCommitRow(requestContext, commitService, gitCommit, CommitRowType.RefUpdate, pushNotification, refLookup));
+                }
+
+                // Add deleted refs if any
+                if (deletedRefs.Any() && notification.Count < maxLines)
+                {
+                    notification.Add(new DeleteRow() { Refs = deletedRefs });
                 }
 
                 // Add "unknown" refs
-                foreach (var refUpdateResultGroup in unknowns.TakeWhile(c => notification.Count < maxLines))
+                foreach (var refUpdateResult in unknowns.TakeWhile(c => notification.Count < maxLines))
                 {
-                    byte[] newObjectId = refUpdateResultGroup.NewObjectId;
+                    byte[] newObjectId = refUpdateResult.NewObjectId;
                     TfsGitObject gitObject = repository.LookupObject(requestContext, newObjectId);
                     notification.Add(new RefUpdateRow()
                     {
                         NewObjectId = newObjectId,
                         ObjectType = gitObject.ObjectType,
-                        RefNames = RefsToStrings(refUpdateResultGroup.RefUpdateResults)
+                        Refs = new[] { new GitRef(refUpdateResult) }
                     });
                 }
 
@@ -154,24 +145,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             }
         }
 
-        private static string[] RefsToStrings(IEnumerable<TfsGitRefUpdateResult> refUpdateResults)
-        {
-            if (refUpdateResults.Count() == 0) return null;
-            var refStrings = new List<string>();
-            foreach (var gitRef in refUpdateResults)
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.Append('[');
-                if (gitRef.Name.StartsWith("refs/heads/") && gitRef.OldObjectId.IsZero())
-                    sb.Append('+');
-                sb.AppendFormat("{0}]", gitRef.Name.Replace("refs/heads/", "").Replace("refs/tags/", ""));
-                refStrings.Add(sb.ToString());
-            }
-            return refStrings.ToArray();
-        }
-
         private static CommitRow CreateCommitRow(TeamFoundationRequestContext requestContext, TeamFoundationGitCommitService commitService,  
-            TfsGitCommit gitCommit, CommitRowType rowType, PushNotification pushNotification, Dictionary<byte[], List<string>> refNames)
+            TfsGitCommit gitCommit, CommitRowType rowType, PushNotification pushNotification, Dictionary<byte[], List<GitRef>> refLookup)
         {
             var commitManifest = commitService.GetCommitManifest(requestContext, gitCommit.Repository, gitCommit.ObjectId);
             string repoUri = gitCommit.Repository.GetRepositoryUri(requestContext);
@@ -188,24 +163,12 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 Comment = gitCommit.GetComment(requestContext),
                 ChangeCounts = commitManifest.ChangeCounts
             };
-            List<string> refs = null;
-            refNames.TryGetValue(gitCommit.ObjectId, out refs);
-            commitRow.RefNames = refs;
+            List<GitRef> refs = null;
+            refLookup.TryGetValue(gitCommit.ObjectId, out refs);
+            commitRow.Refs = refs;
 
             return commitRow;
         }
-    }
-
-    class RefUpdateResultGroup
-    {
-        public RefUpdateResultGroup(byte[] newObjectId, IEnumerable<TfsGitRefUpdateResult> refUpdateResults)
-        {
-            this.NewObjectId = newObjectId;
-            this.RefUpdateResults = refUpdateResults;
-        }
-        public byte[] NewObjectId { get; set; }
-        public IEnumerable<TfsGitRefUpdateResult> RefUpdateResults { get; set; }
-
     }
 
 }
