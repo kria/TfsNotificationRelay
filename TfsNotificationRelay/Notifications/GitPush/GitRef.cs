@@ -22,11 +22,11 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
 {
     public class GitRef
     {
-        public string Name { get; }
-        public string FullName { get; }
-        public byte[] CommitId { get; }
-        public GitRefType Type { get; }
-        public bool IsNew { get; }
+        public string Name { get; private set; }
+        public string FullName { get; private set; }
+        public byte[] CommitId { get; private set; }
+        public GitRefType Type { get; private set; }
+        public bool IsNew { get; private set; }
 
         public GitRef(TfsGitRefUpdateResult updateResult)
         {
