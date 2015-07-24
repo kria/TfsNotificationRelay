@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace DevCore.TfsNotificationRelay.Notifications.GitPush
+namespace DevCore.TfsNotificationRelay.Notifications
 {
     public class GitRef
     {
@@ -28,27 +28,30 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
         public GitRefType Type { get; private set; }
         public bool IsNew { get; private set; }
 
-        public GitRef(TfsGitRefUpdateResult updateResult)
+        public GitRef(string fullName)
         {
-            CommitId = updateResult.NewObjectId;
-            FullName = updateResult.Name;
-            IsNew = updateResult.OldObjectId.IsZero();
+            FullName = fullName;
 
-            if (updateResult.Name.StartsWith("refs/heads/"))
+            if (fullName.StartsWith("refs/heads/"))
             {
                 Type = GitRefType.Branch;
-                Name = updateResult.Name.Replace("refs/heads/", "");
+                Name = fullName.Replace("refs/heads/", "");
             }
-            else if (updateResult.Name.StartsWith("refs/tags/"))
+            else if (fullName.StartsWith("refs/tags/"))
             {
                 Type = GitRefType.Tag;
-                Name = updateResult.Name.Replace("refs/tags/", "");
+                Name = fullName.Replace("refs/tags/", "");
             }
             else
             {
                 Type = GitRefType.Other;
-                Name = updateResult.Name;
+                Name = fullName;
             }
+        }
+        public GitRef(TfsGitRefUpdateResult updateResult) : this(updateResult.Name)
+        {
+            CommitId = updateResult.NewObjectId;
+            IsNew = updateResult.OldObjectId.IsZero();
         }
 
         public string ToString(BotElement bot, Func<string, string> transform)

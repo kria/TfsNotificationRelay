@@ -102,7 +102,8 @@
     <Compile Include="EventHandlers\PullRequestStatusUpdateHandler.cs" />
     <Compile Include="EventHandlers\RepositoryCreatedHandler.cs" />
     <Compile Include="HtmlToText.cs" />
-    <Compile Include="Notifications\GitPush\GitRef.cs" />
+    <Compile Include="Notifications\GitRef.cs" />
+    <Compile Include="Notifications\PullRequestNotification.cs" />
     <Compile Include="TextHelper.cs" />
     <Compile Include="INotifier.cs" />
     <Compile Include="Notifications\BaseNotification.cs" />
