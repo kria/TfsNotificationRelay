@@ -11,6 +11,9 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
+using System.Collections.Generic;
+using System.Linq;
+
 namespace DevCore.TfsNotificationRelay.Notifications
 {
     public abstract class WorkItemNotification : BaseNotification
@@ -25,10 +28,23 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string WiTitle { get; set; }
         public string ProjectName { get; set; }
         public string AreaPath { get; set; }
+        public string AssignedTo { get; set; }
+        public string AssignedToUserName { get; set; }
 
         public string UserName
         {
             get { return settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName; }
+        }
+
+        public override IEnumerable<string> TargetUserNames
+        {
+            get
+            {
+                if (AssignedToUserName != null && AssignedToUserName != UniqueName)
+                    return new[] { AssignedToUserName };
+                else
+                    return Enumerable.Empty<string>();
+            }
         }
 
     }

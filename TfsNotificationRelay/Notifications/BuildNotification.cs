@@ -38,6 +38,10 @@ namespace DevCore.TfsNotificationRelay.Notifications
         {
             get { return settings.StripUserDomain ? TextHelper.StripDomain(RequestedFor) : RequestedFor; }
         }
+        public override IEnumerable<string> TargetUserNames
+        {
+            get { return new[] { RequestedFor }; }
+        }
         public string DisplayName
         {
             get { return RequestedForDisplayName; }

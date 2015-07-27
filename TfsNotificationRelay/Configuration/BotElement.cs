@@ -44,6 +44,20 @@ namespace DevCore.TfsNotificationRelay.Configuration
 
         public TextElement Text { get; set; }
 
+        [ConfigurationProperty("userMapId")]
+        public string UserMapId
+        {
+            get { return (string)this["userMapId"]; }
+        }
+
+        public UserMapElement UserMap { get; set; }
+
+        public string GetMappedUser(string tfsUserName)
+        {
+            var userMapping = UserMap.FirstOrDefault(u => u.TfsUser == tfsUserName);
+            return userMapping != null ? userMapping.MappedUser : null;
+        }
+
         [ConfigurationProperty("botSettings")]
         [ConfigurationCollection(typeof(NameValueConfigurationCollection))]
         protected NameValueConfigurationCollection BotSettingsConfigurationCollection

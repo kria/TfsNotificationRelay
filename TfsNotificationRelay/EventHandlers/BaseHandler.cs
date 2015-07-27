@@ -74,7 +74,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
         public virtual EventNotificationStatus ProcessEvent(TeamFoundationRequestContext requestContext, NotificationType notificationType,
             object notificationEventArgs, out int statusCode, out string statusMessage, out Microsoft.TeamFoundation.Common.ExceptionPropertyCollection properties)
         {
-            requestContext.Trace(0, TraceLevel.Verbose, Constants.TraceArea, "BaseHandler", 
+            requestContext.Trace(0, TraceLevel.Info, Constants.TraceArea, "BaseHandler", 
                 "ProcessEvent: notificationType={0}, notificationEventArgs={1}", notificationType, notificationEventArgs);
             Stopwatch timer = new Stopwatch();
             timer.Start();
@@ -136,7 +136,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             finally
             {
                 timer.Stop();
-                requestContext.Trace(0, TraceLevel.Verbose, Constants.TraceArea, "BaseHandler", "Time spent in ProcessEvent: {0}", timer.Elapsed);
+                requestContext.Trace(0, TraceLevel.Info, Constants.TraceArea, "BaseHandler", "Time spent in ProcessEvent: {0}", timer.Elapsed);
             }
             
         }

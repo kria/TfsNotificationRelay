@@ -64,6 +64,7 @@
                   <xs:attribute name="id" type="xs:string" use="required" />
                   <xs:attribute name="type" type="xs:string" use="required" />
                   <xs:attribute name="textId" type="xs:string" use="required" />
+                  <xs:attribute name="userMapId" type="xs:string" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
@@ -123,7 +124,26 @@
               </xs:element>
             </xs:sequence>
           </xs:complexType>
-        </xs:element>   
+        </xs:element>
+        <xs:element name="userMaps">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="userMap" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element maxOccurs="unbounded" name="add">
+                      <xs:complexType>
+                        <xs:attribute name="tfsUser" type="xs:string" use="required" />
+                        <xs:attribute name="mappedUser" type="xs:string" use="required" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="id" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:sequence>
     </xs:complexType>
   </xs:element>

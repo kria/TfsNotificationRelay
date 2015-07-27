@@ -28,12 +28,14 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
         private string repoName;
         private IEnumerable<string> teamNames;
         private IEnumerable<GitRef> refs;
+        private string userName;
 
-        public GitPushNotification(string teamProjecCollection, string projectName, string repoName, IEnumerable<string> teamNames, IEnumerable<GitRef> refs)
+        public GitPushNotification(string teamProjecCollection, string projectName, string repoName, string userName, IEnumerable<string> teamNames, IEnumerable<GitRef> refs)
         {
             this.TeamProjectCollection = teamProjecCollection;
             this.projectName = projectName;
             this.repoName = repoName;
+            this.userName = userName;
             this.teamNames = teamNames;
             this.refs = refs;
         }

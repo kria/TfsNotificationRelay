@@ -47,6 +47,15 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             if (idField == null) throw new TfsNotificationRelayException("missing System.Id");
             int id = idField.NewValue;
 
+            var assignedTo = ev.CoreFields.StringFields.GetFieldValue("System.AssignedTo", f => f.NewValue);
+            string assignedToUserName = null;
+            if (assignedTo != null)
+            {
+                var assignedToIdentity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.DisplayName, assignedTo);
+                if (assignedToIdentity != null)
+                    assignedToUserName = assignedToIdentity.UniqueName;
+            }
+
             var teamNames = GetUserTeamsByProjectUri(requestContext, ev.ProjectNodeId, identity.Descriptor);
 
             if (ev.TextFields != null)
@@ -65,6 +74,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                         WiTitle = ev.WorkItemTitle,
                         ProjectName = ev.PortfolioProject,
                         AreaPath = ev.AreaPath,
+                        AssignedTo = assignedTo,
+                        AssignedToUserName = assignedToUserName,
                         CommentHtml = comment.Value,
                         Comment = TextHelper.HtmlToText(comment.Value),
                         TeamNames = teamNames
@@ -89,7 +100,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 IsStateChanged = ev.ChangedFields != null && ev.ChangedFields.StringFields != null && ev.ChangedFields.StringFields.Any(f => f.ReferenceName == "System.State"),
                 IsAssignmentChanged = ev.ChangedFields != null && ev.ChangedFields.StringFields != null && ev.ChangedFields.StringFields.Any(f => f.ReferenceName == "System.AssignedTo"),
                 State = ev.CoreFields.StringFields.GetFieldValue("System.State", f => f.NewValue),
-                AssignedTo = ev.CoreFields.StringFields.GetFieldValue("System.AssignedTo", f => f.NewValue),
+                AssignedTo = assignedTo,
+                AssignedToUserName = assignedToUserName,
                 CoreFields = ev.CoreFields,
                 ChangedFields = ev.ChangedFields,
                 TeamNames = teamNames

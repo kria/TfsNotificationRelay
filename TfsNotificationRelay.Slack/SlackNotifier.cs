@@ -23,12 +23,13 @@ using System.Threading.Tasks;
 using DevCore.TfsNotificationRelay.Configuration;
 using DevCore.TfsNotificationRelay.Notifications.GitPush;
 using Microsoft.TeamFoundation.Framework.Server;
+using DevCore.TfsNotificationRelay.Slack.Models;
 
 namespace DevCore.TfsNotificationRelay.Slack
 {
     public class SlackNotifier : INotifier
     {
-        public async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
+        public virtual async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
         {
             var channels = bot.GetCsvSetting("channels");
             var tasks = new List<Task>();
@@ -36,32 +37,32 @@ namespace DevCore.TfsNotificationRelay.Slack
 
             foreach (string channel in channels)
             {
-                Message slackMessage = ToSlackMessage((dynamic)notification, bot, channel);
+                Message slackMessage = ToSlackMessage((dynamic)notification, bot, channel, false);
                 if (slackMessage != null)
                 {
-                    tasks.Add(slackClient.SendMessageAsync(slackMessage, bot.GetSetting("webhookUrl")).ContinueWith(t => t.Result.EnsureSuccessStatusCode()));
+                    tasks.Add(slackClient.SendWebhookMessageAsync(slackMessage, bot.GetSetting("webhookUrl")).ContinueWith(t => t.Result.EnsureSuccessStatusCode()));
                 }
             }
 
             await Task.WhenAll(tasks);
         }
 
-        public Message ToSlackMessage(INotification notification, BotElement bot, string channel)
+        public Message ToSlackMessage(INotification notification, BotElement bot, string channel, bool asUser)
         {
             var lines = notification.ToMessage(bot, s => s);
 
-            return SlackHelper.CreateSlackMessage(lines, bot, channel, bot.GetSetting("standardColor"));
+            return SlackHelper.CreateSlackMessage(lines, bot, channel, bot.GetSetting("standardColor"), asUser);
         }
 
-        public Message ToSlackMessage(BuildCompletionNotification notification, BotElement bot, string channel)
+        public Message ToSlackMessage(BuildCompletionNotification notification, BotElement bot, string channel, bool asUser)
         {
             var lines = notification.ToMessage(bot, s => s);
             var color = notification.IsSuccessful ? bot.GetSetting("successColor") : bot.GetSetting("errorColor");
 
-            return SlackHelper.CreateSlackMessage(lines, bot, channel, color);
+            return SlackHelper.CreateSlackMessage(lines, bot, channel, color, asUser);
         }
 
-        public Message ToSlackMessage(WorkItemChangedNotification notification, BotElement bot, string channel)
+        public Message ToSlackMessage(WorkItemChangedNotification notification, BotElement bot, string channel, bool asUser)
         {
             string header = notification.ToMessage(bot, s => s).First();
 
@@ -80,17 +81,17 @@ namespace DevCore.TfsNotificationRelay.Slack
                 }
             }
 
-            return SlackHelper.CreateSlackMessage(header, fields, bot, channel, bot.GetSetting("standardColor"));
+            return SlackHelper.CreateSlackMessage(header, fields, bot, channel, bot.GetSetting("standardColor"), asUser);
         }
 
-        public Message ToSlackMessage(WorkItemCommentNotification notification, BotElement bot, string channel)
+        public Message ToSlackMessage(WorkItemCommentNotification notification, BotElement bot, string channel, bool asUser)
         {
             string header = notification.ToMessage(bot, s => s).First();
             var fields = new[] {
                 new AttachmentField(bot.Text.Comment, notification.Comment, false)
             };
 
-            return SlackHelper.CreateSlackMessage(header, fields, bot, channel, bot.GetSetting("standardColor"));
+            return SlackHelper.CreateSlackMessage(header, fields, bot, channel, bot.GetSetting("standardColor"), asUser);
         }
 
 

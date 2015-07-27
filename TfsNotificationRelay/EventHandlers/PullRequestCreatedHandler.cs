@@ -33,7 +33,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             var commonService = requestContext.GetService<ICommonStructureService>();
             
             var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.Identifier, ev.Creator.Identifier);
-            
+
             using (TfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, ev.RepositoryId))
             {
                 var pullRequestService = requestContext.GetService<ITeamFoundationGitPullRequestService>();
@@ -41,10 +41,13 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 if (pullRequestService.TryGetPullRequestDetails(requestContext, repository, ev.PullRequestId, out pullRequest)) 
                 {
                     string repoUri = repository.GetRepositoryUri(requestContext);
+                    var reviewers = identityService.ReadIdentities(requestContext, pullRequest.Reviewers.Select(r => r.Reviewer).ToArray());
+                    // Expand team identies in reviewers?
 
                     var notification = new Notifications.PullRequestCreatedNotification()
                     {
                         TeamProjectCollection = requestContext.ServiceHost.Name,
+                        CreatorUserName = identity.UniqueName,
                         UniqueName = identity.UniqueName,
                         DisplayName = identity.DisplayName,
                         ProjectName = commonService.GetProject(requestContext, ev.TeamProjectUri).Name,
@@ -55,7 +58,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                         PrTitle = pullRequest.Title,
                         TeamNames = GetUserTeamsByProjectUri(requestContext, ev.TeamProjectUri, ev.Creator),
                         SourceBranch = new Notifications.GitRef(pullRequest.SourceBranchName),
-                        TargetBranch = new Notifications.GitRef(pullRequest.TargetBranchName)
+                        TargetBranch = new Notifications.GitRef(pullRequest.TargetBranchName),
+                        ReviewerUserNames = reviewers.Select(r => r.UniqueName)
                     };
                     yield return notification;
                 } 

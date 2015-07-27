@@ -81,6 +81,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\Defaults.cs" />
+    <Compile Include="Configuration\UserMapElement.cs" />
+    <Compile Include="Configuration\UserMappingElement.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Configuration\ConfigurationElementCollectionOfT.cs" />
     <Compile Include="Configuration\ConfigurationHelper.cs" />

@@ -24,7 +24,6 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public bool IsNew { get; set; }
         public bool IsStateChanged { get; set; }
         public bool IsAssignmentChanged { get; set; }
-        public string AssignedTo { get; set; }
         public string State { get; set; }
         public CoreFieldsType CoreFields { get; set; }
         public ChangedFieldsType ChangedFields { get; set; }

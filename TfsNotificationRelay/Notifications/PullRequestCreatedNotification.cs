@@ -40,6 +40,11 @@ namespace DevCore.TfsNotificationRelay.Notifications
             return new[] { bot.Text.PullRequestCreatedFormat.FormatWith(formatter) };
         }
 
+        public override IEnumerable<string> TargetUserNames
+        {
+            get { return ReviewerUserNames; }
+        }
+
         public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
         {
             var rule = GetRulesMatch(collection, eventRules).FirstOrDefault(r => r.Events.HasFlag(TfsEvents.PullRequestCreated));

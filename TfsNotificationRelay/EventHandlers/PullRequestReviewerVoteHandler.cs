@@ -41,9 +41,12 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 if (pullRequestService.TryGetPullRequestDetails(requestContext, repository, ev.PullRequestId, out pullRequest))
                 {
                     string repoUri = repository.GetRepositoryUri(requestContext);
+                    var creator = identityService.ReadIdentities(requestContext, new[] { pullRequest.Creator }).First();
+                    var reviewers = identityService.ReadIdentities(requestContext, pullRequest.Reviewers.Select(r => r.Reviewer).ToArray());
                     var notification = new Notifications.PullRequestReviewerVoteNotification()
                     {
                         TeamProjectCollection = requestContext.ServiceHost.Name,
+                        CreatorUserName = creator.UniqueName,
                         Vote = ev.ReviewerVote,
                         UniqueName = identity.UniqueName,
                         DisplayName = identity.DisplayName,
@@ -55,7 +58,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                         PrTitle = pullRequest.Title,
                         TeamNames = GetUserTeamsByProjectUri(requestContext, ev.TeamProjectUri, ev.Reviewer),
                         SourceBranch = new Notifications.GitRef(pullRequest.SourceBranchName),
-                        TargetBranch = new Notifications.GitRef(pullRequest.TargetBranchName)
+                        TargetBranch = new Notifications.GitRef(pullRequest.TargetBranchName),
+                        ReviewerUserNames = reviewers.Select(r => r.UniqueName)
                     };
                     yield return notification;
                 }
