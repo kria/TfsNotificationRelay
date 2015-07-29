@@ -49,7 +49,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
             var assignedTo = ev.CoreFields.StringFields.GetFieldValue("System.AssignedTo", f => f.NewValue);
             string assignedToUserName = null;
-            if (assignedTo != null)
+            if (!string.IsNullOrEmpty(assignedTo))
             {
                 var assignedToIdentity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.DisplayName, assignedTo);
                 if (assignedToIdentity != null)
