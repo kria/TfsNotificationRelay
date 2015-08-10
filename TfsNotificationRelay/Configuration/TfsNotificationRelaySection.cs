@@ -88,6 +88,14 @@ namespace DevCore.TfsNotificationRelay.Configuration
             
             foreach (var bot in Bots)
             {
+                // Link up inheritance first
+                if (!string.IsNullOrEmpty(bot.BasedOn))
+                {
+                    var baseBot = Bots.FirstOrDefault(b => b.Id == bot.BasedOn);
+                    if (baseBot == null) throw new TfsNotificationRelayException(String.Format("Unknown basedOn ({0}) for bot {1}", bot.BasedOn, bot.Id));
+                    bot.BaseBot = baseBot;
+                }
+
                 var text = this.Texts.FirstOrDefault(t => t.Id == bot.TextId);
                 if (text == null) throw new TfsNotificationRelayException(String.Format("Unknown textId ({0}) for bot {1}", bot.TextId, bot.Id));
 

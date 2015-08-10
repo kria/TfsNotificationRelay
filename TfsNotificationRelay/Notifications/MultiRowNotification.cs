@@ -45,6 +45,6 @@ namespace DevCore.TfsNotificationRelay.Notifications
             get { return Enumerable.Empty<string>(); }
         }
 
-        public abstract EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules);
+        public abstract EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules);
     }
 }

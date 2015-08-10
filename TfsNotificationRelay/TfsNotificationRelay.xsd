@@ -24,7 +24,7 @@
               <xs:element name="bot" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element name="botSettings">
+                    <xs:element name="botSettings" minOccurs="0" maxOccurs="1">
                       <xs:complexType>
                         <xs:sequence>
                           <xs:element maxOccurs="unbounded" name="add">
@@ -36,7 +36,7 @@
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element name="eventRules">
+                    <xs:element name="eventRules" minOccurs="0" maxOccurs="1">
                       <xs:complexType>
                         <xs:sequence>
                           <xs:element maxOccurs="unbounded" name="rule">
@@ -62,9 +62,11 @@
                     </xs:element>
                   </xs:sequence>
                   <xs:attribute name="id" type="xs:string" use="required" />
-                  <xs:attribute name="type" type="xs:string" use="required" />
-                  <xs:attribute name="textId" type="xs:string" use="required" />
+                  <xs:attribute name="type" type="xs:string" />
+                  <xs:attribute name="textId" type="xs:string" />
                   <xs:attribute name="userMapId" type="xs:string" />
+                  <xs:attribute name="basedOn" type="xs:string" />
+                  <xs:attribute name="inheritRules" type="xs:boolean" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>

@@ -15,6 +15,7 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Configuration;
 using DevCore.TfsNotificationRelay.Configuration;
+using System.Linq;
 
 namespace TfsNotificationRelay.Tests
 {
@@ -28,9 +29,9 @@ namespace TfsNotificationRelay.Tests
             
             Assert.IsNotNull(config, "Unable to load section");
             Assert.IsTrue(config.Settings.MaxLines > 0, "Too low MaxLines");
-            Assert.IsTrue(config.Bots[0].EventRules.Count > 0, "no rules");
-            Assert.IsTrue(config.Bots.Count > 0, "No bots");
-            Assert.IsTrue(config.Texts.Count > 0, "No texts");
+            Assert.IsTrue(config.Bots[0].GetRules().Any(), "no rules");
+            Assert.IsTrue(config.Bots.Any(), "No bots");
+            Assert.IsTrue(config.Texts.Any(), "No texts");
         }
     }
 }

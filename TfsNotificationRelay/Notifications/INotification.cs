@@ -32,6 +32,6 @@ namespace DevCore.TfsNotificationRelay.Notifications
         /// <returns></returns>
         IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform);
 
-        EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules);
+        EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules);
     }
 }

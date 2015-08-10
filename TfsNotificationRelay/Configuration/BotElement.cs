@@ -30,16 +30,16 @@ namespace DevCore.TfsNotificationRelay.Configuration
             get { return (string)this["id"]; }
         }
 
-        [ConfigurationProperty("type", IsRequired = true)]
+        [ConfigurationProperty("type")]
         public string Type
         {
-            get { return (string)this["type"]; }
+            get { return GetProperty("type"); }
         }
 
-        [ConfigurationProperty("textId", IsRequired = true)]
+        [ConfigurationProperty("textId")]
         public string TextId
         {
-            get { return (string)this["textId"]; }
+            get { return GetProperty("textId"); }
         }
 
         public TextElement Text { get; set; }
@@ -47,7 +47,7 @@ namespace DevCore.TfsNotificationRelay.Configuration
         [ConfigurationProperty("userMapId")]
         public string UserMapId
         {
-            get { return (string)this["userMapId"]; }
+            get { return GetProperty("userMapId"); }
         }
 
         public UserMapElement UserMap { get; set; }
@@ -58,37 +58,38 @@ namespace DevCore.TfsNotificationRelay.Configuration
             return userMapping != null ? userMapping.MappedUser : null;
         }
 
+        [ConfigurationProperty("basedOn")]
+        public string BasedOn
+        {
+            get { return (string)this["basedOn"]; }
+        }
+
+        public BotElement BaseBot { get; set; }
+
+        [ConfigurationProperty("inheritRules")]
+        public bool InheritRules
+        {
+            get { return GetProperty<bool>("inheritRules"); }
+        }
+
         [ConfigurationProperty("botSettings")]
         [ConfigurationCollection(typeof(NameValueConfigurationCollection))]
         protected NameValueConfigurationCollection BotSettingsConfigurationCollection
         {
-            get { return (NameValueConfigurationCollection)base["botSettings"]; }
-        }
-
-        private Dictionary<string, string> _BotSettings;
-        public Dictionary<string, string> BotSettings
-        {
-            get
-            {
-                if (_BotSettings != null) return _BotSettings;
-                _BotSettings = new Dictionary<string, string>();
-                foreach (NameValueConfigurationElement element in BotSettingsConfigurationCollection)
-                {
-                    _BotSettings.Add(element.Name, element.Value);
-                }
-                return _BotSettings;
-            }
+            get { return (NameValueConfigurationCollection)this["botSettings"]; }
         }
 
         public string GetSetting(string name) 
         {
-            return BotSettingsConfigurationCollection[name].Value;
+            var setting = BotSettingsConfigurationCollection[name];
+            if (setting != null) return setting.Value;
+            if (BaseBot == null) return null;
+            return BaseBot.GetSetting(name);
         }
 
         public string GetSetting(string name, string fallback)
         {
-            if (!BotSettingsConfigurationCollection.AllKeys.Contains(name)) return fallback;
-            return BotSettingsConfigurationCollection[name].Value;
+            return GetSetting(name) ?? fallback;
         }
 
         public IEnumerable<string> GetCsvSetting(string name, string fallback)
@@ -104,9 +105,50 @@ namespace DevCore.TfsNotificationRelay.Configuration
         [ConfigurationProperty("eventRules")]
         [ConfigurationCollection(typeof(EventRuleCollection),
             AddItemName = "rule")]
-        public EventRuleCollection EventRules
+        protected EventRuleCollection EventRules
         {
-            get { return (EventRuleCollection)base["eventRules"]; }
+            get { return (EventRuleCollection)this["eventRules"]; }
         }
+
+        /// <summary>
+        /// Get all rules for whole basedOn hierarchy, starting from root ancestor
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<EventRuleElement> GetRules()
+        {
+            if (InheritRules && BaseBot != null)
+            {
+                foreach (var rule in BaseBot.GetRules())
+                    yield return rule;
+            }
+            foreach (var rule in EventRules)
+                yield return rule;
+        }
+
+        protected string GetProperty(string propertyName)
+        {
+            var propertyValue = (string)this[propertyName];
+
+            // We have to check for empty string since missing string elements are deserialized as string.Empty!?
+            if (!string.IsNullOrEmpty(propertyValue) || BaseBot == null)
+            {
+                return propertyValue;
+            }
+
+            return BaseBot.GetProperty(propertyName);
+        }
+
+        protected T GetProperty<T>(string propertyName)
+        {
+            var propertyValue = (T)this[propertyName];
+
+            if (propertyValue != null || BaseBot == null)
+            {
+                return propertyValue;
+            }
+
+            return BaseBot.GetProperty<T>(propertyName);
+        }
+
     }
 }

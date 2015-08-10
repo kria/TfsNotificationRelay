@@ -40,7 +40,7 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
             this.refs = refs;
         }
 
-        public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
+        public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
         {
             var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.GitPush)
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)

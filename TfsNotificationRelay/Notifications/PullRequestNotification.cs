@@ -50,7 +50,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
             }
         }
 
-        public IEnumerable<EventRuleElement> GetRulesMatch(string collection, Configuration.EventRuleCollection eventRules)
+        public IEnumerable<EventRuleElement> GetRulesMatch(string collection, IEnumerable<EventRuleElement> eventRules)
         {
             var rules = eventRules.Where(r => collection.IsMatchOrNoPattern(r.TeamProjectCollection)
                 && ProjectName.IsMatchOrNoPattern(r.TeamProject)

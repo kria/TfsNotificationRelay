@@ -55,7 +55,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
             return new[] { bot.Text.PullRequestStatusUpdateFormat.FormatWith(formatter) };
         }
 
-        public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
+        public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
         {
             var rule = GetRulesMatch(collection, eventRules).FirstOrDefault(r => r.Events.HasFlag(TfsEvents.PullRequestStatusUpdate));
 

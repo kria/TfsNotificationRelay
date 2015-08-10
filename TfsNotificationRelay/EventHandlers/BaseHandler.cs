@@ -110,7 +110,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                                 var notifier = (INotifier)Activator.CreateInstance(botType);
                                 foreach (var notification in notifications)
                                 {
-                                    var matchingRule = notification.GetRuleMatch(requestContext.ServiceHost.Name, bot.EventRules);
+                                    var matchingRule = notification.GetRuleMatch(requestContext.ServiceHost.Name, bot.GetRules());
                                     if (matchingRule != null && matchingRule.Notify)
                                         tasks.Add(NotifyAsync(requestContext, notifier, notification, bot, matchingRule));
                                 }

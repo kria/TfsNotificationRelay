@@ -17,6 +17,7 @@ using DevCore.TfsNotificationRelay.Slack.Models;
 using Microsoft.TeamFoundation.Framework.Server;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace DevCore.TfsNotificationRelay.Slack
 {
@@ -25,6 +26,8 @@ namespace DevCore.TfsNotificationRelay.Slack
         public override async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
         {
             var token = bot.GetSetting("token");
+            if (string.IsNullOrEmpty(token)) throw new ArgumentException("Missing token!");
+
             var tasks = new List<Task>();
             var slackClient = new SlackClient();
 

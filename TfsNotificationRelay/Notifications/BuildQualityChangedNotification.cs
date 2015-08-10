@@ -48,7 +48,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
             return new[] { bot.Text.BuildQualityChangedFormat.FormatWith(formatter) };
         }
 
-        public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
+        public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
         {
             var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.BuildQualityChanged)
                 && (r.BuildStatuses & BuildStatus) != 0

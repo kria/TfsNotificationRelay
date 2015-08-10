@@ -11,7 +11,6 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
-using DevCore.TfsNotificationRelay.Configuration;
 using DevCore.TfsNotificationRelay.Notifications;
 using DevCore.TfsNotificationRelay.Notifications.GitPush;
 using Microsoft.TeamFoundation.Framework.Common;
@@ -19,12 +18,8 @@ using Microsoft.TeamFoundation.Framework.Server;
 using Microsoft.TeamFoundation.Git.Server;
 using Microsoft.TeamFoundation.Integration.Server;
 using Microsoft.TeamFoundation.Server.Core;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.EventHandlers
 {
@@ -65,7 +60,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 // Associate refs (branch, lightweight and annotated tag) with corresponding commit
                 foreach (var refUpdateResult in pushNotification.RefUpdateResults.Where(r => r.Succeeded))
                 {
-                    byte[] newObjectId = refUpdateResult.NewObjectId;
+                    var newObjectId = refUpdateResult.NewObjectId;
                     TfsGitCommit commit = null;
 
                     if (newObjectId.IsZero())
@@ -111,7 +106,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 notification.TotalLineCount += pushNotification.IncludedCommits.Count() + oldCommits.Count + unknowns.Count;
 
                 // Add new commits with refs
-                foreach (byte[] commitId in pushNotification.IncludedCommits.TakeWhile(c => notification.Count < maxLines))
+                foreach (var commitId in pushNotification.IncludedCommits.TakeWhile(c => notification.Count < maxLines))
                 {
                     TfsGitCommit gitCommit = (TfsGitCommit)repository.LookupObject(requestContext, commitId);
                     notification.Add(CreateCommitRow(requestContext, commitService, gitCommit, CommitRowType.Commit, pushNotification, refLookup));
@@ -132,7 +127,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 // Add "unknown" refs
                 foreach (var refUpdateResult in unknowns.TakeWhile(c => notification.Count < maxLines))
                 {
-                    byte[] newObjectId = refUpdateResult.NewObjectId;
+                    var newObjectId = refUpdateResult.NewObjectId;
                     TfsGitObject gitObject = repository.LookupObject(requestContext, newObjectId);
                     notification.Add(new RefUpdateRow()
                     {
