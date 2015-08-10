@@ -18,7 +18,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DevCore.TfsNotificationRelay.Slack
+namespace DevCore.TfsNotificationRelay.Slack.Models
 {
     public class AttachmentField
     {

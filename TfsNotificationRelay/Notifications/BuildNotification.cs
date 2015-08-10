@@ -38,6 +38,10 @@ namespace DevCore.TfsNotificationRelay.Notifications
         {
             get { return settings.StripUserDomain ? TextHelper.StripDomain(RequestedFor) : RequestedFor; }
         }
+        public override IEnumerable<string> TargetUserNames
+        {
+            get { return new[] { RequestedFor }; }
+        }
         public string DisplayName
         {
             get { return RequestedForDisplayName; }
@@ -76,7 +80,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
             return new[] { bot.Text.BuildFormat.FormatWith(formatter), transform(BuildStatus.ToString()) };
         }
 
-        public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
+        public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
         {
             var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.BuildCompleted)
                 && (r.BuildStatuses & BuildStatus) != 0

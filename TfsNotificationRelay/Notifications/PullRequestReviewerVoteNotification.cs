@@ -15,24 +15,12 @@ using DevCore.TfsNotificationRelay.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
-    public class PullRequestReviewerVoteNotification : BaseNotification
+    public class PullRequestReviewerVoteNotification : PullRequestNotification
     {
-        protected readonly static Configuration.SettingsElement settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
-
         public short Vote { get; set; }
-        public string UniqueName { get; set; }
-        public string DisplayName { get; set; }
-        public string ProjectName { get; set; }
-        public string RepoUri { get; set; }
-        public string RepoName { get; set; }
-        public int PrId { get; set; }
-        public string PrUrl { get; set; }
-        public string PrTitle { get; set; }
         private string FormatAction(Configuration.BotElement bot)
         {
             switch (Vote)
@@ -43,10 +31,6 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 default:
                     return String.Format("voted {0} on", Vote);
             }
-        }
-        public string UserName
-        {
-            get { return settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName; }
         }
 
         public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
@@ -63,18 +47,16 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 PrUrl = this.PrUrl,
                 PrTitle = transform(this.PrTitle),
                 UserName = transform(this.UserName),
-                Action = FormatAction(bot)
+                Action = FormatAction(bot),
+                SourceBranchName = transform(this.SourceBranch.Name),
+                TargetBranchName = transform(this.TargetBranch.Name)
             };
             return new[] { bot.Text.PullRequestReviewerVoteFormat.FormatWith(formatter) };
         }
 
-        public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
+        public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
         {
-            var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.PullRequestReviewerVote)
-                && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
-                && ProjectName.IsMatchOrNoPattern(r.TeamProject)
-                && TeamNames.IsMatchOrNoPattern(r.TeamName)
-                && RepoName.IsMatchOrNoPattern(r.GitRepository));
+            var rule = GetRulesMatch(collection, eventRules).FirstOrDefault(r => r.Events.HasFlag(TfsEvents.PullRequestReviewerVote));
 
             return rule;
         }

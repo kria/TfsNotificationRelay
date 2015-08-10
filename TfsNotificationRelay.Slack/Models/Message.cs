@@ -12,13 +12,9 @@
  */
 
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DevCore.TfsNotificationRelay.Slack
+namespace DevCore.TfsNotificationRelay.Slack.Models
 {
     public class Message
     {
@@ -35,5 +31,8 @@ namespace DevCore.TfsNotificationRelay.Slack
 
         [JsonProperty(PropertyName = "icon_emoji")]
         public string IconEmoji { get; set; }
+
+        [JsonProperty(PropertyName = "as_user")]
+        public bool AsUser { get; set; }
     }
 }

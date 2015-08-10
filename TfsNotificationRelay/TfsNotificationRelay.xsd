@@ -24,7 +24,7 @@
               <xs:element name="bot" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element name="botSettings">
+                    <xs:element name="botSettings" minOccurs="0" maxOccurs="1">
                       <xs:complexType>
                         <xs:sequence>
                           <xs:element maxOccurs="unbounded" name="add">
@@ -36,7 +36,7 @@
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element name="eventRules">
+                    <xs:element name="eventRules" minOccurs="0" maxOccurs="1">
                       <xs:complexType>
                         <xs:sequence>
                           <xs:element maxOccurs="unbounded" name="rule">
@@ -53,6 +53,8 @@
                               <xs:attribute name="buildStatuses" type="xs:string" />
                               <xs:attribute name="workItemfields" type="xs:string" />
                               <xs:attribute name="sourcePath" type="xs:string" />
+                              <xs:attribute name="gitBranch" type="xs:string" />
+                              <xs:attribute name="gitTag" type="xs:string" />
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>
@@ -60,8 +62,11 @@
                     </xs:element>
                   </xs:sequence>
                   <xs:attribute name="id" type="xs:string" use="required" />
-                  <xs:attribute name="type" type="xs:string" use="required" />
-                  <xs:attribute name="textId" type="xs:string" use="required" />
+                  <xs:attribute name="type" type="xs:string" />
+                  <xs:attribute name="textId" type="xs:string" />
+                  <xs:attribute name="userMapId" type="xs:string" />
+                  <xs:attribute name="basedOn" type="xs:string" />
+                  <xs:attribute name="inheritRules" type="xs:boolean" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
@@ -114,11 +119,33 @@
                   <xs:attribute name="assignedTo" type="xs:string" use="required" />
                   <xs:attribute name="repositoryCreatedFormat" type="xs:string" use="required" />
                   <xs:attribute name="workItemFieldTransitionFormat" type="xs:string" use="required" />
+                  <xs:attribute name="branchFormat" type="xs:string" use="required" />
+                  <xs:attribute name="tagFormat" type="xs:string" use="required" />
+                  <xs:attribute name="refSeparator" type="xs:string" use="required" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
           </xs:complexType>
-        </xs:element>   
+        </xs:element>
+        <xs:element name="userMaps">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="userMap" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element maxOccurs="unbounded" name="add">
+                      <xs:complexType>
+                        <xs:attribute name="tfsUser" type="xs:string" use="required" />
+                        <xs:attribute name="mappedUser" type="xs:string" use="required" />
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="id" type="xs:string" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:sequence>
     </xs:complexType>
   </xs:element>

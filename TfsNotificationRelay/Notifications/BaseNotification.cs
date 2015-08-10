@@ -27,6 +27,11 @@ namespace DevCore.TfsNotificationRelay.Notifications
 
         public abstract IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform);
 
-        public abstract EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules);
+        public abstract EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules);
+
+        public virtual IEnumerable<string> TargetUserNames
+        {
+            get { return Enumerable.Empty<string>(); }
+        }
     }
 }

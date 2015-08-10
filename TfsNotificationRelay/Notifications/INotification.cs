@@ -21,6 +21,8 @@ namespace DevCore.TfsNotificationRelay.Notifications
     {
         string TeamProjectCollection { get; set; }
 
+        IEnumerable<string> TargetUserNames { get; }
+
         /// <summary>
         /// Returns the message formatted according the text settings of the bot.
         /// The transform function will be applied to all text from TFS.
@@ -30,6 +32,6 @@ namespace DevCore.TfsNotificationRelay.Notifications
         /// <returns></returns>
         IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform);
 
-        EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules);
+        EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules);
     }
 }

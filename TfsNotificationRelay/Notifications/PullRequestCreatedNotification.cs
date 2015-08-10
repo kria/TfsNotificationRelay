@@ -15,29 +15,11 @@ using DevCore.TfsNotificationRelay.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
-    public class PullRequestCreatedNotification : BaseNotification
+    public class PullRequestCreatedNotification : PullRequestNotification
     {
-        protected readonly static Configuration.SettingsElement settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
-
-        public string UniqueName { get; set; }
-        public string DisplayName { get; set; }
-        public string ProjectName { get; set; }
-        public string RepoUri { get; set; }
-        public string RepoName { get; set; }
-        public int PrId { get; set; }
-        public string PrUrl { get; set; }
-        public string PrTitle { get; set; }
-
-        public string UserName
-        {
-            get { return settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName; }
-        }
-
         public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
         {
             var formatter = new
@@ -51,18 +33,21 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 PrUrl = this.PrUrl,
                 PrTitle = transform(this.PrTitle),
                 UserName = transform(this.UserName),
+                SourceBranchName = transform(this.SourceBranch.Name),
+                TargetBranchName = transform(this.TargetBranch.Name)
             };
 
             return new[] { bot.Text.PullRequestCreatedFormat.FormatWith(formatter) };
         }
 
-        public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
+        public override IEnumerable<string> TargetUserNames
         {
-            var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.PullRequestCreated)
-                && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
-                && ProjectName.IsMatchOrNoPattern(r.TeamProject)
-                && TeamNames.IsMatchOrNoPattern(r.TeamName)
-                && RepoName.IsMatchOrNoPattern(r.GitRepository));
+            get { return ReviewerUserNames; }
+        }
+
+        public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
+        {
+            var rule = GetRulesMatch(collection, eventRules).FirstOrDefault(r => r.Events.HasFlag(TfsEvents.PullRequestCreated));
 
             return rule;
         }

@@ -103,5 +103,17 @@ namespace DevCore.TfsNotificationRelay.Configuration
         {
             get { return (string)this["sourcePath"]; }
         }
+
+        [ConfigurationProperty("gitBranch")]
+        public string GitBranch
+        {
+            get { return (string)this["gitBranch"]; }
+        }
+
+        [ConfigurationProperty("gitTag")]
+        public string GitTag
+        {
+            get { return (string)this["gitTag"]; }
+        }
     }
 }

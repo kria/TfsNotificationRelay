@@ -24,7 +24,6 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public bool IsNew { get; set; }
         public bool IsStateChanged { get; set; }
         public bool IsAssignmentChanged { get; set; }
-        public string AssignedTo { get; set; }
         public string State { get; set; }
         public CoreFieldsType CoreFields { get; set; }
         public ChangedFieldsType ChangedFields { get; set; }
@@ -87,7 +86,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
             return null;
         }
 
-        public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
+        public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
         {
             var rule = eventRules.FirstOrDefault(r =>
                 (r.Events.HasFlag(TfsEvents.WorkItemCreated) && IsNew

@@ -23,12 +23,11 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
     {
         public Sha1Id NewObjectId { get; set; }
         public GitObjectType ObjectType { get; set; }
-        public IList<string> RefNames { get; set; }
+        public IEnumerable<GitRef> Refs { get; set; }
 
         public override string ToString(BotElement bot, Func<string, string> transform)
         {
-            return String.Format("{0} {1} {2} {3}",
-                transform(String.Concat(RefNames)), bot.Text.RefPointer, transform(ObjectType.ToString()), transform(NewObjectId.ToHexString()));
+            return String.Format("{0} {1} {2} {3}", Refs.ToString(bot, transform), bot.Text.RefPointer, transform(ObjectType.ToString()), transform(NewObjectId.ToHexString()));
         }
     }
 }

@@ -11,27 +11,18 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
+using DevCore.TfsNotificationRelay.Configuration;
+using Microsoft.TeamFoundation.Git.Common;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DevCore.TfsNotificationRelay.Configuration;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
-    public class PullRequestStatusUpdateNotification : BaseNotification
+    public class PullRequestStatusUpdateNotification : PullRequestNotification
     {
-        protected readonly static Configuration.SettingsElement settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
-
         public PullRequestStatus Status { get; set; } 
-        public string UniqueName { get; set; }
-        public string DisplayName { get; set; }
-        public string ProjectName { get; set; }
-        public string RepoUri { get; set; }
-        public string RepoName { get; set; }
-        public int PrId { get; set; }
-        public string PrUrl { get; set; }
-        public string PrTitle { get; set; }
         private string FormatAction(Configuration.BotElement bot)
         {
             switch (Status)
@@ -42,10 +33,6 @@ namespace DevCore.TfsNotificationRelay.Notifications
                     default:
                         return String.Format("updated status to {0} for", Status.ToString());
                 }
-        }
-        public string UserName
-        {
-            get { return settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName; }
         }
 
         public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
@@ -62,18 +49,16 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 PrUrl = this.PrUrl,
                 PrTitle = transform(this.PrTitle),
                 UserName = transform(this.UserName),
-                Action = FormatAction(bot)
+                Action = FormatAction(bot),
+                SourceBranchName = transform(this.SourceBranch.Name),
+                TargetBranchName = transform(this.TargetBranch.Name)
             };
             return new[] { bot.Text.PullRequestStatusUpdateFormat.FormatWith(formatter) };
         }
 
-        public override EventRuleElement GetRuleMatch(string collection, Configuration.EventRuleCollection eventRules)
+        public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
         {
-            var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.PullRequestStatusUpdate)
-                && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
-                && ProjectName.IsMatchOrNoPattern(r.TeamProject)
-                && TeamNames.IsMatchOrNoPattern(r.TeamName)
-                && RepoName.IsMatchOrNoPattern(r.GitRepository));
+            var rule = GetRulesMatch(collection, eventRules).FirstOrDefault(r => r.Events.HasFlag(TfsEvents.PullRequestStatusUpdate));
 
             return rule;
         }

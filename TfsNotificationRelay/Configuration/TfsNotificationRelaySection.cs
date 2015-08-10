@@ -56,6 +56,14 @@ namespace DevCore.TfsNotificationRelay.Configuration
             get { return (ConfigurationElementCollection<TextElement>)base["texts"]; }
         }
 
+        [ConfigurationProperty("userMaps")]
+        [ConfigurationCollection(typeof(ConfigurationElementCollection<UserMapElement>),
+            AddItemName = "userMap")]
+        public ConfigurationElementCollection<UserMapElement> UserMaps
+        {
+            get { return (ConfigurationElementCollection<UserMapElement>)base["userMaps"]; }
+        }
+
         [ConfigurationProperty("xmlns")]
         public string Xmlns
         {
@@ -80,10 +88,29 @@ namespace DevCore.TfsNotificationRelay.Configuration
             
             foreach (var bot in Bots)
             {
+                // Link up inheritance first
+                if (!string.IsNullOrEmpty(bot.BasedOn))
+                {
+                    var baseBot = Bots.FirstOrDefault(b => b.Id == bot.BasedOn);
+                    if (baseBot == null) throw new TfsNotificationRelayException(String.Format("Unknown basedOn ({0}) for bot {1}", bot.BasedOn, bot.Id));
+                    bot.BaseBot = baseBot;
+                }
+
                 var text = this.Texts.FirstOrDefault(t => t.Id == bot.TextId);
                 if (text == null) throw new TfsNotificationRelayException(String.Format("Unknown textId ({0}) for bot {1}", bot.TextId, bot.Id));
 
                 bot.Text = text;
+                
+                if (!string.IsNullOrEmpty(bot.UserMapId))
+                {
+                    var userMap = UserMaps.FirstOrDefault(m => m.Id == bot.UserMapId);
+                    if (userMap == null) throw new TfsNotificationRelayException(String.Format("Unknown userMapId ({0}) for bot {1}", bot.UserMapId, bot.Id));
+                    bot.UserMap = userMap;
+                }
+                else
+                {
+                    bot.UserMap = new UserMapElement();
+                }
             }
         }
 

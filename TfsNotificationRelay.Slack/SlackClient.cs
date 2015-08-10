@@ -11,6 +11,7 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
+using DevCore.TfsNotificationRelay.Slack.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
@@ -25,16 +26,54 @@ namespace DevCore.TfsNotificationRelay.Slack
 {
     class SlackClient : HttpClient
     {
-        public Task<HttpResponseMessage> SendMessageAsync(Message message, string webhookUrl)
-        {
-            string json = JsonConvert.SerializeObject(message, Formatting.Indented, new JsonSerializerSettings
-            {
-                NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
+        private const string apiBaseUrl = "https://slack.com/api/";
 
+        public JsonSerializerSettings serializerSettings = new JsonSerializerSettings
+        {
+            NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore,
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
+
+
+        public Task<HttpResponseMessage> SendWebhookMessageAsync(Message message, string webhookUrl)
+        {
+            string json = JsonConvert.SerializeObject(message, Formatting.Indented, serializerSettings);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             return PostAsync(webhookUrl, content);
         }
+
+        public async Task<HttpResponseMessage> SendApiMessageAsync(Message message, string token, string userId)
+        {
+            var args = new Dictionary<string, string>();
+            var channelId = await OpenIMChannelAsync(token, userId);
+            args.Add("token", token);
+            args.Add("channel", channelId);
+            args.Add("as_user", message.AsUser.ToString());
+            args.Add("text", message.Text);
+            args.Add("username", message.Username);
+            args.Add("attachments", JsonConvert.SerializeObject(message.Attachments, Formatting.Indented, serializerSettings));
+            args.Add("icon_url", message.IconUrl);
+            args.Add("icon_emoji", message.IconEmoji);
+
+            var content = new FormUrlEncodedContent(args);
+            return await PostAsync(apiBaseUrl + "chat.postMessage", content);
+        }
+
+        private async Task<string> OpenIMChannelAsync(string token, string userId)
+        {
+            var args = new Dictionary<string, string>();
+            args.Add("token", token);
+            args.Add("user", userId);
+            var content = new FormUrlEncodedContent(args);
+            var result = await PostAsync(apiBaseUrl + "im.open", content);
+            result.EnsureSuccessStatusCode();
+
+            var body = await result.Content.ReadAsStringAsync();
+            dynamic response = JObject.Parse(body);
+            string channelId = response.channel.id;
+
+            return channelId;
+        }
+
     }
 }
