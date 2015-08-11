@@ -43,14 +43,14 @@ TfsNotificationRelay is an extensible plugin for Team Foundation Server that sen
 1. If you don't already have one, add an Incoming WebHooks integration under *Configure Integrations* in Slack.
 2. Download the latest [release][0] or clone and build the source yourself.
 3. Open `DevCore.TfsNotificationRelay.dll.config` and set at least your full unique Webhook URL in `slackWebhookUrl`. There are more [settings and formats][1] in there that should be somewhat self-explanatory.
-4. Install the plugin by dropping `DevCore.TfsNotificationRelay.dll`, `DevCore.TfsNotificationRelay.Slack.dll`, `DevCore.TfsNotificationRelay.dll.config` and `Newtonsoft.Json.dll` in *C:\Program Files\Microsoft Team Foundation Server 12.0\Application Tier\Web Services\bin\Plugins* on the server.
+4. Install the plugin by dropping `DevCore.TfsNotificationRelay.dll`, `DevCore.TfsNotificationRelay.Slack.dll`, `DevCore.TfsNotificationRelay.dll.config`, `Newtonsoft.Json.dll` and `HtmlAgilityPack.dll` in *C:\Program Files\Microsoft Team Foundation Server 12.0\Application Tier\Web Services\bin\Plugins* on the server.
 
 ### HipChat
 
 1. Create a room notification token for the HipChat room that you want to send notifications to.
 2. Download the latest [release][0] or clone and build the source yourself.
 3. Open `DevCore.TfsNotificationRelay.dll.config` and set at least `roomNotificationToken` and the corresponding `room` setting. There are more [settings and formats][1] in there that should be somewhat self-explanatory.
-4. Install the plugin by dropping `DevCore.TfsNotificationRelay.dll`, `DevCore.TfsNotificationRelay.HipChat.dll`, `DevCore.TfsNotificationRelay.dll.config` and `Newtonsoft.Json.dll` in *C:\Program Files\Microsoft Team Foundation Server 12.0\Application Tier\Web Services\bin\Plugins* on the server.
+4. Install the plugin by dropping `DevCore.TfsNotificationRelay.dll`, `DevCore.TfsNotificationRelay.HipChat.dll`, `DevCore.TfsNotificationRelay.dll.config`, `Newtonsoft.Json.dll` and `HtmlAgilityPack.dll` in *C:\Program Files\Microsoft Team Foundation Server 12.0\Application Tier\Web Services\bin\Plugins* on the server.
 
 [0]: https://github.com/kria/TfsNotificationRelay/releases
 [1]: https://github.com/kria/TfsNotificationRelay/blob/master/TfsNotificationRelay/app.config
@@ -86,6 +86,7 @@ Branch    | Description
 ----------|----------------------------------
 `master`  | TfsNotificationRelay for TFS 2013
 `tfs2015` | TfsNotificationRelay for TFS 2015
+`develop` | Current development (based on master)
 
 ## License
 
