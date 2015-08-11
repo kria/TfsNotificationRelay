@@ -21,6 +21,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using DevCore.TfsNotificationRelay.Notifications;
+using Microsoft.VisualStudio.Services.Location.Server;
 
 namespace DevCore.TfsNotificationRelay.EventHandlers
 {
@@ -29,17 +30,17 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
         protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, BuildCompletionNotificationEvent buildNotification, int maxLines)
         {
             BuildDetail build = buildNotification.Build;
-            var locationService = requestContext.GetService<TeamFoundationLocationService>();
+            var locationService = requestContext.GetService<ILocationService>();
             var buildService = requestContext.GetService<TeamFoundationBuildService>();
             
             using (var buildReader = buildService.QueryQueuedBuildsById(requestContext, build.QueueIds, new[] { "*" }, QueryOptions.None))
             {
                 var result = buildReader.Current<BuildQueueQueryResult>();
                 QueuedBuild qb = result.QueuedBuilds.FirstOrDefault();
-                
-                string buildUrl = String.Format("{0}/{1}/{2}/_build#buildUri={3}&_a=summary",
+                string buildUrl = String.Format("{0}/{1}/{2}/_build#_a=summary&buildId={3}",
                     locationService.GetAccessMapping(requestContext, "PublicAccessMapping").AccessPoint,
-                    requestContext.ServiceHost.Name, build.TeamProject, build.Uri);
+                    requestContext.ServiceHost.Name, build.TeamProject, qb.BuildId);
+
                 var notification = new BuildCompletionNotification()
                 {
                     TeamProjectCollection = requestContext.ServiceHost.Name,

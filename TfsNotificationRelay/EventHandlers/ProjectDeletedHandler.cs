@@ -13,7 +13,7 @@
 
 using DevCore.TfsNotificationRelay.Notifications;
 using Microsoft.TeamFoundation.Framework.Server;
-using Microsoft.TeamFoundation.Server.Core;
+using Microsoft.TeamFoundation.Server.Types;
 using System.Collections.Generic;
 
 namespace DevCore.TfsNotificationRelay.EventHandlers

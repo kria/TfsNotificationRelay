@@ -16,6 +16,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
@@ -125,9 +126,22 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public UnifiedField(StringField field)
         {
             Name = field.Name;
-            NewValue = field.NewValue;
-            OldValue = field.OldValue;
             ReferenceName = field.ReferenceName;
+
+            switch (field.ReferenceName)
+            {
+                case "System.AssignedTo":
+                case "System.ChangedBy":
+                case "System.CreatedBy":
+                case "System.AuthorizedAs":
+                    NewValue = GetDisplayName(field.NewValue);
+                    OldValue = GetDisplayName(field.OldValue);
+                    break;
+                default:
+                    NewValue = field.NewValue;
+                    OldValue = field.OldValue;
+                    break;
+            }
         }
 
         public UnifiedField(IntegerField field)
@@ -142,5 +156,14 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string NewValue { get; set; }
         public string OldValue { get; set; }
         public string ReferenceName { get; set; }
+
+        private string GetDisplayName(string value)
+        {
+            string pattern = @"\|(.*)%";
+            var match = Regex.Match(value, pattern);
+            if (match.Success) return match.Groups[1].Value;
+
+            return value;
+        }
     }
 }

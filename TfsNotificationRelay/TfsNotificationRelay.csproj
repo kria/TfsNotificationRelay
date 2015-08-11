@@ -47,17 +47,16 @@
       <HintPath>..\lib\Microsoft.TeamFoundation.Framework.Server.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.TeamFoundation.Git.Common, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Microsoft.TeamFoundation.Git.Common.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.TeamFoundation.Git.Server">
       <HintPath>..\lib\Microsoft.TeamFoundation.Git.Server.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Server.Core">
       <HintPath>..\lib\Microsoft.TeamFoundation.Server.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Server.Types">
+      <HintPath>..\lib\Microsoft.TeamFoundation.Server.Types.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.SourceControl.WebApi, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">

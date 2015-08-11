@@ -12,7 +12,6 @@
  */
 
 using DevCore.TfsNotificationRelay.Configuration;
-using Microsoft.TeamFoundation.Git.Common;
 using Microsoft.TeamFoundation.Git.Server;
 using System;
 using System.Collections.Generic;

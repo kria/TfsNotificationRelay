@@ -13,7 +13,8 @@
 
 using DevCore.TfsNotificationRelay.Notifications;
 using Microsoft.TeamFoundation.Framework.Server;
-using Microsoft.TeamFoundation.Server.Core;
+using Microsoft.TeamFoundation.Server.Types;
+using Microsoft.VisualStudio.Services.Location.Server;
 using System;
 using System.Collections.Generic;
 
@@ -23,7 +24,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
     {
         protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, ProjectCreatedEvent ev, int maxLines)
         {
-            var locationService = requestContext.GetService<TeamFoundationLocationService>();
+            var locationService = requestContext.GetService<ILocationService>();
 
             string projectUrl = String.Format("{0}/{1}/{2}",
                 locationService.GetAccessMapping(requestContext, "PublicAccessMapping").AccessPoint,

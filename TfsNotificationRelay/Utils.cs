@@ -11,7 +11,7 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
-using Microsoft.TeamFoundation.Git.Common;
+using Microsoft.TeamFoundation.Git.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;

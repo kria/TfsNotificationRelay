@@ -15,7 +15,6 @@ using DevCore.TfsNotificationRelay.Notifications;
 using DevCore.TfsNotificationRelay.Notifications.GitPush;
 using Microsoft.TeamFoundation.Framework.Common;
 using Microsoft.TeamFoundation.Framework.Server;
-using Microsoft.TeamFoundation.Git.Common;
 using Microsoft.TeamFoundation.Git.Server;
 using Microsoft.TeamFoundation.Integration.Server;
 using Microsoft.TeamFoundation.Server.Core;
@@ -111,13 +110,13 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 foreach (var commitId in pushNotification.IncludedCommits.TakeWhile(c => notification.Count < maxLines))
                 {
                     TfsGitCommit gitCommit = (TfsGitCommit)repository.LookupObject(requestContext, commitId);
-                    notification.Add(CreateCommitRow(requestContext, commitService, gitCommit, CommitRowType.Commit, pushNotification, refLookup));
+                    notification.Add(CreateCommitRow(requestContext, commitService, repository, gitCommit, CommitRowType.Commit, pushNotification, refLookup));
                 }
 
                 // Add updated refs to old commits
                 foreach (TfsGitCommit gitCommit in oldCommits.OrderByDescending(c => c.GetCommitTime(requestContext)).TakeWhile(c => notification.Count < maxLines))
                 {
-                    notification.Add(CreateCommitRow(requestContext, commitService, gitCommit, CommitRowType.RefUpdate, pushNotification, refLookup));
+                    notification.Add(CreateCommitRow(requestContext, commitService, repository, gitCommit, CommitRowType.RefUpdate, pushNotification, refLookup));
                 }
 
                 // Add deleted refs if any
@@ -143,11 +142,11 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             }
         }
 
-        private static CommitRow CreateCommitRow(TeamFoundationRequestContext requestContext, TeamFoundationGitCommitService commitService,  
-            TfsGitCommit gitCommit, CommitRowType rowType, PushNotification pushNotification, Dictionary<Sha1Id, List<GitRef>> refLookup)
+        private static CommitRow CreateCommitRow(TeamFoundationRequestContext requestContext, TeamFoundationGitCommitService commitService,
+            TfsGitRepository repository, TfsGitCommit gitCommit, CommitRowType rowType, PushNotification pushNotification, Dictionary<Sha1Id, List<GitRef>> refLookup)
         {
-            var commitManifest = commitService.GetCommitManifest(requestContext, gitCommit.Repository, gitCommit.ObjectId);
-            string repoUri = gitCommit.Repository.GetRepositoryUri(requestContext);
+            var commitManifest = commitService.GetCommitManifest(requestContext, repository, gitCommit.ObjectId);
+            string repoUri = repository.GetRepositoryUri(requestContext);
 
             var commitRow = new CommitRow()
             {

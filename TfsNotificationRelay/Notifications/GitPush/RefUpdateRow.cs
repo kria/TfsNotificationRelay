@@ -12,7 +12,7 @@
  */
 
 using DevCore.TfsNotificationRelay.Configuration;
-using Microsoft.TeamFoundation.Git.Common;
+using Microsoft.TeamFoundation.Git.Server;
 using Microsoft.TeamFoundation.SourceControl.WebApi;
 using System;
 using System.Collections.Generic;
