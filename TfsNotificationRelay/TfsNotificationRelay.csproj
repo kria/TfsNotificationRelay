@@ -38,9 +38,18 @@
       <HintPath>..\lib\Microsoft.TeamFoundation.Build.Server.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Build2.WebApi">
+      <HintPath>..\lib\Microsoft.TeamFoundation.Build2.WebApi.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.TeamFoundation.Common, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Microsoft.TeamFoundation.Common.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Core.WebApi, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Microsoft.TeamFoundation.Core.WebApi.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Framework.Server">
@@ -93,6 +102,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Build2Converter.cs" />
     <Compile Include="Configuration\Defaults.cs" />
     <Compile Include="Configuration\UserMapElement.cs" />
     <Compile Include="Configuration\UserMappingElement.cs" />
@@ -108,6 +118,7 @@
     <Compile Include="Configuration\TextElement.cs" />
     <Compile Include="Configuration\TfsNotificationRelaySection.cs" />
     <Compile Include="EventHandlers\BaseHandler.cs" />
+    <Compile Include="EventHandlers\BuildCompletedHandler.cs" />
     <Compile Include="EventHandlers\BuildCompletionHandler.cs" />
     <Compile Include="ByteArrayComparer.cs" />
     <Compile Include="EventHandlers\BuildQualityChangedHandler.cs" />
