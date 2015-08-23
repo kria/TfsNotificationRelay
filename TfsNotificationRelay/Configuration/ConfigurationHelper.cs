@@ -12,12 +12,9 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
+using System.IO;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Configuration
 {
@@ -29,6 +26,11 @@ namespace DevCore.TfsNotificationRelay.Configuration
             AppDomain.CurrentDomain.AssemblyResolve += resolver;
 
             string configPath = new Uri(assembly.CodeBase).LocalPath + ".config";
+            if (!File.Exists(configPath) && !configPath.Contains("Web Services"))
+            {
+                var appTierDir = Directory.GetParent(Path.GetDirectoryName(configPath)).Parent;
+                configPath = Path.Combine(appTierDir.FullName, @"Web Services\bin\Plugins", Path.GetFileName(configPath));
+            }
             var configuration = ConfigurationManager.OpenMappedExeConfiguration(
                     new ExeConfigurationFileMap() { ExeConfigFilename = configPath },
                     ConfigurationUserLevel.None);
