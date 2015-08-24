@@ -42,7 +42,7 @@ See the [wiki](https://github.com/kria/TfsNotificationRelay/wiki).
 
 ## TFS version support
 
-There are two separate [releases][0] of TfsNotificationRelay:
+There are two separate [releases](https://github.com/kria/TfsNotificationRelay/releases) of TfsNotificationRelay:
 
 * **TfsNotificationRelay for TFS 2013** - Should work on TFS 2013.2 and up. Because of a few breaking API changes in TFS 2013.2, the plugin won't work on previous versions without some minor modifications.
 * **TfsNotificationRelay for TFS 2015**
