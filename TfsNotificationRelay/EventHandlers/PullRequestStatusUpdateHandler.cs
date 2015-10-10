@@ -27,7 +27,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class PullRequestStatusUpdateHandler : BaseHandler<StatusUpdateNotification>
     {
-        protected override IEnumerable<Notifications.INotification> CreateNotifications(TeamFoundationRequestContext requestContext, StatusUpdateNotification ev, int maxLines)
+        protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, StatusUpdateNotification ev, int maxLines)
         {
             var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
             var identityService = requestContext.GetService<ITeamFoundationIdentityService>();
@@ -44,7 +44,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     string repoUri = repository.GetRepositoryUri(requestContext);
                     var creator = identityService.ReadIdentities(requestContext, new[] { pullRequest.Creator }).First();
                     var reviewers = identityService.ReadIdentities(requestContext, pullRequest.Reviewers.Select(r => r.Reviewer).ToArray());
-                    var notification = new Notifications.PullRequestStatusUpdateNotification()
+                    var notification = new PullRequestStatusUpdateNotification()
                     {
                         TeamProjectCollection = requestContext.ServiceHost.Name,
                         CreatorUserName = creator.UniqueName,
@@ -55,11 +55,11 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                         RepoUri = repoUri,
                         RepoName = ev.RepositoryName,
                         PrId = pullRequest.PullRequestId,
-                        PrUrl = string.Format("{0}/pullrequest/{1}#view=discussion", repoUri, ev.PullRequestId),
+                        PrUrl = $"{repoUri}/pullrequest/{ev.PullRequestId}#view=discussion",
                         PrTitle = pullRequest.Title,
                         TeamNames = GetUserTeamsByProjectUri(requestContext, ev.TeamProjectUri, ev.Updater),
-                        SourceBranch = new Notifications.GitRef(pullRequest.SourceBranchName),
-                        TargetBranch = new Notifications.GitRef(pullRequest.TargetBranchName),
+                        SourceBranch = new GitRef(pullRequest.SourceBranchName),
+                        TargetBranch = new GitRef(pullRequest.TargetBranchName),
                         ReviewerUserNames = reviewers.Select(r => r.UniqueName)
                     };
                     yield return notification;

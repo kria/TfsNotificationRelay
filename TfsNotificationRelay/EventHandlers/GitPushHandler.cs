@@ -44,7 +44,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     RepoName = pushNotification.RepositoryName,
                     RepoUri = repository.GetRepositoryUri(requestContext),
                     ProjectName = commonService.GetProject(requestContext, pushNotification.TeamProjectUri).Name,
-                    IsForcePush = settings.IdentifyForcePush ? pushNotification.IsForceRequired(requestContext, repository) : false
+                    IsForcePush = Settings.IdentifyForcePush && pushNotification.IsForceRequired(requestContext, repository)
                 };
                 var notification = new GitPushNotification(requestContext.ServiceHost.Name, pushRow.ProjectName, 
                     pushNotification.AuthenticatedUserName, pushRow.RepoName, teamNames,
@@ -159,7 +159,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 Comment = gitCommit.GetComment(requestContext),
                 ChangeCounts = commitManifest.ChangeCounts
             };
-            List<GitRef> refs = null;
+            List<GitRef> refs;
             refLookup.TryGetValue(gitCommit.ObjectId, out refs);
             commitRow.Refs = refs;
 

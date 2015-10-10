@@ -23,64 +23,43 @@ namespace DevCore.TfsNotificationRelay.Configuration
 {
     public class TfsNotificationRelaySection : ConfigurationSection
     {
-        private static TfsNotificationRelaySection instance;
+        private static TfsNotificationRelaySection _instance;
 
         public static TfsNotificationRelaySection Instance
         {
             get 
             {
-                if (instance == null) instance = ConfigurationHelper.GetConfigurationSection<TfsNotificationRelaySection>(Assembly.GetExecutingAssembly(), "tfsNotificationRelay");
+                if (_instance == null) _instance = ConfigurationHelper.GetConfigurationSection<TfsNotificationRelaySection>(Assembly.GetExecutingAssembly(), "tfsNotificationRelay");
                                
-                return instance;
+                return _instance;
             }
         }
         [ConfigurationProperty("settings")]
-        public SettingsElement Settings
-        {
-            get { return (SettingsElement)this["settings"]; }
-        }
+        public SettingsElement Settings => (SettingsElement)this["settings"];
 
         [ConfigurationProperty("bots")]
         [ConfigurationCollection(typeof(ConfigurationElementCollection<BotElement>),
             AddItemName = "bot")]
-        public ConfigurationElementCollection<BotElement> Bots
-        {
-            get { return (ConfigurationElementCollection<BotElement>)base["bots"]; }
-        }
+        public ConfigurationElementCollection<BotElement> Bots => (ConfigurationElementCollection<BotElement>)base["bots"];
 
         [ConfigurationProperty("texts")]
         [ConfigurationCollection(typeof(ConfigurationElementCollection<TextElement>),
             AddItemName = "text")]
-        public ConfigurationElementCollection<TextElement> Texts
-        {
-            get { return (ConfigurationElementCollection<TextElement>)base["texts"]; }
-        }
+        public ConfigurationElementCollection<TextElement> Texts => (ConfigurationElementCollection<TextElement>)base["texts"];
 
         [ConfigurationProperty("userMaps")]
         [ConfigurationCollection(typeof(ConfigurationElementCollection<UserMapElement>),
             AddItemName = "userMap")]
-        public ConfigurationElementCollection<UserMapElement> UserMaps
-        {
-            get { return (ConfigurationElementCollection<UserMapElement>)base["userMaps"]; }
-        }
+        public ConfigurationElementCollection<UserMapElement> UserMaps => (ConfigurationElementCollection<UserMapElement>)base["userMaps"];
 
         [ConfigurationProperty("xmlns")]
-        public string Xmlns
-        {
-            get { return (string)this["xmlns"]; }
-        }
+        public string Xmlns => (string)this["xmlns"];
 
         [ConfigurationProperty("xmlns:xsi")]
-        public string XmlnsXsi
-        {
-            get { return (string)this["xmlns:xsi"]; }
-        }
+        public string XmlnsXsi => (string)this["xmlns:xsi"];
 
         [ConfigurationProperty("xsi:noNamespaceSchemaLocation")]
-        public string XsiNoNamespaceSchemaLocation
-        {
-            get { return (string)this["xsi:noNamespaceSchemaLocation"]; }
-        }
+        public string XsiNoNamespaceSchemaLocation => (string)this["xsi:noNamespaceSchemaLocation"];
 
         protected override void PostDeserialize()
         {
@@ -92,19 +71,19 @@ namespace DevCore.TfsNotificationRelay.Configuration
                 if (!string.IsNullOrEmpty(bot.BasedOn))
                 {
                     var baseBot = Bots.FirstOrDefault(b => b.Id == bot.BasedOn);
-                    if (baseBot == null) throw new TfsNotificationRelayException(String.Format("Unknown basedOn ({0}) for bot {1}", bot.BasedOn, bot.Id));
+                    if (baseBot == null) throw new TfsNotificationRelayException($"Unknown basedOn ({bot.BasedOn}) for bot {bot.Id}");
                     bot.BaseBot = baseBot;
                 }
 
-                var text = this.Texts.FirstOrDefault(t => t.Id == bot.TextId);
-                if (text == null) throw new TfsNotificationRelayException(String.Format("Unknown textId ({0}) for bot {1}", bot.TextId, bot.Id));
+                var text = Texts.FirstOrDefault(t => t.Id == bot.TextId);
+                if (text == null) throw new TfsNotificationRelayException($"Unknown textId ({bot.TextId}) for bot {bot.Id}");
 
                 bot.Text = text;
                 
                 if (!string.IsNullOrEmpty(bot.UserMapId))
                 {
                     var userMap = UserMaps.FirstOrDefault(m => m.Id == bot.UserMapId);
-                    if (userMap == null) throw new TfsNotificationRelayException(String.Format("Unknown userMapId ({0}) for bot {1}", bot.UserMapId, bot.Id));
+                    if (userMap == null) throw new TfsNotificationRelayException($"Unknown userMapId ({bot.UserMapId}) for bot {bot.Id}");
                     bot.UserMap = userMap;
                 }
                 else

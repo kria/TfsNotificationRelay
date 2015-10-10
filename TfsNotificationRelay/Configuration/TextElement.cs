@@ -22,276 +22,141 @@ namespace DevCore.TfsNotificationRelay.Configuration
 {
     public class TextElement : ConfigurationElement, IKeyedConfigurationElement
     {
-        public object Key { get { return Id; } }
+        public object Key => Id;
 
         [ConfigurationProperty("id", IsRequired= true)]
-        public string Id
-        {
-            get { return (string)this["id"]; }
-        }
+        public string Id => (string)this["id"];
 
         [ConfigurationProperty("pushFormat")]
-        public string PushFormat
-        {
-            get { return (string)this["pushFormat"]; }
-        }
+        public string PushFormat => (string)this["pushFormat"];
 
         [ConfigurationProperty("pushed")]
-        public string Pushed
-        {
-            get { return (string)this["pushed"]; }
-        }
+        public string Pushed => (string)this["pushed"];
 
         [ConfigurationProperty("forcePushed")]
-        public string ForcePushed
-        {
-            get { return (string)this["forcePushed"]; }
-        }
+        public string ForcePushed => (string)this["forcePushed"];
 
         [ConfigurationProperty("commit")]
-        public string Commit
-        {
-            get { return (string)this["commit"]; }
-        }
+        public string Commit => (string)this["commit"];
 
         [ConfigurationProperty("refPointer")]
-        public string RefPointer
-        {
-            get { return (string)this["refPointer"]; }
-        }
+        public string RefPointer => (string)this["refPointer"];
 
         [ConfigurationProperty("deleted")]
-        public string Deleted
-        {
-            get { return (string)this["deleted"]; }
-        }
+        public string Deleted => (string)this["deleted"];
 
         [ConfigurationProperty("commitFormat")]
-        public string CommitFormat
-        {
-            get { return (string)this["commitFormat"]; }
-        }
+        public string CommitFormat => (string)this["commitFormat"];
 
         [ConfigurationProperty("linesSupressedFormat")]
-        public string LinesSupressedFormat
-        {
-            get { return (string)this["linesSupressedFormat"]; }
-        }
+        public string LinesSupressedFormat => (string)this["linesSupressedFormat"];
 
         [ConfigurationProperty("dateTimeFormat")]
-        public string DateTimeFormat
-        {
-            get { return (string)this["dateTimeFormat"]; }
-        }
+        public string DateTimeFormat => (string)this["dateTimeFormat"];
 
         [ConfigurationProperty("timeSpanFormat")]
-        public string TimeSpanFormat
-        {
-            get { return (string)this["timeSpanFormat"]; }
-        }
+        public string TimeSpanFormat => (string)this["timeSpanFormat"];
 
         [ConfigurationProperty("buildFormat")]
-        public string BuildFormat
-        {
-            get { return (string)this["buildFormat"]; }
-        }
+        public string BuildFormat => (string)this["buildFormat"];
 
         [ConfigurationProperty("buildQualityChangedFormat")]
-        public string BuildQualityChangedFormat
-        {
-            get { return (string)this["buildQualityChangedFormat"]; }
-        }
+        public string BuildQualityChangedFormat => (string)this["buildQualityChangedFormat"];
 
         [ConfigurationProperty("buildQualityNotSet")]
-        public string BuildQualityNotSet
-        {
-            get { return (string)this["buildQualityNotSet"]; }
-        }
+        public string BuildQualityNotSet => (string)this["buildQualityNotSet"];
 
         [ConfigurationProperty("projectCreatedFormat")]
-        public string ProjectCreatedFormat
-        {
-            get { return (string)this["projectCreatedFormat"]; }
-        }
+        public string ProjectCreatedFormat => (string)this["projectCreatedFormat"];
 
         [ConfigurationProperty("projectDeletedFormat")]
-        public string ProjectDeletedFormat
-        {
-            get { return (string)this["projectDeletedFormat"]; }
-        }
+        public string ProjectDeletedFormat => (string)this["projectDeletedFormat"];
 
         [ConfigurationProperty("checkinFormat")]
-        public string CheckinFormat
-        {
-            get { return (string)this["checkinFormat"]; }
-        }
+        public string CheckinFormat => (string)this["checkinFormat"];
 
         [ConfigurationProperty("projectLinkFormat")]
-        public string ProjectLinkFormat
-        {
-            get { return (string)this["projectLinkFormat"]; }
-        }
+        public string ProjectLinkFormat => (string)this["projectLinkFormat"];
 
         [ConfigurationProperty("changeCountAddFormat")]
-        public string ChangeCountAddFormat
-        {
-            get { return (string)this["changeCountAddFormat"]; }
-        }
+        public string ChangeCountAddFormat => (string)this["changeCountAddFormat"];
 
         [ConfigurationProperty("changeCountDeleteFormat")]
-        public string ChangeCountDeleteFormat
-        {
-            get { return (string)this["changeCountDeleteFormat"]; }
-        }
+        public string ChangeCountDeleteFormat => (string)this["changeCountDeleteFormat"];
 
         [ConfigurationProperty("changeCountEditFormat")]
-        public string ChangeCountEditFormat
-        {
-            get { return (string)this["changeCountEditFormat"]; }
-        }
+        public string ChangeCountEditFormat => (string)this["changeCountEditFormat"];
 
         [ConfigurationProperty("changeCountRenameFormat")]
-        public string ChangeCountRenameFormat
-        {
-            get { return (string)this["changeCountRenameFormat"]; }
-        }
+        public string ChangeCountRenameFormat => (string)this["changeCountRenameFormat"];
 
         [ConfigurationProperty("changeCountSourceRenameFormat")]
-        public string ChangeCountSourceRenameFormat
-        {
-            get { return (string)this["changeCountSourceRenameFormat"]; }
-        }
+        public string ChangeCountSourceRenameFormat => (string)this["changeCountSourceRenameFormat"];
 
         [ConfigurationProperty("changeCountUnknownFormat")]
-        public string ChangeCountUnknownFormat
-        {
-            get { return (string)this["changeCountUnknownFormat"]; }
-        }
+        public string ChangeCountUnknownFormat => (string)this["changeCountUnknownFormat"];
 
         [ConfigurationProperty("workItemchangedFormat")]
-        public string WorkItemchangedFormat
-        {
-            get { return (string)this["workItemchangedFormat"]; }
-        }
+        public string WorkItemchangedFormat => (string)this["workItemchangedFormat"];
 
         [ConfigurationProperty("updated")]
-        public string Updated
-        {
-            get { return (string)this["updated"]; }
-        }
+        public string Updated => (string)this["updated"];
 
         [ConfigurationProperty("created")]
-        public string Created
-        {
-            get { return (string)this["created"]; }
-        }
+        public string Created => (string)this["created"];
 
         [ConfigurationProperty("commentedOn")]
-        public string CommentedOn
-        {
-            get { return (string)this["commentedOn"]; }
-        }
+        public string CommentedOn => (string)this["commentedOn"];
 
         [ConfigurationProperty("comment")]
-        public string Comment
-        {
-            get { return (string)this["comment"]; }
-        }
+        public string Comment => (string)this["comment"];
 
         [ConfigurationProperty("state")]
-        public string State
-        {
-            get { return (string)this["state"]; }
-        }
+        public string State => (string)this["state"];
 
         [ConfigurationProperty("assignedTo")]
-        public string AssignedTo
-        {
-            get { return (string)this["assignedTo"]; }
-        }
+        public string AssignedTo => (string)this["assignedTo"];
 
         [ConfigurationProperty("pullRequestCreatedFormat")]
-        public string PullRequestCreatedFormat
-        {
-            get { return (string)this["pullRequestCreatedFormat"]; }
-        }
+        public string PullRequestCreatedFormat => (string)this["pullRequestCreatedFormat"];
 
         [ConfigurationProperty("pullRequestStatusUpdateFormat")]
-        public string PullRequestStatusUpdateFormat
-        {
-            get { return (string)this["pullRequestStatusUpdateFormat"]; }
-        }
+        public string PullRequestStatusUpdateFormat => (string)this["pullRequestStatusUpdateFormat"];
 
         [ConfigurationProperty("pullRequestReviewerVoteFormat")]
-        public string PullRequestReviewerVoteFormat
-        {
-            get { return (string)this["pullRequestReviewerVoteFormat"]; }
-        }
+        public string PullRequestReviewerVoteFormat => (string)this["pullRequestReviewerVoteFormat"];
 
         [ConfigurationProperty("voteApproved")]
-        public string VoteApproved
-        {
-            get { return (string)this["voteApproved"]; }
-        }
+        public string VoteApproved => (string)this["voteApproved"];
 
         [ConfigurationProperty("voteRejected")]
-        public string VoteRejected
-        {
-            get { return (string)this["voteRejected"]; }
-        }
+        public string VoteRejected => (string)this["voteRejected"];
 
         [ConfigurationProperty("voteRescinded")]
-        public string VoteRescinded
-        {
-            get { return (string)this["voteRescinded"]; }
-        }
+        public string VoteRescinded => (string)this["voteRescinded"];
 
         [ConfigurationProperty("completed")]
-        public string Completed
-        {
-            get { return (string)this["completed"]; }
-        }
+        public string Completed => (string)this["completed"];
 
         [ConfigurationProperty("abandoned")]
-        public string Abandoned
-        {
-            get { return (string)this["abandoned"]; }
-        }
+        public string Abandoned => (string)this["abandoned"];
 
         [ConfigurationProperty("reactivated")]
-        public string Reactivated
-        {
-            get { return (string)this["reactivated"]; }
-        }
+        public string Reactivated => (string)this["reactivated"];
 
         [ConfigurationProperty("repositoryCreatedFormat")]
-        public string RepositoryCreatedFormat
-        {
-            get { return (string)this["repositoryCreatedFormat"]; }
-        }
+        public string RepositoryCreatedFormat => (string)this["repositoryCreatedFormat"];
 
         [ConfigurationProperty("workItemFieldTransitionFormat")]
-        public string WorkItemFieldTransitionFormat
-        {
-            get { return (string)this["workItemFieldTransitionFormat"]; }
-        }
+        public string WorkItemFieldTransitionFormat => (string)this["workItemFieldTransitionFormat"];
 
         [ConfigurationProperty("branchFormat")]
-        public string BranchFormat
-        {
-            get { return (string)this["branchFormat"]; }
-        }
+        public string BranchFormat => (string)this["branchFormat"];
 
         [ConfigurationProperty("tagFormat")]
-        public string TagFormat
-        {
-            get { return (string)this["tagFormat"]; }
-        }
+        public string TagFormat => (string)this["tagFormat"];
 
         [ConfigurationProperty("refSeparator")]
-        public string RefSeparator
-        {
-            get { return (string)this["refSeparator"]; }
-        }
+        public string RefSeparator => (string)this["refSeparator"];
     }
 }

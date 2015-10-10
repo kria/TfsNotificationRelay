@@ -22,7 +22,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
     public class PullRequestStatusUpdateNotification : PullRequestNotification
     {
         public PullRequestStatus Status { get; set; } 
-        private string FormatAction(Configuration.BotElement bot)
+        private string FormatAction(BotElement bot)
         {
             switch (Status)
                 {
@@ -30,27 +30,27 @@ namespace DevCore.TfsNotificationRelay.Notifications
                     case PullRequestStatus.Active: return bot.Text.Reactivated;
                     case PullRequestStatus.Completed: return bot.Text.Completed;
                     default:
-                        return String.Format("updated status to {0} for", Status.ToString());
+                        return $"updated status to {Status} for";
                 }
         }
 
-        public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
         {
             var formatter = new
             {
-                TeamProjectCollection = transform(this.TeamProjectCollection),
-                Status = transform(this.Status.ToString()),
-                DisplayName = transform(this.DisplayName),
-                ProjectName = transform(this.ProjectName),
-                RepoUri = this.RepoUri,
-                RepoName = transform(this.RepoName),
-                PrId = this.PrId,
-                PrUrl = this.PrUrl,
-                PrTitle = transform(this.PrTitle),
-                UserName = transform(this.UserName),
+                TeamProjectCollection = transform(TeamProjectCollection),
+                Status = transform(Status.ToString()),
+                DisplayName = transform(DisplayName),
+                ProjectName = transform(ProjectName),
+                RepoUri,
+                RepoName = transform(RepoName),
+                PrId,
+                PrUrl,
+                PrTitle = transform(PrTitle),
+                UserName = transform(UserName),
                 Action = FormatAction(bot),
-                SourceBranchName = transform(this.SourceBranch.Name),
-                TargetBranchName = transform(this.TargetBranch.Name)
+                SourceBranchName = transform(SourceBranch.Name),
+                TargetBranchName = transform(TargetBranch.Name)
             };
             return new[] { bot.Text.PullRequestStatusUpdateFormat.FormatWith(formatter) };
         }

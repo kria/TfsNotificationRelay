@@ -19,7 +19,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
 {
     public abstract class PullRequestNotification : BaseNotification
     {
-        protected readonly static Configuration.SettingsElement settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
+        protected readonly static SettingsElement Settings = TfsNotificationRelaySection.Instance.Settings;
 
         public string CreatorUserName { get; set; }
         public string UniqueName { get; set; }
@@ -34,21 +34,9 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public GitRef TargetBranch { get; set; }
         public IEnumerable<string> ReviewerUserNames { get; set; }
 
-        public string UserName
-        {
-            get { return settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName; }
-        }
+        public string UserName => Settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName;
 
-        public override IEnumerable<string> TargetUserNames
-        {
-            get
-            {
-                if (CreatorUserName != UniqueName)
-                    return new[] { CreatorUserName };
-                else
-                    return Enumerable.Empty<string>();
-            }
-        }
+        public override IEnumerable<string> TargetUserNames => CreatorUserName != UniqueName ? new[] { CreatorUserName } : Enumerable.Empty<string>();
 
         public IEnumerable<EventRuleElement> GetRulesMatch(string collection, IEnumerable<EventRuleElement> eventRules)
         {

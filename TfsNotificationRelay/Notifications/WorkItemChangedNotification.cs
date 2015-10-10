@@ -28,28 +28,28 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public CoreFieldsType CoreFields { get; set; }
         public ChangedFieldsType ChangedFields { get; set; }
 
-        private string FormatAction(Configuration.BotElement bot)
+        private string FormatAction(BotElement bot)
         {
             return IsNew ? bot.Text.Created : bot.Text.Updated;
         }
 
-        public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
         {
             var lines = new List<string>();
             var formatter = new
             {
-                TeamProjectCollection = transform(this.TeamProjectCollection),
-                DisplayName = transform(this.DisplayName),
-                ProjectName = transform(this.ProjectName),
-                WiUrl = this.WiUrl,
-                WiType = transform(this.WiType),
-                WiId = this.WiId,
-                WiTitle = transform(this.WiTitle),
-                IsStateChanged = this.IsStateChanged,
-                IsAssignmentChanged = this.IsAssignmentChanged,
-                AssignedTo = transform(this.AssignedTo),
-                State = transform(this.State),
-                UserName = transform(this.UserName),
+                TeamProjectCollection = transform(TeamProjectCollection),
+                DisplayName = transform(DisplayName),
+                ProjectName = transform(ProjectName),
+                WiUrl,
+                WiType = transform(WiType),
+                WiId,
+                WiTitle = transform(WiTitle),
+                IsStateChanged,
+                IsAssignmentChanged,
+                AssignedTo = transform(AssignedTo),
+                State = transform(State),
+                UserName = transform(UserName),
                 Action = FormatAction(bot)
             };
             lines.Add(bot.Text.WorkItemchangedFormat.FormatWith(formatter));
@@ -76,7 +76,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
             var integerFields = core ? CoreFields.IntegerFields : ChangedFields.IntegerFields;
 
             var sfield = stringFields.FirstOrDefault(f => f.ReferenceName == fieldId);
-            if (sfield != null && !String.IsNullOrEmpty(sfield.NewValue) && (core || sfield.OldValue != sfield.NewValue))
+            if (!string.IsNullOrEmpty(sfield?.NewValue) && (core || sfield.OldValue != sfield.NewValue))
                 return new UnifiedField(sfield);
 
             var ifield = integerFields.FirstOrDefault(f => f.ReferenceName == fieldId);
@@ -100,7 +100,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
             return rule;
         }
 
-        private bool IsChangedFieldMatchOrNotSet(ChangedFieldsType changedFields, IEnumerable<string> ruleFieldNames)
+        private static bool IsChangedFieldMatchOrNotSet(ChangedFieldsType changedFields, IEnumerable<string> ruleFieldNames)
         {
             if (changedFields == null) return false; // no fields have changed on the work item
             if (!ruleFieldNames.Any()) return true; // no explicit fields set in rule means we allow any field

@@ -23,39 +23,21 @@ namespace DevCore.TfsNotificationRelay.Configuration
     public class SettingsElement : ConfigurationElement
     {
         [ConfigurationProperty("logfile")]
-        public string Logfile
-        {
-            get { return (string)this["logfile"]; }
-        }
+        public string Logfile => (string)this["logfile"];
 
         [ConfigurationProperty("stripUserDomain")]
-        public bool StripUserDomain
-        {
-            get { return (bool)this["stripUserDomain"]; }
-        }
+        public bool StripUserDomain => (bool)this["stripUserDomain"];
 
         [ConfigurationProperty("commentMaxLength")]
-        public int CommentMaxLength
-        {
-            get { return (int)this["commentMaxLength"]; }
-        }
+        public int CommentMaxLength => (int)this["commentMaxLength"];
 
         [ConfigurationProperty("maxLines")]
-        public int MaxLines
-        {
-            get { return (int)this["maxLines"]; }
-        }
+        public int MaxLines => (int)this["maxLines"];
 
         [ConfigurationProperty("hashLength")]
-        public int HashLength
-        {
-            get { return (int)this["hashLength"]; }
-        }
+        public int HashLength => (int)this["hashLength"];
 
         [ConfigurationProperty("identifyForcePush")]
-        public bool IdentifyForcePush
-        {
-            get { return (bool)this["identifyForcePush"]; }
-        }
+        public bool IdentifyForcePush => (bool)this["identifyForcePush"];
     }
 }

@@ -58,12 +58,13 @@ namespace DevCore.TfsNotificationRelay
         /// String formatting with named variables <see href="http://james.newtonking.com/archive/2008/03/29/formatwith-2-0-string-formatting-with-named-variables" />
         /// </summary>
         /// <param name="format"></param>
+        /// <param name="provider"></param>
         /// <param name="source"></param>
         /// <returns></returns>
         public static string FormatWith(this string format, IFormatProvider provider, object source)
         {
             if (format == null)
-                throw new ArgumentNullException("format");
+                throw new ArgumentNullException(nameof(format));
 
             Regex r = new Regex(@"(?<start>\{)+(?<property>[\w\.\[\]]+)(?<format>:[^}]+)?(?<end>\})+",
               RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
@@ -89,12 +90,12 @@ namespace DevCore.TfsNotificationRelay
 
         public static bool IsMatchOrNoPattern(this string input, string pattern)
         {
-            return String.IsNullOrEmpty(pattern) || Regex.IsMatch(input, pattern);
+            return string.IsNullOrEmpty(pattern) || Regex.IsMatch(input, pattern);
         }
 
         public static bool IsMatchOrNoPattern(this IEnumerable<string> input, string pattern)
         {
-            return String.IsNullOrEmpty(pattern) || input.Any(n => Regex.IsMatch(n, pattern));
+            return string.IsNullOrEmpty(pattern) || input.Any(n => Regex.IsMatch(n, pattern));
         }
 
         public static string HtmlToText(string html)

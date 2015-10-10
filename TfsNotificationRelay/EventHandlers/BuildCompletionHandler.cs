@@ -11,11 +11,11 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
-using DevCore.TfsNotificationRelay.Configuration;
 using Microsoft.TeamFoundation.Build.Server;
 using Microsoft.TeamFoundation.Framework.Server;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,9 +37,10 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 var result = buildReader.Current<BuildQueueQueryResult>();
                 QueuedBuild qb = result.QueuedBuilds.FirstOrDefault();
                 
-                string buildUrl = String.Format("{0}/{1}/{2}/_build#buildUri={3}&_a=summary",
+                string buildUrl = string.Format("{0}/{1}/{2}/_build#buildUri={3}&_a=summary",
                     locationService.GetAccessMapping(requestContext, "PublicAccessMapping").AccessPoint,
                     requestContext.ServiceHost.Name, build.TeamProject, build.Uri);
+                
                 var notification = new BuildCompletionNotification()
                 {
                     TeamProjectCollection = requestContext.ServiceHost.Name,

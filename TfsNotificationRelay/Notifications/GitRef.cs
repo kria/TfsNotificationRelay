@@ -22,11 +22,11 @@ namespace DevCore.TfsNotificationRelay.Notifications
 {
     public class GitRef
     {
-        public string Name { get; private set; }
-        public string FullName { get; private set; }
-        public byte[] CommitId { get; private set; }
-        public GitRefType Type { get; private set; }
-        public bool IsNew { get; private set; }
+        public string Name { get; }
+        public string FullName { get; }
+        public byte[] CommitId { get; }
+        public GitRefType Type { get; }
+        public bool IsNew { get; }
 
         public GitRef(string fullName)
         {
@@ -72,7 +72,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
     {
         public static string ToString(this IEnumerable<GitRef> refs, BotElement bot, Func<string, string> transform)
         {
-            return String.Join(bot.Text.RefSeparator, refs.Select(r => r.ToString(bot, transform)));
+            return string.Join(bot.Text.RefSeparator, refs.Select(r => r.ToString(bot, transform)));
         }
     }
 

@@ -23,27 +23,26 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string OldValue { get; set; }
         public string NewValue { get; set; }
 
-        public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
         {
             var formatter = new
             {
-                TeamProjectCollection = transform(this.TeamProjectCollection),
-                ProjectName = transform(this.ProjectName),
-                BuildDefinition = transform(this.BuildDefinition),
-                BuildStatus = transform(this.BuildStatus.ToString()),
-                BuildUrl = this.BuildUrl,
-                BuildNumber = transform(this.BuildNumber),
-                BuildReason = transform(this.BuildReason.ToString()),
-                RequestedFor = transform(this.RequestedFor),
-                RequestedForDisplayName = transform(this.RequestedForDisplayName),
-                DisplayName = transform(this.RequestedForDisplayName),
-                StartTime = this.StartTime,
-                FinishTime = this.FinishTime,
-                UserName = transform(this.UserName),
+                TeamProjectCollection = transform(TeamProjectCollection),
+                ProjectName = transform(ProjectName),
+                BuildDefinition = transform(BuildDefinition),
+                BuildStatus = transform(BuildStatus.ToString()), BuildUrl,
+                BuildNumber = transform(BuildNumber),
+                BuildReason = transform(BuildReason.ToString()),
+                RequestedFor = transform(RequestedFor),
+                RequestedForDisplayName = transform(RequestedForDisplayName),
+                DisplayName = transform(RequestedForDisplayName),
+                StartTime,
+                FinishTime,
+                UserName = transform(UserName),
                 BuildDuration = FormatBuildDuration(bot),
-                DropLocation = this.DropLocation,
-                NewValue = this.NewValue == null ? bot.Text.BuildQualityNotSet : transform(this.NewValue),
-                OldValue = this.OldValue == null ? bot.Text.BuildQualityNotSet : transform(this.OldValue)
+                DropLocation,
+                NewValue = NewValue == null ? bot.Text.BuildQualityNotSet : transform(NewValue),
+                OldValue = OldValue == null ? bot.Text.BuildQualityNotSet : transform(OldValue)
             };
             return new[] { bot.Text.BuildQualityChangedFormat.FormatWith(formatter) };
         }

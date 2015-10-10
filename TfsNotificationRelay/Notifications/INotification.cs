@@ -30,7 +30,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
         /// <param name="bot"></param>
         /// <param name="transform"></param>
         /// <returns></returns>
-        IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform);
+        IList<string> ToMessage(BotElement bot, Func<string, string> transform);
 
         EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules);
     }

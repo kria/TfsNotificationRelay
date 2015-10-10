@@ -26,10 +26,10 @@ namespace DevCore.TfsNotificationRelay.Notifications
 
         public int TotalLineCount { get; set; }
 
-        public IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
+        public IList<string> ToMessage(BotElement bot, Func<string, string> transform)
         {
             var lines = this.Select(r => r.ToString(bot, transform)).ToList();
-            if (lines != null && lines.Count > 0)
+            if (lines.Count > 0)
             {
                 if (lines.Count < TotalLineCount)
                 {
@@ -40,10 +40,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
             return lines;
         }
 
-        public virtual IEnumerable<string> TargetUserNames
-        {
-            get { return Enumerable.Empty<string>(); }
-        }
+        public virtual IEnumerable<string> TargetUserNames => Enumerable.Empty<string>();
 
         public abstract EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules);
     }

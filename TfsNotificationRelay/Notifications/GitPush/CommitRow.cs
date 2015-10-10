@@ -35,27 +35,26 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
 
         public override string ToString(BotElement bot, Func<string, string> transform)
         {
-            string formattedTime = String.IsNullOrEmpty(bot.Text.DateTimeFormat) ? AuthorTime.ToString() : AuthorTime.ToString(bot.Text.DateTimeFormat);
+            string formattedTime = string.IsNullOrEmpty(bot.Text.DateTimeFormat) ? AuthorTime.ToString() : AuthorTime.ToString(bot.Text.DateTimeFormat);
             var sb = new StringBuilder();
             if (Refs != null) sb.AppendFormat("{0} ", Refs.ToString(bot, transform));
             
             sb.Append(bot.Text.CommitFormat.FormatWith(new
             {
-                Action = Type == CommitRowType.Commit ? bot.Text.Commit : bot.Text.RefPointer,
-                CommitUri = CommitUri,
-                CommitId = transform(CommitId.ToHexString(settings.HashLength)),
-                ChangeCounts = (ChangeCounts != null) ? ChangeCountsToString(bot, ChangeCounts, CommitId.ToHexString(settings.HashLength)) : "",
+                Action = Type == CommitRowType.Commit ? bot.Text.Commit : bot.Text.RefPointer, CommitUri,
+                CommitId = transform(CommitId.ToHexString(Settings.HashLength)),
+                ChangeCounts = (ChangeCounts != null) ? ChangeCountsToString(bot, ChangeCounts) : "",
                 AuthorTime = formattedTime,
                 Author = transform(Author),
                 AuthorName = transform(AuthorName),
                 AuthorEmail = transform(AuthorEmail),
-                Comment = transform(Comment.Truncate(settings.CommentMaxLength))
+                Comment = transform(Comment.Truncate(Settings.CommentMaxLength))
             }));
 
             return sb.ToString();
         }
 
-        private string ChangeCountsToString(BotElement bot, Dictionary<TfsGitChangeType, int> changeCounts, string commitId)
+        private string ChangeCountsToString(BotElement bot, Dictionary<TfsGitChangeType, int> changeCounts)
         {
             var counters = new[] {
                 new ChangeCounter(TfsGitChangeType.Add, bot.Text.ChangeCountAddFormat, 0),
@@ -70,13 +69,13 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
                 // renamed files will also show up as Rename or Rename+Edit, so don't count them twice
                 if (changeCount.Key == (TfsGitChangeType.Delete | TfsGitChangeType.SourceRename)) continue;
 
-                foreach (var counter in counters)
+                foreach (var counter in counters.Where(c => changeCount.Key.HasFlag(c.Type)))
                 {
-                    if (changeCount.Key.HasFlag(counter.Type)) counter.Count += changeCount.Value;
+                    counter.Count += changeCount.Value;
                 }
             }
 
-            return String.Join(", ", counters.Where(c => c.Count > 0).Select(c => c.Format.FormatWith(new { Count = c.Count })));
+            return string.Join(", ", counters.Where(c => c.Count > 0).Select(c => c.Format.FormatWith(new {c.Count })));
         }
     }
 

@@ -21,7 +21,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
     public class PullRequestReviewerVoteNotification : PullRequestNotification
     {
         public short Vote { get; set; }
-        private string FormatAction(Configuration.BotElement bot)
+        private string FormatAction(BotElement bot)
         {
             switch (Vote)
             {
@@ -29,27 +29,27 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 case 0: return bot.Text.VoteRescinded;
                 case 10: return bot.Text.VoteApproved;
                 default:
-                    return String.Format("voted {0} on", Vote);
+                    return $"voted {Vote} on";
             }
         }
 
-        public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
         {
             var formatter = new
             {
-                TeamProjectCollection = transform(this.TeamProjectCollection),
-                Vote = this.Vote,
-                DisplayName = transform(this.DisplayName),
-                ProjectName = transform(this.ProjectName),
-                RepoUri = this.RepoUri,
-                RepoName = transform(this.RepoName),
-                PrId = this.PrId,
-                PrUrl = this.PrUrl,
-                PrTitle = transform(this.PrTitle),
-                UserName = transform(this.UserName),
+                TeamProjectCollection = transform(TeamProjectCollection),
+                Vote,
+                DisplayName = transform(DisplayName),
+                ProjectName = transform(ProjectName),
+                RepoUri,
+                RepoName = transform(RepoName),
+                PrId,
+                PrUrl,
+                PrTitle = transform(PrTitle),
+                UserName = transform(UserName),
                 Action = FormatAction(bot),
-                SourceBranchName = transform(this.SourceBranch.Name),
-                TargetBranchName = transform(this.TargetBranch.Name)
+                SourceBranchName = transform(SourceBranch.Name),
+                TargetBranchName = transform(TargetBranch.Name)
             };
             return new[] { bot.Text.PullRequestReviewerVoteFormat.FormatWith(formatter) };
         }

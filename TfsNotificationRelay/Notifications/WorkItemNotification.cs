@@ -18,7 +18,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
 {
     public abstract class WorkItemNotification : BaseNotification
     {
-        protected static Configuration.SettingsElement settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
+        protected static Configuration.SettingsElement Settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
 
         public string UniqueName { get; set; }
         public string DisplayName { get; set; }
@@ -31,10 +31,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string AssignedTo { get; set; }
         public string AssignedToUserName { get; set; }
 
-        public string UserName
-        {
-            get { return settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName; }
-        }
+        public string UserName => Settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName;
 
         public override IEnumerable<string> TargetUserNames
         {

@@ -11,7 +11,6 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
-using DevCore.TfsNotificationRelay.Configuration;
 using DevCore.TfsNotificationRelay.Notifications;
 using Microsoft.TeamFoundation.Framework.Server;
 using Microsoft.TeamFoundation.Integration.Server;
@@ -28,9 +27,9 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
         protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, ProjectDeletedEvent ev, int maxLines)
         {
             string projectName;
-            if (this.ProjectsNames.TryGetValue(ev.Uri, out projectName))
+            if (ProjectsNames.TryGetValue(ev.Uri, out projectName))
             {
-                this.ProjectsNames.Remove(ev.Uri);
+                ProjectsNames.Remove(ev.Uri);
             }
 
             yield return new ProjectDeletedNotification() { TeamProjectCollection = requestContext.ServiceHost.Name, ProjectUri = ev.Uri, ProjectName = projectName };

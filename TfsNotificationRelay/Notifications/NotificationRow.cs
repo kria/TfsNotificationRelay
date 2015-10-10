@@ -22,7 +22,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
 {
     public abstract class NotificationRow
     {
-        protected readonly static Configuration.SettingsElement settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
+        protected readonly static SettingsElement Settings = TfsNotificationRelaySection.Instance.Settings;
 
         public abstract string ToString(BotElement bot, Func<string, string> transform);
     }

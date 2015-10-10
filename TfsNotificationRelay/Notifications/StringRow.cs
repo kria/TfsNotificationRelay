@@ -26,7 +26,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
 
         public StringRow(string text)
         {
-            this.Text = text;
+            Text = text;
         }
         public override string ToString(BotElement bot, Func<string, string> transform)
         {

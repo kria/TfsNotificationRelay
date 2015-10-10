@@ -23,18 +23,18 @@ namespace DevCore.TfsNotificationRelay.Notifications
 {
     public class ProjectCreatedNotification : BaseNotification
     {
-        protected static Configuration.SettingsElement settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
+        protected static SettingsElement Settings = TfsNotificationRelaySection.Instance.Settings;
 
         public string ProjectUrl { get; set; }
         public string ProjectName { get; set; }
 
-        public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
         {
             var formatter = new
             {
-                TeamProjectCollection = transform(this.TeamProjectCollection),
-                ProjectUrl = this.ProjectUrl,
-                ProjectName = transform(this.ProjectName),
+                TeamProjectCollection = transform(TeamProjectCollection),
+                ProjectUrl,
+                ProjectName = transform(ProjectName),
             };
 
             return new[] { bot.Text.ProjectCreatedFormat.FormatWith(formatter) };

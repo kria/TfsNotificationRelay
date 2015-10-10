@@ -18,10 +18,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.TeamFoundation.Framework.Server;
 using Microsoft.TeamFoundation.WorkItemTracking.Server;
-using Microsoft.TeamFoundation.Integration.Server;
 using Microsoft.TeamFoundation.Server.Core;
 using Microsoft.TeamFoundation.Framework.Common;
-using System.Text.RegularExpressions;
 using DevCore.TfsNotificationRelay.Notifications;
 
 namespace DevCore.TfsNotificationRelay.EventHandlers
@@ -56,33 +54,30 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     assignedToUserName = assignedToIdentity.UniqueName;
             }
 
-            var teamNames = GetUserTeamsByProjectUri(requestContext, ev.ProjectNodeId, identity.Descriptor);
+            var teamNames = GetUserTeamsByProjectUri(requestContext, ev.ProjectNodeId, identity.Descriptor).ToList();
 
-            if (ev.TextFields != null)
+            var comment = ev.TextFields?.FirstOrDefault(f => f.ReferenceName == "System.History" && !string.IsNullOrEmpty(f.Value));
+            if (comment != null)
             {
-                var comment = ev.TextFields.FirstOrDefault(f => f.ReferenceName == "System.History" && !String.IsNullOrEmpty(f.Value));
-                if (comment != null)
+                var commentNotification = new WorkItemCommentNotification()
                 {
-                    var commentNotification = new WorkItemCommentNotification()
-                    {
-                        TeamProjectCollection = requestContext.ServiceHost.Name,
-                        UniqueName = identity.UniqueName,
-                        DisplayName = identity.DisplayName,
-                        WiUrl = ev.DisplayUrl,
-                        WiType = type,
-                        WiId = id,
-                        WiTitle = ev.WorkItemTitle,
-                        ProjectName = ev.PortfolioProject,
-                        AreaPath = ev.AreaPath,
-                        AssignedTo = assignedTo,
-                        AssignedToUserName = assignedToUserName,
-                        CommentHtml = comment.Value,
-                        Comment = TextHelper.HtmlToText(comment.Value),
-                        TeamNames = teamNames
-                    };
+                    TeamProjectCollection = requestContext.ServiceHost.Name,
+                    UniqueName = identity.UniqueName,
+                    DisplayName = identity.DisplayName,
+                    WiUrl = ev.DisplayUrl,
+                    WiType = type,
+                    WiId = id,
+                    WiTitle = ev.WorkItemTitle,
+                    ProjectName = ev.PortfolioProject,
+                    AreaPath = ev.AreaPath,
+                    AssignedTo = assignedTo,
+                    AssignedToUserName = assignedToUserName,
+                    CommentHtml = comment.Value,
+                    Comment = TextHelper.HtmlToText(comment.Value),
+                    TeamNames = teamNames
+                };
 
-                    notifications.Add(commentNotification);
-                }
+                notifications.Add(commentNotification);
             }
 
             var changeNotification = new WorkItemChangedNotification()
@@ -97,8 +92,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 WiTitle = ev.WorkItemTitle,
                 ProjectName = ev.PortfolioProject,
                 AreaPath = ev.AreaPath,
-                IsStateChanged = ev.ChangedFields != null && ev.ChangedFields.StringFields != null && ev.ChangedFields.StringFields.Any(f => f.ReferenceName == "System.State"),
-                IsAssignmentChanged = ev.ChangedFields != null && ev.ChangedFields.StringFields != null && ev.ChangedFields.StringFields.Any(f => f.ReferenceName == "System.AssignedTo"),
+                IsStateChanged = ev.ChangedFields?.StringFields?.Any(f => f.ReferenceName == "System.State") ?? false,
+                IsAssignmentChanged = ev.ChangedFields?.StringFields?.Any(f => f.ReferenceName == "System.AssignedTo") ?? false,
                 State = ev.CoreFields.StringFields.GetFieldValue("System.State", f => f.NewValue),
                 AssignedTo = assignedTo,
                 AssignedToUserName = assignedToUserName,

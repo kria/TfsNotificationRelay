@@ -23,7 +23,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
 {
     public class CheckinNotification : BaseNotification
     {
-        protected static Configuration.SettingsElement settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
+        protected static SettingsElement Settings = TfsNotificationRelaySection.Instance.Settings;
 
         public string UniqueName { get; set; }
         public string DisplayName { get; set; }
@@ -33,26 +33,23 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string Comment { get; set; }
         public IEnumerable<string> SubmittedItems { get; set; }
 
-        private string FormatProjectLinks(Configuration.BotElement bot, Func<string, string> transform)
+        private string FormatProjectLinks(BotElement bot, Func<string, string> transform)
         {
-            return String.Join(", ", Projects.Select(x => bot.Text.ProjectLinkFormat
+            return string.Join(", ", Projects.Select(x => bot.Text.ProjectLinkFormat
                 .FormatWith(new { ProjectName = transform(x.Key), ProjectUrl = x.Value })));
         }
-        public string UserName
-        {
-            get { return settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName; }
-        }
+        public string UserName => Settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName;
 
-        public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
         {
             var formatter = new
             {
-                TeamProjectCollection = transform(this.TeamProjectCollection),
-                DisplayName = transform(this.DisplayName),
-                ChangesetUrl = this.ChangesetUrl,
-                ChangesetId = this.ChangesetId,
-                Comment = transform(this.Comment),
-                UserName = transform(this.UserName),
+                TeamProjectCollection = transform(TeamProjectCollection),
+                DisplayName = transform(DisplayName),
+                ChangesetUrl,
+                ChangesetId,
+                Comment = transform(Comment),
+                UserName = transform(UserName),
                 ProjectLinks = FormatProjectLinks(bot, transform)
             };
             return new[] { bot.Text.CheckinFormat.FormatWith(formatter) };

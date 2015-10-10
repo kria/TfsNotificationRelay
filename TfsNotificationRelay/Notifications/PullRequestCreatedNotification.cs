@@ -20,30 +20,27 @@ namespace DevCore.TfsNotificationRelay.Notifications
 {
     public class PullRequestCreatedNotification : PullRequestNotification
     {
-        public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
         {
             var formatter = new
             {
-                TeamProjectCollection = transform(this.TeamProjectCollection),
-                DisplayName = transform(this.DisplayName),
-                ProjectName = transform(this.ProjectName),
-                RepoUri = this.RepoUri,
-                RepoName = transform(this.RepoName),
-                PrId = this.PrId,
-                PrUrl = this.PrUrl,
-                PrTitle = transform(this.PrTitle),
-                UserName = transform(this.UserName),
-                SourceBranchName = transform(this.SourceBranch.Name),
-                TargetBranchName = transform(this.TargetBranch.Name)
+                TeamProjectCollection = transform(TeamProjectCollection),
+                DisplayName = transform(DisplayName),
+                ProjectName = transform(ProjectName),
+                RepoUri,
+                RepoName = transform(RepoName),
+                PrId,
+                PrUrl,
+                PrTitle = transform(PrTitle),
+                UserName = transform(UserName),
+                SourceBranchName = transform(SourceBranch.Name),
+                TargetBranchName = transform(TargetBranch.Name)
             };
 
             return new[] { bot.Text.PullRequestCreatedFormat.FormatWith(formatter) };
         }
 
-        public override IEnumerable<string> TargetUserNames
-        {
-            get { return ReviewerUserNames; }
-        }
+        public override IEnumerable<string> TargetUserNames => ReviewerUserNames;
 
         public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
         {

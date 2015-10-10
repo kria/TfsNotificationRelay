@@ -17,18 +17,12 @@ namespace DevCore.TfsNotificationRelay.Configuration
 {
     public class UserMappingElement : ConfigurationElement, IKeyedConfigurationElement
     {
-        public object Key { get { return this; } }
+        public object Key => this;
 
         [ConfigurationProperty("tfsUser")]
-        public string TfsUser
-        {
-            get { return (string)this["tfsUser"]; }
-        }
+        public string TfsUser => (string)this["tfsUser"];
 
         [ConfigurationProperty("mappedUser")]
-        public string MappedUser
-        {
-            get { return (string)this["mappedUser"]; }
-        }
+        public string MappedUser => (string)this["mappedUser"];
     }
 }

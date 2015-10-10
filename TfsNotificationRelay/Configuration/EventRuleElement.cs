@@ -19,61 +19,34 @@ namespace DevCore.TfsNotificationRelay.Configuration
 {
     public class EventRuleElement : ConfigurationElement, IKeyedConfigurationElement
     {
-        public object Key { get { return this; } }
-        
+        public object Key => this;
+
         [ConfigurationProperty("events", IsRequired = true)]
-        public TfsEvents Events
-        {
-            get { return (TfsEvents)this["events"]; }
-        }
+        public TfsEvents Events => (TfsEvents)this["events"];
 
         [ConfigurationProperty("notify")]
-        public bool Notify
-        {
-            get { return (bool)this["notify"]; }
-        }
+        public bool Notify => (bool)this["notify"];
 
         [ConfigurationProperty("teamProjectCollection")]
-        public string TeamProjectCollection
-        {
-            get { return (string)this["teamProjectCollection"]; }
-        }
+        public string TeamProjectCollection => (string)this["teamProjectCollection"];
 
         [ConfigurationProperty("teamProject")]
-        public string TeamProject
-        {
-            get { return (string)this["teamProject"]; }
-        }
+        public string TeamProject => (string)this["teamProject"];
 
         [ConfigurationProperty("gitRepository")]
-        public string GitRepository
-        {
-            get { return (string)this["gitRepository"]; }
-        }
+        public string GitRepository => (string)this["gitRepository"];
 
         [ConfigurationProperty("buildDefinition")]
-        public string BuildDefinition
-        {
-            get { return (string)this["buildDefinition"]; }
-        }
+        public string BuildDefinition => (string)this["buildDefinition"];
 
         [ConfigurationProperty("teamName")]
-        public string TeamName
-        {
-            get { return (string)this["teamName"]; }
-        }
+        public string TeamName => (string)this["teamName"];
 
         [ConfigurationProperty("workItemType")]
-        public string WorkItemType
-        {
-          get { return (string)this["workItemType"]; }
-        }
+        public string WorkItemType => (string)this["workItemType"];
 
         [ConfigurationProperty("areaPath")] 
-        public string AreaPath
-        {
-            get { return (string)this["areaPath"]; }
-        }
+        public string AreaPath => (string)this["areaPath"];
 
         [ConfigurationProperty("buildStatuses")]
         public BuildStatus BuildStatuses
@@ -86,34 +59,17 @@ namespace DevCore.TfsNotificationRelay.Configuration
         }
 
         [ConfigurationProperty("workItemfields")]
-        public string WorkItemfields
-        {
-            get { return (string)this["workItemfields"]; }
-        }
+        public string WorkItemfields => (string)this["workItemfields"];
 
-        public IEnumerable<string> WorkItemFieldItems
-        {
-            get {
-                return TextHelper.SplitCsv(WorkItemfields);
-            }
-        }
+        public IEnumerable<string> WorkItemFieldItems => TextHelper.SplitCsv(WorkItemfields);
 
         [ConfigurationProperty("sourcePath")]
-        public string SourcePath
-        {
-            get { return (string)this["sourcePath"]; }
-        }
+        public string SourcePath => (string)this["sourcePath"];
 
         [ConfigurationProperty("gitBranch")]
-        public string GitBranch
-        {
-            get { return (string)this["gitBranch"]; }
-        }
+        public string GitBranch => (string)this["gitBranch"];
 
         [ConfigurationProperty("gitTag")]
-        public string GitTag
-        {
-            get { return (string)this["gitTag"]; }
-        }
+        public string GitTag => (string)this["gitTag"];
     }
 }

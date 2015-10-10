@@ -24,19 +24,19 @@ namespace DevCore.TfsNotificationRelay.Notifications
     {
         public string ProjectUri { get; set; }
 
-        private string projectName;
+        private string _projectName;
         public string ProjectName {
-            get { return projectName ?? ProjectUri; }
-            set { projectName = value; }
+            get { return _projectName ?? ProjectUri; }
+            set { _projectName = value; }
         }
 
-        public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
         {
             var formatter = new
             {
-                TeamProjectCollection = transform(this.TeamProjectCollection),
-                ProjectUri = this.ProjectUri,
-                ProjectName = transform(this.ProjectName),
+                TeamProjectCollection = transform(TeamProjectCollection),
+                ProjectUri,
+                ProjectName = transform(ProjectName),
             };
 
             return new[] { bot.Text.ProjectDeletedFormat.FormatWith(formatter) };
