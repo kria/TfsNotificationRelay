@@ -15,8 +15,6 @@ using DevCore.TfsNotificationRelay.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
@@ -25,13 +23,10 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string TeamProjectCollection { get; set; }
         public IEnumerable<string> TeamNames { get; set; }
 
-        public abstract IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform);
+        public abstract IList<string> ToMessage(BotElement bot, Func<string, string> transform);
 
         public abstract EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules);
 
-        public virtual IEnumerable<string> TargetUserNames
-        {
-            get { return Enumerable.Empty<string>(); }
-        }
+        public virtual IEnumerable<string> TargetUserNames => Enumerable.Empty<string>();
     }
 }

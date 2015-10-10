@@ -23,7 +23,7 @@ namespace DevCore.TfsNotificationRelay.Slack
     {
         public static Message CreateSlackMessage(IEnumerable<string> lines, BotElement bot, string channel, string color, bool asUser) 
         {
-            if (lines == null || lines.Count() == 0) return null;
+            if (lines == null || !lines.Any()) return null;
 
             string header = lines.First();
             var fields = from line in lines.Skip(1) select new AttachmentField() { Value = line, IsShort = false };
@@ -56,9 +56,9 @@ namespace DevCore.TfsNotificationRelay.Slack
             if (!asUser)
             {
                 message.Username = bot.GetSetting("username");
-                if (!String.IsNullOrEmpty(bot.GetSetting("iconUrl")))
+                if (!string.IsNullOrEmpty(bot.GetSetting("iconUrl")))
                     message.IconUrl = bot.GetSetting("iconUrl");
-                else if (!String.IsNullOrEmpty(bot.GetSetting("iconEmoji")))
+                else if (!string.IsNullOrEmpty(bot.GetSetting("iconEmoji")))
                     message.IconEmoji = bot.GetSetting("iconEmoji");
             }
 

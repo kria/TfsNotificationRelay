@@ -23,20 +23,20 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string Comment { get; set; }
         public string CommentHtml { get; set; }
 
-        public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
         {
             var lines = new List<string>();
             var formatter = new
             {
-                TeamProjectCollection = transform(this.TeamProjectCollection),
-                DisplayName = transform(this.DisplayName),
-                ProjectName = transform(this.ProjectName),
-                AreaPath = transform(this.AreaPath),
-                WiUrl = this.WiUrl,
-                WiType = transform(this.WiType),
-                WiId = this.WiId,
-                WiTitle = transform(this.WiTitle),
-                UserName = transform(this.UserName),
+                TeamProjectCollection = transform(TeamProjectCollection),
+                DisplayName = transform(DisplayName),
+                ProjectName = transform(ProjectName),
+                AreaPath = transform(AreaPath),
+                WiUrl,
+                WiType = transform(WiType),
+                WiId,
+                WiTitle = transform(WiTitle),
+                UserName = transform(UserName),
                 Action = bot.Text.CommentedOn
             };
             lines.Add(bot.Text.WorkItemchangedFormat.FormatWith(formatter));

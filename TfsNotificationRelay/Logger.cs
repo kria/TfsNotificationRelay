@@ -26,7 +26,7 @@ namespace DevCore.TfsNotificationRelay
     {
         public static void Log(IEnumerable<string> lines)
         {
-            if (String.IsNullOrEmpty(TfsNotificationRelaySection.Instance.Settings.Logfile)) return;
+            if (string.IsNullOrEmpty(TfsNotificationRelaySection.Instance.Settings.Logfile)) return;
 
             using (StreamWriter sw = File.AppendText(TfsNotificationRelaySection.Instance.Settings.Logfile))
             {
@@ -42,9 +42,9 @@ namespace DevCore.TfsNotificationRelay
             Log(new[] { line });
         }
 
-        public static void Log(string format, params Object[] args)
+        public static void Log(string format, params object[] args)
         {
-            Log(String.Format(format, args));
+            Log(string.Format(format, args));
         }
 
         public static void Log(Exception ex)

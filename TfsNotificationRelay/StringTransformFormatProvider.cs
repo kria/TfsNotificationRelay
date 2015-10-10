@@ -22,10 +22,10 @@ namespace DevCore.TfsNotificationRelay
 {
     public class StringTransformFormatProvider : IFormatProvider, ICustomFormatter
     {
-        protected Func<string, string> transform;
+        protected Func<string, string> Transform;
         public StringTransformFormatProvider(Func<string, string> transform)
         {
-            this.transform = transform;
+            Transform = transform;
         }
         public static StringTransformFormatProvider From(Func<string, string> transform)
         {
@@ -40,7 +40,7 @@ namespace DevCore.TfsNotificationRelay
         {
             if (arg is string)
             {
-                return transform(arg as string);
+                return Transform((string) arg);
             }
             else
             {
@@ -50,7 +50,7 @@ namespace DevCore.TfsNotificationRelay
                 }
                 catch (FormatException e)
                 {
-                    throw new FormatException(String.Format("The format of '{0}' is invalid.", format), e);
+                    throw new FormatException($"The format of '{format}' is invalid.", e);
                 }
             }
         }
@@ -60,7 +60,7 @@ namespace DevCore.TfsNotificationRelay
             var formattable = arg as IFormattable;
             if (formattable != null)
                 return formattable.ToString(format, CultureInfo.CurrentCulture);
-            return arg != null ? arg.ToString() : String.Empty;
+            return arg?.ToString() ?? string.Empty;
         }
     }
 }

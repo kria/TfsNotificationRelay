@@ -12,7 +12,6 @@
  */
 
 using DevCore.TfsNotificationRelay.Configuration;
-using Microsoft.TeamFoundation.Git.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,31 +23,31 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
 {
     public class GitPushNotification : MultiRowNotification
     {
-        private string projectName;
-        private string repoName;
-        private IEnumerable<string> teamNames;
-        private IEnumerable<GitRef> refs;
-        private string userName;
+        private readonly string _projectName;
+        private readonly string _repoName;
+        private readonly IEnumerable<string> _teamNames;
+        private readonly IEnumerable<GitRef> _refs;
+        private readonly string _userName;
 
         public GitPushNotification(string teamProjecCollection, string projectName, string repoName, string userName, IEnumerable<string> teamNames, IEnumerable<GitRef> refs)
         {
-            this.TeamProjectCollection = teamProjecCollection;
-            this.projectName = projectName;
-            this.repoName = repoName;
-            this.userName = userName;
-            this.teamNames = teamNames;
-            this.refs = refs;
+            TeamProjectCollection = teamProjecCollection;
+            _projectName = projectName;
+            _repoName = repoName;
+            _userName = userName;
+            _teamNames = teamNames;
+            _refs = refs;
         }
 
         public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
         {
             var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.GitPush)
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
-                && projectName.IsMatchOrNoPattern(r.TeamProject)
-                && teamNames.IsMatchOrNoPattern(r.TeamName)
-                && repoName.IsMatchOrNoPattern(r.GitRepository)
-                && (String.IsNullOrEmpty(r.GitBranch) || refs.Any(n => Regex.IsMatch(n.Name, r.GitBranch)))
-                && (String.IsNullOrEmpty(r.GitTag) || refs.Any(n => Regex.IsMatch(n.Name, r.GitTag))));
+                && _projectName.IsMatchOrNoPattern(r.TeamProject)
+                && _teamNames.IsMatchOrNoPattern(r.TeamName)
+                && _repoName.IsMatchOrNoPattern(r.GitRepository)
+                && (string.IsNullOrEmpty(r.GitBranch) || _refs.Any(n => Regex.IsMatch(n.Name, r.GitBranch)))
+                && (string.IsNullOrEmpty(r.GitTag) || _refs.Any(n => Regex.IsMatch(n.Name, r.GitTag))));
 
             return rule;
         }

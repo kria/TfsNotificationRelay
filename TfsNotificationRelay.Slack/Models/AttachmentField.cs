@@ -26,9 +26,9 @@ namespace DevCore.TfsNotificationRelay.Slack.Models
 
         public AttachmentField(string title, string value, bool isShort = false) 
         {
-            this.Title = title;
-            this.Value = value;
-            this.IsShort = isShort;
+            Title = title;
+            Value = value;
+            IsShort = isShort;
         }
 
         public string Title { get; set; }

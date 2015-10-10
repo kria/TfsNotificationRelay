@@ -18,12 +18,9 @@ namespace DevCore.TfsNotificationRelay.Configuration
 
     public class UserMapElement : ConfigurationElementCollection<UserMappingElement>, IKeyedConfigurationElement
     {
-        public object Key { get { return Id; } }
+        public object Key => Id;
 
         [ConfigurationProperty("id", IsRequired = true, IsKey = true)]
-        public string Id
-        {
-            get { return (string)this["id"]; }
-        }
+        public string Id => (string)this["id"];
     }
 }

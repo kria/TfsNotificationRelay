@@ -26,7 +26,7 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
 
         public override string ToString(BotElement bot, Func<string, string> transform)
         {
-            return String.Format("{0} {1}", Refs.ToString(bot, transform), bot.Text.Deleted);
+            return $"{Refs.ToString(bot, transform)} {bot.Text.Deleted}";
         }
     }
 }

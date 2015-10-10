@@ -15,6 +15,7 @@ using System;
 
 namespace DevCore.TfsNotificationRelay
 {
+    [Serializable]
     class TfsNotificationRelayException : Exception
     {
         public TfsNotificationRelayException()

@@ -31,8 +31,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 requestContext.ServiceHost.Name,
                 ev.Name);
 
-            if (!this.ProjectsNames.ContainsKey(ev.Uri))
-                this.ProjectsNames.Add(ev.Uri, ev.Name);
+            if (!ProjectsNames.ContainsKey(ev.Uri))
+                ProjectsNames.Add(ev.Uri, ev.Name);
 
             yield return new ProjectCreatedNotification() { TeamProjectCollection = requestContext.ServiceHost.Name, ProjectUrl = projectUrl, ProjectName = ev.Name };
         }

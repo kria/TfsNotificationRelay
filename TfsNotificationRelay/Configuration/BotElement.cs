@@ -22,69 +22,47 @@ namespace DevCore.TfsNotificationRelay.Configuration
 {
     public class BotElement : ConfigurationElement, IKeyedConfigurationElement
     {
-        public object Key { get { return Id; } }
+        public object Key => Id;
 
         [ConfigurationProperty("id", IsRequired = true, IsKey = true)]
-        public string Id
-        {
-            get { return (string)this["id"]; }
-        }
+        public string Id => (string)this["id"];
 
         [ConfigurationProperty("type")]
-        public string Type
-        {
-            get { return GetProperty("type"); }
-        }
+        public string Type => GetProperty("type");
 
         [ConfigurationProperty("textId")]
-        public string TextId
-        {
-            get { return GetProperty("textId"); }
-        }
+        public string TextId => GetProperty("textId");
 
         public TextElement Text { get; set; }
 
         [ConfigurationProperty("userMapId")]
-        public string UserMapId
-        {
-            get { return GetProperty("userMapId"); }
-        }
+        public string UserMapId => GetProperty("userMapId");
 
         public UserMapElement UserMap { get; set; }
 
         public string GetMappedUser(string tfsUserName)
         {
             var userMapping = UserMap.FirstOrDefault(u => u.TfsUser == tfsUserName);
-            return userMapping != null ? userMapping.MappedUser : null;
+            return userMapping?.MappedUser;
         }
 
         [ConfigurationProperty("basedOn")]
-        public string BasedOn
-        {
-            get { return (string)this["basedOn"]; }
-        }
+        public string BasedOn => (string)this["basedOn"];
 
         public BotElement BaseBot { get; set; }
 
         [ConfigurationProperty("inheritRules")]
-        public bool InheritRules
-        {
-            get { return GetProperty<bool>("inheritRules"); }
-        }
+        public bool InheritRules => GetProperty<bool>("inheritRules");
 
         [ConfigurationProperty("botSettings")]
         [ConfigurationCollection(typeof(NameValueConfigurationCollection))]
-        protected NameValueConfigurationCollection BotSettingsConfigurationCollection
-        {
-            get { return (NameValueConfigurationCollection)this["botSettings"]; }
-        }
+        protected NameValueConfigurationCollection BotSettingsConfigurationCollection => (NameValueConfigurationCollection)this["botSettings"];
 
         public string GetSetting(string name) 
         {
             var setting = BotSettingsConfigurationCollection[name];
             if (setting != null) return setting.Value;
-            if (BaseBot == null) return null;
-            return BaseBot.GetSetting(name);
+            return BaseBot?.GetSetting(name);
         }
 
         public string GetSetting(string name, string fallback)
@@ -105,10 +83,7 @@ namespace DevCore.TfsNotificationRelay.Configuration
         [ConfigurationProperty("eventRules")]
         [ConfigurationCollection(typeof(EventRuleCollection),
             AddItemName = "rule")]
-        protected EventRuleCollection EventRules
-        {
-            get { return (EventRuleCollection)this["eventRules"]; }
-        }
+        protected EventRuleCollection EventRules => (EventRuleCollection)this["eventRules"];
 
         /// <summary>
         /// Get all rules for whole basedOn hierarchy, starting from root ancestor

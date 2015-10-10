@@ -36,7 +36,6 @@ namespace DevCore.TfsNotificationRelay.HipChat
             string room = bot.GetSetting("room");
             string baseUrl = bot.GetSetting("apiBaseUrl");
             string authToken = bot.GetSetting("roomNotificationToken");
-            string messageFormat = bot.GetSetting("messageFormat");
 
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authToken);
@@ -44,7 +43,7 @@ namespace DevCore.TfsNotificationRelay.HipChat
             string json = ToJson((dynamic)notification, bot);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             string url = baseUrl + "/room/" + room + "/notification";
-            requestContext.Trace(0, System.Diagnostics.TraceLevel.Verbose, Constants.TraceArea, "HipChatNotifier", "Sending notification to {0}\n{1}", url, json);
+            requestContext.Trace(0, TraceLevel.Verbose, Constants.TraceArea, "HipChatNotifier", "Sending notification to {0}\n{1}", url, json);
 
             await httpClient.PostAsync(url, content).ContinueWith(t => t.Result.EnsureSuccessStatusCode());
         }
@@ -61,21 +60,21 @@ namespace DevCore.TfsNotificationRelay.HipChat
             return CreateHipChatMessage(notification, bot, color).ToString();
         }
 
-        private JObject CreateHipChatMessage(INotification notification, BotElement bot, string color)
+        private static JObject CreateHipChatMessage(INotification notification, BotElement bot, string color)
         {
             dynamic jobject = new JObject();
 
             if (bot.GetSetting("messageFormat") == "text")
             {
                 var lines = notification.ToMessage(bot, s => s);
-                if (lines == null || lines.Count() == 0) return null;
+                if (lines == null || !lines.Any()) return null;
                 jobject.message_format = "text";
-                jobject.message = String.Join("\n", lines);
+                jobject.message = string.Join("\n", lines);
             } else {
-                var lines = notification.ToMessage(bot, s => HttpUtility.HtmlEncode(s));
-                if (lines == null || lines.Count() == 0) return null;
+                var lines = notification.ToMessage(bot, HttpUtility.HtmlEncode);
+                if (lines == null || !lines.Any()) return null;
                 jobject.message_format = "html";
-                jobject.message = String.Join("<br/>", lines);
+                jobject.message = string.Join("<br/>", lines);
             }
             jobject.color = color;
             jobject.notify = bot.GetSetting("notify").Equals("true", StringComparison.OrdinalIgnoreCase);

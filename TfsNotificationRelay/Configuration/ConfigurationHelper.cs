@@ -22,7 +22,7 @@ namespace DevCore.TfsNotificationRelay.Configuration
     {
         public static T GetConfigurationSection<T>(Assembly assembly, string sectionName) where T : ConfigurationSection
         {
-            ResolveEventHandler resolver = (s, a) => { return assembly; };
+            ResolveEventHandler resolver = (s, a) => assembly;
             AppDomain.CurrentDomain.AssemblyResolve += resolver;
 
             string configPath = new Uri(assembly.CodeBase).LocalPath + ".config";

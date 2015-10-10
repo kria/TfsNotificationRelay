@@ -11,32 +11,28 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
+using DevCore.TfsNotificationRelay.Configuration;
 using DevCore.TfsNotificationRelay.Notifications;
+using Microsoft.TeamFoundation.Framework.Common;
 using Microsoft.TeamFoundation.Framework.Server;
 using Microsoft.TeamFoundation.Integration.Server;
+using Microsoft.TeamFoundation.Server.Core;
+using Microsoft.VisualStudio.Services.Identity;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using System.IO;
-using System.Configuration;
-using DevCore.TfsNotificationRelay.Configuration;
-using Microsoft.TeamFoundation.Server.Core;
-using Microsoft.VisualStudio.Services.Identity;
-using Microsoft.TeamFoundation.Framework.Common;
 
 namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     public abstract class BaseHandler<T> : BaseHandler
     {
-        private const string area = "TfsNotificationRelay";
+        private const string Area = "TfsNotificationRelay";
 
         public override Type[] SubscribedTypes()
         {
-            return new Type[] { typeof(T) };
+            return new[] { typeof(T) };
         }
 
         protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines)
@@ -49,23 +45,14 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
     public abstract class BaseHandler : ISubscriber
     {
-        protected static Configuration.SettingsElement settings;
-        private static IDictionary<string, string> projectsNames;
+        protected static SettingsElement Settings;
+        private static IDictionary<string, string> _projectsNames;
 
-        public string Name
-        {
-            get { return "TfsNotificationRelay"; }
-        }
+        public string Name => "TfsNotificationRelay";
 
-        public SubscriberPriority Priority
-        {
-            get { return SubscriberPriority.Normal; }
-        }
+        public SubscriberPriority Priority => SubscriberPriority.Normal;
 
-        public IDictionary<string, string> ProjectsNames
-        {
-            get { return projectsNames; }
-        }
+        public IDictionary<string, string> ProjectsNames => _projectsNames;
 
         public abstract Type[] SubscribedTypes();
 
@@ -81,22 +68,22 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
             try
             {
-                settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
+                Settings = TfsNotificationRelaySection.Instance.Settings;
                 statusCode = 0;
                 statusMessage = string.Empty;
                 properties = null;
 
-                if (projectsNames == null)
+                if (_projectsNames == null)
                 {
                     var commonService = requestContext.GetService<CommonStructureService>();
-                    projectsNames = commonService.GetProjects(requestContext).ToDictionary(p => p.Uri, p => p.Name);
+                    _projectsNames = commonService.GetProjects(requestContext).ToDictionary(p => p.Uri, p => p.Name);
                 }
 
-                var config = Configuration.TfsNotificationRelaySection.Instance;
+                var config = TfsNotificationRelaySection.Instance;
 
                 if (notificationType == NotificationType.Notification)
                 {
-                    var notifications = CreateNotifications(requestContext, notificationEventArgs, settings.MaxLines).ToList();
+                    var notifications = CreateNotifications(requestContext, notificationEventArgs, Settings.MaxLines).ToList();
 
                     var tasks = new List<Task>();
 
@@ -118,12 +105,12 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                             }
                             catch (Exception ex)
                             {
-                                TeamFoundationApplicationCore.LogException(requestContext, String.Format("TfsNotificationRelay: Can't create bot {0}.", bot.Id), ex);
+                                TeamFoundationApplicationCore.LogException(requestContext, $"TfsNotificationRelay: Can't create bot {bot.Id}.", ex);
                             }
                         }
                         else
                         {
-                            string errmsg = String.Format("TfsNotificationRelay: Unknown bot type: {0}, Skipping bot: {1}.", bot.Type, bot.Id);
+                            string errmsg = $"TfsNotificationRelay: Unknown bot type: {bot.Type}, Skipping bot: {bot.Id}.";
                             TeamFoundationApplicationCore.Log(requestContext, errmsg, 0, EventLogEntryType.Error);
                         }
                     }
@@ -141,7 +128,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             
         }
 
-        private async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotifier notifier, INotification notification, Configuration.BotElement bot, EventRuleElement matchingRule)
+        private static async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotifier notifier, INotification notification, BotElement bot, EventRuleElement matchingRule)
         {
             try
             {
@@ -149,7 +136,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             }
             catch (Exception ex)
             {
-                TeamFoundationApplicationCore.LogException(requestContext, String.Format("TfsNotificationRelay: Notify failed for bot {0}.", bot.Id), ex, 0, EventLogEntryType.Error);
+                TeamFoundationApplicationCore.LogException(requestContext, $"TfsNotificationRelay: Notify failed for bot {bot.Id}.", ex, 0, EventLogEntryType.Error);
             }
         }
 
@@ -165,11 +152,11 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
         {
             var teamService = requestContext.GetService<TeamFoundationTeamService>();
 
-            var projectTeams = teamService.QueryTeams(requestContext, projectUri);
-            Trace(requestContext, "Teams in project {0}: {1}", projectUri, String.Join(", ", projectTeams.Select(t => t.Name)));
+            var projectTeams = teamService.QueryTeams(requestContext, projectUri).ToList();
+            Trace(requestContext, "Teams in project {0}: {1}", projectUri, string.Join(", ", projectTeams.Select(t => t.Name)));
 
-            var userTeams = teamService.QueryTeams(requestContext, identity);
-            Trace(requestContext, "Teams for user {0}: {1}", identity, String.Join(", ", userTeams.Select(t => t.Name)));
+            var userTeams = teamService.QueryTeams(requestContext, identity).ToList();
+            Trace(requestContext, "Teams for user {0}: {1}", identity, string.Join(", ", userTeams.Select(t => t.Name)));
 
             var teamNames = projectTeams.Join(userTeams,
                 pt => pt.Identity.Descriptor,
@@ -188,7 +175,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
         /// <returns>The teams the user is a member of</returns>
         protected IEnumerable<string> GetUserTeamsByProjectName(TeamFoundationRequestContext requestContext, string projectName, IdentityDescriptor identity)
         {
-            var projectUri = this.ProjectsNames.Where(p => p.Value ==  projectName)
+            var projectUri = ProjectsNames.Where(p => p.Value ==  projectName)
                 .Select(p => p.Key).FirstOrDefault();
             if (projectUri == null) return Enumerable.Empty<string>();
 
@@ -220,7 +207,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
         protected void Trace(TeamFoundationRequestContext requestContext, string format, params object[] args)
         {
-            requestContext.Trace(0, TraceLevel.Verbose, Constants.TraceArea, this.GetType().Name, format, args);
+            requestContext.Trace(0, TraceLevel.Verbose, Constants.TraceArea, GetType().Name, format, args);
         }
 
     }

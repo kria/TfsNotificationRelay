@@ -21,7 +21,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
 {
     public abstract class BuildNotification : BaseNotification
     {
-        protected static Configuration.SettingsElement settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
+        protected static SettingsElement Settings = TfsNotificationRelaySection.Instance.Settings;
 
         public string ProjectName { get; set; }
         public string BuildDefinition { get; set; }
@@ -34,48 +34,38 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string RequestedForDisplayName { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime FinishTime { get; set; }
-        public string UserName 
-        {
-            get { return settings.StripUserDomain ? TextHelper.StripDomain(RequestedFor) : RequestedFor; }
-        }
-        public override IEnumerable<string> TargetUserNames
-        {
-            get { return new[] { RequestedFor }; }
-        }
-        public string DisplayName
-        {
-            get { return RequestedForDisplayName; }
-        }
-        protected string FormatBuildDuration(Configuration.BotElement bot)
+        public string UserName => Settings.StripUserDomain ? TextHelper.StripDomain(RequestedFor) : RequestedFor;
+
+        public override IEnumerable<string> TargetUserNames => new[] { RequestedFor };
+        public string DisplayName => RequestedForDisplayName;
+
+        protected string FormatBuildDuration(BotElement bot)
         {
             var duration = FinishTime - StartTime;
-            return String.IsNullOrEmpty(bot.Text.TimeSpanFormat) ? duration.ToString(@"hh\:mm\:ss") : duration.ToString(bot.Text.TimeSpanFormat);
+            return string.IsNullOrEmpty(bot.Text.TimeSpanFormat) ? duration.ToString(@"hh\:mm\:ss") : duration.ToString(bot.Text.TimeSpanFormat);
         }
 
-        public bool IsSuccessful
-        {
-            get { return BuildStatus.HasFlag(BuildStatus.Succeeded); }
-        }
+        public bool IsSuccessful => BuildStatus.HasFlag(BuildStatus.Succeeded);
 
-        public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
         {
             var formatter = new
             {
-                TeamProjectCollection = transform(this.TeamProjectCollection),
-                ProjectName = transform(this.ProjectName),
-                BuildDefinition = transform(this.BuildDefinition),
-                BuildStatus = transform(this.BuildStatus.ToString()),
-                BuildUrl = this.BuildUrl,
-                BuildNumber = transform(this.BuildNumber),
-                BuildReason = transform(this.BuildReason.ToString()),
-                RequestedFor = transform(this.RequestedFor),
-                RequestedForDisplayName = transform(this.RequestedForDisplayName),
-                DisplayName = transform(this.RequestedForDisplayName),
-                StartTime = this.StartTime,
-                FinishTime = this.FinishTime,
-                UserName = transform(this.UserName),
+                TeamProjectCollection = transform(TeamProjectCollection),
+                ProjectName = transform(ProjectName),
+                BuildDefinition = transform(BuildDefinition),
+                BuildStatus = transform(BuildStatus.ToString()),
+                BuildUrl,
+                BuildNumber = transform(BuildNumber),
+                BuildReason = transform(BuildReason.ToString()),
+                RequestedFor = transform(RequestedFor),
+                RequestedForDisplayName = transform(RequestedForDisplayName),
+                DisplayName = transform(RequestedForDisplayName),
+                StartTime,
+                FinishTime,
+                UserName = transform(UserName),
                 BuildDuration = FormatBuildDuration(bot),
-                DropLocation = this.DropLocation
+                DropLocation
             };
             return new[] { bot.Text.BuildFormat.FormatWith(formatter), transform(BuildStatus.ToString()) };
         }

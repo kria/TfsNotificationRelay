@@ -33,17 +33,14 @@ namespace DevCore.TfsNotificationRelay.Configuration
             return ((IKeyedConfigurationElement)element).Key;
         }
 
-        public T this[int index]
-        {
-            get { return (T)BaseGet(index); }
-        }
+        public T this[int index] => (T)BaseGet(index);
 
         public new IEnumerator<T> GetEnumerator()
         {
-            int count = base.Count;
+            int count = Count;
             for (int i = 0; i < count; i++)
             {
-                yield return base.BaseGet(i) as T;
+                yield return BaseGet(i) as T;
             }
         }
     }

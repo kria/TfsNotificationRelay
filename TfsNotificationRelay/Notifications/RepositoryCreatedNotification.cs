@@ -20,7 +20,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
 {
     public class RepositoryCreatedNotification : BaseNotification
     {
-        protected static Configuration.SettingsElement settings = Configuration.TfsNotificationRelaySection.Instance.Settings;
+        protected static SettingsElement Settings = TfsNotificationRelaySection.Instance.Settings;
 
         public string UniqueName { get; set; }
         public string DisplayName { get; set; }
@@ -28,21 +28,18 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string RepoUri { get; set; }
         public string RepoName { get; set; }
 
-        public string UserName
-        {
-            get { return settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName; }
-        }
+        public string UserName => Settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName;
 
-        public override IList<string> ToMessage(Configuration.BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
         {
             var formatter = new
             {
-                TeamProjectCollection = transform(this.TeamProjectCollection),
-                DisplayName = transform(this.DisplayName),
-                UserName = transform(this.UserName),
-                ProjectName = transform(this.ProjectName),
-                RepoUri = this.RepoUri,
-                RepoName = transform(this.RepoName)
+                TeamProjectCollection = transform(TeamProjectCollection),
+                DisplayName = transform(DisplayName),
+                UserName = transform(UserName),
+                ProjectName = transform(ProjectName),
+                RepoUri,
+                RepoName = transform(RepoName)
             };
 
             return new[] { bot.Text.RepositoryCreatedFormat.FormatWith(formatter) };

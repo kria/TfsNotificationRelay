@@ -54,7 +54,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                         RepoUri = repoUri,
                         RepoName = ev.RepositoryName,
                         PrId = pullRequest.PullRequestId,
-                        PrUrl = string.Format("{0}/pullrequest/{1}#view=discussion", repoUri, ev.PullRequestId),
+                        PrUrl = $"{repoUri}/pullrequest/{ev.PullRequestId}#view=discussion",
                         PrTitle = pullRequest.Title,
                         TeamNames = GetUserTeamsByProjectUri(requestContext, ev.TeamProjectUri, ev.Reviewer),
                         SourceBranch = new Notifications.GitRef(pullRequest.SourceBranchName),

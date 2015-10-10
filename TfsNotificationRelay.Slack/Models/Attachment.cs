@@ -22,7 +22,7 @@ namespace DevCore.TfsNotificationRelay.Slack.Models
 {
     public class Attachment
     {
-        private static readonly string[] mrkdwn_in = { "pretext", "text", "title", "fields", "fallback" };
+        private static readonly string[] MarkdownFields = { "pretext", "text", "title", "fields", "fallback" };
 
         public string Fallback { get; set; }
         
@@ -33,10 +33,8 @@ namespace DevCore.TfsNotificationRelay.Slack.Models
         public string Color { get; set; }
         
         [JsonProperty(PropertyName = "mrkdwn_in")]
-        public IEnumerable<string> MrkdwnIn 
-        {
-            get { return mrkdwn_in; }
-        }
+        public IEnumerable<string> MrkdwnIn => MarkdownFields;
+
         public IEnumerable<AttachmentField> Fields { get; set; }
     }
 }

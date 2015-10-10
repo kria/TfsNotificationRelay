@@ -16,6 +16,7 @@ using Microsoft.TeamFoundation.Framework.Server;
 using Microsoft.VisualStudio.Services.Location.Server;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using TFVC = Microsoft.TeamFoundation.VersionControl.Server;
 
@@ -34,9 +35,9 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             var teamNames = new HashSet<string>();
             var projects = new Dictionary<string, string>();
 
-            var submittedItems = checkin.GetSubmittedItems(requestContext);
+            var submittedItems = checkin.GetSubmittedItems(requestContext).ToList();
 
-            string pattern = @"^\$\/([^\/]*)\/";
+            const string pattern = @"^\$\/([^\/]*)\/";
             foreach (string item in submittedItems)
             {
                 Match match = Regex.Match(item, pattern);
@@ -48,7 +49,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     string projectUrl = baseUrl + projectName;
                     projects.Add(projectName, projectUrl);
                     
-                    foreach (var team in this.GetUserTeamsByProjectName(requestContext, projectName, checkin.ChangesetOwner.Descriptor))
+                    foreach (var team in GetUserTeamsByProjectName(requestContext, projectName, checkin.ChangesetOwner.Descriptor))
                     {
                         teamNames.Add(team);
                     }
@@ -60,7 +61,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 TeamProjectCollection = requestContext.ServiceHost.Name,
                 UniqueName = checkin.ChangesetOwner.UniqueName,
                 DisplayName = checkin.ChangesetOwner.DisplayName,
-                ChangesetUrl = String.Format("{0}_versionControl/changeset/{1}", baseUrl, checkin.Changeset),
+                ChangesetUrl = $"{baseUrl}_versionControl/changeset/{checkin.Changeset}",
                 ChangesetId = checkin.Changeset,
                 Projects = projects,
                 Comment = checkin.Comment,

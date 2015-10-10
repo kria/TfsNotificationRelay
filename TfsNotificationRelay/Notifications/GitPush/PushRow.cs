@@ -28,20 +28,17 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
         public string ProjectName { get; set; }
         public string RepoName { get; set; }
         public bool IsForcePush { get; set; }
-        public string UserName
-        {
-            get { return settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName; }
-        }
+        public string UserName => Settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName;
+
         public override string ToString(BotElement bot, Func<string, string> transform)
         {
             var formatter = new
             {
-                DisplayName = transform(this.DisplayName),
-                RepoUri = this.RepoUri,
-                ProjectName = transform(this.ProjectName),
-                RepoName = transform(this.RepoName),
-                Pushed = this.IsForcePush ? bot.Text.ForcePushed : bot.Text.Pushed,
-                UserName = transform(this.UserName)
+                DisplayName = transform(DisplayName), RepoUri,
+                ProjectName = transform(ProjectName),
+                RepoName = transform(RepoName),
+                Pushed = IsForcePush ? bot.Text.ForcePushed : bot.Text.Pushed,
+                UserName = transform(UserName)
             };
             return bot.Text.PushFormat.FormatWith(formatter);
         }
