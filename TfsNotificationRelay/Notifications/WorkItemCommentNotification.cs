@@ -18,7 +18,7 @@ using System.Linq;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
-    public class WorkItemCommentNotification : WorkItemNotification
+    public class WorkItemCommentNotification : WorkItemNotification, ICommentNotification
     {
         public string Comment { get; set; }
         public string CommentHtml { get; set; }
@@ -40,8 +40,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 Action = bot.Text.CommentedOn
             };
             lines.Add(bot.Text.WorkItemchangedFormat.FormatWith(formatter));
-
-            lines.Add(Comment);
+            lines.Add(TextHelper.Truncate(Comment, Settings.DiscussionCommentMaxLength));
 
             return lines;
         }

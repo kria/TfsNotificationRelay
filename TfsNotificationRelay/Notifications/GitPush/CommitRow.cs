@@ -48,7 +48,7 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
                 Author = transform(Author),
                 AuthorName = transform(AuthorName),
                 AuthorEmail = transform(AuthorEmail),
-                Comment = transform(Comment.Truncate(Settings.CommentMaxLength))
+                Comment = transform(Comment.Truncate(Settings.CommentMaxLength, true))
             }));
 
             return sb.ToString();

@@ -23,12 +23,18 @@ namespace DevCore.TfsNotificationRelay
 {
     public static class TextHelper
     {
-        public static string Truncate(this string text, int len)
+        public static string Truncate(this string text, int len, bool stopAtEol = false)
         {
             text = text.TrimEnd(Environment.NewLine.ToCharArray());
-            int pos = text.IndexOf('\n');
-            if (pos > 0 && pos <= len)
-                return text.Substring(0, pos);
+
+            int pos;
+            if (stopAtEol)
+            {
+                pos = text.IndexOf('\r');
+                if (pos == -1) pos = text.IndexOf('\n');
+                if (pos > 0 && pos <= len)
+                    return text.Substring(0, pos);
+            }
             if (text.Length <= len)
                 return text;
             pos = text.LastIndexOf(' ', len);

@@ -84,7 +84,7 @@ namespace DevCore.TfsNotificationRelay.Slack
             return SlackHelper.CreateSlackMessage(header, fields, bot, channel, bot.GetSetting("standardColor"), asUser);
         }
 
-        public Message ToSlackMessage(WorkItemCommentNotification notification, BotElement bot, string channel, bool asUser)
+        public Message ToSlackMessage(ICommentNotification notification, BotElement bot, string channel, bool asUser)
         {
             string header = notification.ToMessage(bot, s => s).First();
             var fields = new[] {
