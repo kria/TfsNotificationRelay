@@ -5,6 +5,7 @@ TfsNotificationRelay is an extensible plugin for Team Foundation Server that sen
 [![Build status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay)
 
 ## Features
+
 - [x] Notify multiple targets
 - [x] Rule-based event filtering
 - [x] Collection/project/repository regex filtering
@@ -14,13 +15,16 @@ TfsNotificationRelay is an extensible plugin for Team Foundation Server that sen
 
 ### Events
 
-- [x] Build completion
+- [x] XAML Build completion
+- [x] vNext Build completion (*)
 - [x] Build quality change
 - [x] Work item update
 - [x] Team project creation/deletion
 - Git
   - [x] Push
-  - [x] Pull request
+  - [x] Comment on commit (*)
+  - [x] Pull request (*)
+  - [x] Comment on pull request (*)
   - [x] New repository
   - [x] New branch/tag
   - [x] Deleted branch/tag
@@ -29,6 +33,9 @@ TfsNotificationRelay is an extensible plugin for Team Foundation Server that sen
   - [x] Force-push
 - TFVC
   - [x] Checkin
+  - [x] Comment on changeset (*)
+
+*TFS 2015 only
 
 ## Screenshots
 

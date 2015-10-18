@@ -64,7 +64,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 ChangesetUrl = $"{baseUrl}_versionControl/changeset/{checkin.Changeset}",
                 ChangesetId = checkin.Changeset,
                 Projects = projects,
-                Comment = checkin.Comment,
+                Comment = TextHelper.Truncate(checkin.Comment, Settings.CommentMaxLength, true),
                 TeamNames = teamNames,
                 SubmittedItems = submittedItems
             };

@@ -31,6 +31,9 @@ namespace DevCore.TfsNotificationRelay.Configuration
         [ConfigurationProperty("commentMaxLength")]
         public int CommentMaxLength => (int)this["commentMaxLength"];
 
+        [ConfigurationProperty("discussionCommentMaxLength")]
+        public int DiscussionCommentMaxLength => (int)this["discussionCommentMaxLength"];
+
         [ConfigurationProperty("maxLines")]
         public int MaxLines => (int)this["maxLines"];
 
