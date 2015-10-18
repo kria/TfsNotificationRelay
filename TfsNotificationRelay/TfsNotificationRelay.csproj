@@ -52,6 +52,15 @@
       <HintPath>..\lib\Microsoft.TeamFoundation.Core.WebApi.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Discussion.Server">
+      <HintPath>..\lib\Microsoft.TeamFoundation.Discussion.Server.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.Discussion.WebApi, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Microsoft.TeamFoundation.Discussion.WebApi.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.TeamFoundation.Framework.Server">
       <HintPath>..\lib\Microsoft.TeamFoundation.Framework.Server.dll</HintPath>
       <Private>False</Private>
@@ -71,6 +80,11 @@
     <Reference Include="Microsoft.TeamFoundation.SourceControl.WebApi, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Microsoft.TeamFoundation.SourceControl.WebApi.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.TeamFoundation.VersionControl.Common.Integration, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Microsoft.TeamFoundation.VersionControl.Common.Integration.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.VersionControl.Server">
@@ -123,13 +137,17 @@
     <Compile Include="ByteArrayComparer.cs" />
     <Compile Include="EventHandlers\BuildQualityChangedHandler.cs" />
     <Compile Include="EventHandlers\CheckinHandler.cs" />
+    <Compile Include="EventHandlers\DiscussionsHandler.cs" />
     <Compile Include="EventHandlers\PullRequestCreatedHandler.cs" />
     <Compile Include="EventHandlers\PullRequestReviewerVoteHandler.cs" />
     <Compile Include="EventHandlers\PullRequestStatusUpdateHandler.cs" />
     <Compile Include="EventHandlers\RepositoryCreatedHandler.cs" />
     <Compile Include="HtmlToText.cs" />
+    <Compile Include="Notifications\ChangesetCommentNotification.cs" />
+    <Compile Include="Notifications\CommitCommentNotification.cs" />
     <Compile Include="Notifications\GitRef.cs" />
     <Compile Include="Notifications\ICommentNotification.cs" />
+    <Compile Include="Notifications\PullRequestCommentNotification.cs" />
     <Compile Include="Notifications\PullRequestNotification.cs" />
     <Compile Include="TextHelper.cs" />
     <Compile Include="INotifier.cs" />

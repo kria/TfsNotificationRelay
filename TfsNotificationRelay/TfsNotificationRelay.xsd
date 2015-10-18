@@ -123,6 +123,9 @@
                   <xs:attribute name="branchFormat" type="xs:string" use="required" />
                   <xs:attribute name="tagFormat" type="xs:string" use="required" />
                   <xs:attribute name="refSeparator" type="xs:string" use="required" />
+                  <xs:attribute name="commitCommentFormat" type="xs:string" use="required" />
+                  <xs:attribute name="pullRequestCommentFormat" type="xs:string" use="required" />
+                  <xs:attribute name="changesetCommentFormat" type="xs:string" use="required" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>

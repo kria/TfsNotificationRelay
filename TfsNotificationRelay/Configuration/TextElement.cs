@@ -158,5 +158,14 @@ namespace DevCore.TfsNotificationRelay.Configuration
 
         [ConfigurationProperty("refSeparator")]
         public string RefSeparator => (string)this["refSeparator"];
+
+        [ConfigurationProperty("commitCommentFormat")]
+        public string CommitCommentFormat => (string)this["commitCommentFormat"];
+
+        [ConfigurationProperty("pullRequestCommentFormat")]
+        public string PullRequestCommentFormat => (string)this["pullRequestCommentFormat"];
+
+        [ConfigurationProperty("changesetCommentFormat")]
+        public string ChangesetCommentFormat => (string)this["changesetCommentFormat"];
     }
 }
