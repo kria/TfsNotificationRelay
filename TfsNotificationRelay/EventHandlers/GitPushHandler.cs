@@ -26,7 +26,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class GitPushHandler : BaseHandler<PushNotification>
     {
-        protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, PushNotification pushNotification, int maxLines)
+        protected override IEnumerable<INotification> CreateNotifications(IVssRequestContext requestContext, PushNotification pushNotification, int maxLines)
         {
             var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
             var commonService = requestContext.GetService<CommonStructureService>();
@@ -142,7 +142,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             }
         }
 
-        private static CommitRow CreateCommitRow(TeamFoundationRequestContext requestContext, TeamFoundationGitCommitService commitService,
+        private static CommitRow CreateCommitRow(IVssRequestContext requestContext, TeamFoundationGitCommitService commitService,
             TfsGitRepository repository, TfsGitCommit gitCommit, CommitRowType rowType, PushNotification pushNotification, Dictionary<Sha1Id, List<GitRef>> refLookup)
         {
             var commitManifest = commitService.GetCommitManifest(requestContext, repository, gitCommit.ObjectId);

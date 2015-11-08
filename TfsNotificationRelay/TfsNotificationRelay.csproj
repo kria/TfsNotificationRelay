@@ -52,15 +52,6 @@
       <HintPath>..\lib\Microsoft.TeamFoundation.Core.WebApi.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.TeamFoundation.Discussion.Server">
-      <HintPath>..\lib\Microsoft.TeamFoundation.Discussion.Server.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.TeamFoundation.Discussion.WebApi, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Microsoft.TeamFoundation.Discussion.WebApi.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.TeamFoundation.Framework.Server">
       <HintPath>..\lib\Microsoft.TeamFoundation.Framework.Server.dll</HintPath>
       <Private>False</Private>
@@ -93,6 +84,14 @@
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Server">
       <HintPath>..\lib\Microsoft.TeamFoundation.WorkItemTracking.Server.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Services.CodeReview.Discussion.Server">
+      <HintPath>..\lib\Microsoft.VisualStudio.Services.CodeReview.Discussion.Server.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Services.CodeReview.Discussion.WebApi">
+      <HintPath>..\lib\Microsoft.VisualStudio.Services.CodeReview.Discussion.WebApi.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.WebApi, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">

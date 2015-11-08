@@ -22,7 +22,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class RepositoryCreatedHandler : BaseHandler<RepositoryCreatedNotification>
     {
-        protected override IEnumerable<Notifications.INotification> CreateNotifications(TeamFoundationRequestContext requestContext, RepositoryCreatedNotification ev, int maxLines)
+        protected override IEnumerable<Notifications.INotification> CreateNotifications(IVssRequestContext requestContext, RepositoryCreatedNotification ev, int maxLines)
         {
             var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
             var identityService = requestContext.GetService<ITeamFoundationIdentityService>();

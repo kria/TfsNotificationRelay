@@ -21,7 +21,7 @@ namespace DevCore.TfsNotificationRelay
 {
     public static class TfsHelper
     {
-        public static bool IsDescendantOf(this TfsGitCommit commit, TeamFoundationRequestContext requestContext, Sha1Id ancestorId)
+        public static bool IsDescendantOf(this TfsGitCommit commit, IVssRequestContext requestContext, Sha1Id ancestorId)
         {
             Queue<TfsGitCommit> q = new Queue<TfsGitCommit>();
             HashSet<Sha1Id> visited = new HashSet<Sha1Id>();
@@ -43,7 +43,7 @@ namespace DevCore.TfsNotificationRelay
             return false;
         }
 
-        public static bool IsForceRequired(this PushNotification pushNotification, TeamFoundationRequestContext requestContext, TfsGitRepository repository)
+        public static bool IsForceRequired(this PushNotification pushNotification, IVssRequestContext requestContext, TfsGitRepository repository)
         {
             foreach (var refUpdateResult in pushNotification.RefUpdateResults.Where(r => r.Succeeded))
             {

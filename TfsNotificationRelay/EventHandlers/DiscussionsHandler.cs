@@ -23,19 +23,20 @@ using Microsoft.TeamFoundation.Git.Server;
 using Microsoft.TeamFoundation.Server.Core;
 using Newtonsoft.Json.Linq;
 using Microsoft.TeamFoundation.Integration.Server;
-using Microsoft.TeamFoundation.Discussion.Server;
-using Microsoft.TeamFoundation.Discussion.WebApi;
 using Microsoft.TeamFoundation.VersionControl.Server;
 using Microsoft.TeamFoundation.VersionControl.Common;
 using System.Text.RegularExpressions;
 using Microsoft.TeamFoundation.Framework.Common;
 using Microsoft.VisualStudio.Services.Location.Server;
+using Microsoft.VisualStudio.Services.CodeReview.Discussion.Server;
+using Microsoft.VisualStudio.Services.CodeReview.Discussion.WebApi.Events;
+using Microsoft.VisualStudio.Services.CodeReview.Discussion.WebApi;
 
 namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class DiscussionsHandler : BaseHandler<DiscussionsNotification>
     {
-        protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext,
+        protected override IEnumerable<INotification> CreateNotifications(IVssRequestContext requestContext,
             DiscussionsNotification args, int maxLines)
         {
             var locationService = requestContext.GetService<ILocationService>();
@@ -82,14 +83,14 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
                         foreach (var comment in thread.Comments)
                         {
-                            var commenter = identityService.ReadIdentities(requestContext, new[] { comment.Author }).First();
+                            var commenter = identityService.ReadIdentities(requestContext, new[] { Guid.Parse(comment.Author.Id) }).First();
 
                             var notification = new Notifications.CommitCommentNotification()
                             {
                                 TeamProjectCollection = requestContext.ServiceHost.Name,
                                 PusherUserName = pusher?.UniqueName,
                                 UniqueName = commenter.UniqueName,
-                                DisplayName = comment.AuthorDisplayName,
+                                DisplayName = comment.Author.DisplayName,
                                 ProjectName = project.Name,
                                 RepoUri = repoUri,
                                 RepoName = repository.Name,
@@ -123,8 +124,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
                         foreach (var comment in thread.Comments)
                         {
-                            var commenter = identityService.ReadIdentities(requestContext, new[] { comment.Author }).First();
-                            
+                            var commenter = identityService.ReadIdentities(requestContext, new[] { Guid.Parse(comment.Author.Id) }).First();
+
                             var notification = new Notifications.PullRequestCommentNotification()
                             {
                                 TeamProjectCollection = requestContext.ServiceHost.Name,
@@ -186,7 +187,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
                     foreach (var comment in thread.Comments)
                     {
-                        var commenter = identityService.ReadIdentities(requestContext, new[] { comment.Author }).First();
+                        var commenter = identityService.ReadIdentities(requestContext, new[] { Guid.Parse(comment.Author.Id) }).First();
 
                         var notification = new Notifications.ChangesetCommentNotification()
                         {

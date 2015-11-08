@@ -26,7 +26,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class WorkItemChangedHandler : BaseHandler<WorkItemChangedEvent>
     {
-        protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, WorkItemChangedEvent ev, int maxLines)
+        protected override IEnumerable<INotification> CreateNotifications(IVssRequestContext requestContext, WorkItemChangedEvent ev, int maxLines)
         {
             var notifications = new List<INotification>();
 

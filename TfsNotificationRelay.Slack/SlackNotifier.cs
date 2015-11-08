@@ -29,7 +29,7 @@ namespace DevCore.TfsNotificationRelay.Slack
 {
     public class SlackNotifier : INotifier
     {
-        public virtual async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
+        public virtual async Task NotifyAsync(IVssRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
         {
             var channels = bot.GetCsvSetting("channels");
             var tasks = new List<Task>();

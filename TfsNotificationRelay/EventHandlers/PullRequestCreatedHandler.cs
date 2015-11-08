@@ -26,13 +26,13 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class PullRequestCreatedHandler : BaseHandler<PullRequestCreatedNotification>
     {
-        protected override IEnumerable<Notifications.INotification> CreateNotifications(TeamFoundationRequestContext requestContext, PullRequestCreatedNotification ev, int maxLines)
+        protected override IEnumerable<Notifications.INotification> CreateNotifications(IVssRequestContext requestContext, PullRequestCreatedNotification ev, int maxLines)
         {
             var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
             var identityService = requestContext.GetService<ITeamFoundationIdentityService>();
             var commonService = requestContext.GetService<ICommonStructureService>();
             
-            var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.Identifier, ev.Creator.Identifier);
+            var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.Identifier, ev.Creator.Descriptor.Identifier);
 
             using (TfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, ev.RepositoryId))
             {
@@ -56,7 +56,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                         PrId = pullRequest.PullRequestId,
                         PrUrl = $"{repoUri}/pullrequest/{ev.PullRequestId}#view=discussion",
                         PrTitle = pullRequest.Title,
-                        TeamNames = GetUserTeamsByProjectUri(requestContext, ev.TeamProjectUri, ev.Creator),
+                        TeamNames = GetUserTeamsByProjectUri(requestContext, ev.TeamProjectUri, ev.Creator.Descriptor),
                         SourceBranch = new Notifications.GitRef(pullRequest.SourceBranchName),
                         TargetBranch = new Notifications.GitRef(pullRequest.TargetBranchName),
                         ReviewerUserNames = reviewers.Select(r => r.UniqueName)
