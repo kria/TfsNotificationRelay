@@ -45,6 +45,11 @@ namespace DevCore.TfsNotificationRelay.Notifications
             return string.IsNullOrEmpty(bot.Text.TimeSpanFormat) ? duration.ToString(@"hh\:mm\:ss") : duration.ToString(bot.Text.TimeSpanFormat);
         }
 
+        protected virtual string GetBuildFormat(BotElement bot)
+        {
+            return bot.Text.BuildFormat;
+        }
+
         public bool IsSuccessful => BuildStatus.HasFlag(BuildStatus.Succeeded);
 
         public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
@@ -67,7 +72,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 BuildDuration = FormatBuildDuration(bot),
                 DropLocation
             };
-            return new[] { bot.Text.BuildFormat.FormatWith(formatter), transform(BuildStatus.ToString()) };
+            return new[] { GetBuildFormat(bot).FormatWith(formatter), transform(BuildStatus.ToString()) };
         }
 
         public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
