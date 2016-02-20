@@ -37,7 +37,10 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 WiId,
                 WiTitle = transform(WiTitle),
                 UserName = transform(UserName),
-                Action = bot.Text.CommentedOn
+                Action = bot.Text.CommentedOn,
+                AssignedToUserName = transform(AssignedToUserName),
+                MappedAssignedToUser = bot.GetMappedUser(AssignedToUniqueName),
+                MappedUser = bot.GetMappedUser(UniqueName)
             };
             lines.Add(bot.Text.WorkItemchangedFormat.FormatWith(formatter));
             lines.Add(TextHelper.Truncate(Comment, Settings.DiscussionCommentMaxLength));

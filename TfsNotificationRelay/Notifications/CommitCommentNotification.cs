@@ -25,7 +25,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
     {
         protected readonly static SettingsElement Settings = TfsNotificationRelaySection.Instance.Settings;
 
-        public string PusherUserName { get; set; }
+        public string PusherUniqueName { get; set; }
         public string UniqueName { get; set; }
         public string DisplayName { get; set; }
         public string ProjectName { get; set; }
@@ -35,6 +35,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string CommitUri { get; set; }
         public string Comment { get; set; }
         public string UserName => Settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName;
+        public string PusherUserName => Settings.StripUserDomain ? TextHelper.StripDomain(PusherUniqueName) : PusherUniqueName;
 
         public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
         {
@@ -48,14 +49,17 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 CommitId = transform(CommitId.ToHexString(Settings.HashLength)),
                 CommitUri,
                 Comment = transform(Comment),
-                UserName = transform(UserName)
+                UserName = transform(UserName),
+                PusherUserName = transform(PusherUserName),
+                MappedPusherUser = bot.GetMappedUser(PusherUniqueName),
+                MappedUser = bot.GetMappedUser(UniqueName)
             };
 
             return new[] { bot.Text.CommitCommentFormat.FormatWith(formatter), Comment };
         }
 
         public override IEnumerable<string> TargetUserNames =>
-            string.IsNullOrEmpty(PusherUserName) && PusherUserName != UniqueName ? new[] { PusherUserName } : Enumerable.Empty<string>();
+            string.IsNullOrEmpty(PusherUniqueName) && PusherUniqueName != UniqueName ? new[] { PusherUniqueName } : Enumerable.Empty<string>();
 
         public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
         {

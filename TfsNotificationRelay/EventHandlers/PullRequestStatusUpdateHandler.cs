@@ -47,7 +47,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     var notification = new PullRequestStatusUpdateNotification()
                     {
                         TeamProjectCollection = requestContext.ServiceHost.Name,
-                        CreatorUserName = creator.UniqueName,
+                        CreatorUniqueName = creator.UniqueName,
                         Status = ev.Status,
                         UniqueName = identity.UniqueName,
                         DisplayName = identity.DisplayName,

@@ -30,13 +30,13 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string BuildUrl { get; set; }
         public string BuildNumber { get; set; }
         public BuildReason BuildReason { get; set; }
-        public string RequestedFor { get; set; }
+        public string RequestedForUniqueName { get; set; }
         public string RequestedForDisplayName { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime FinishTime { get; set; }
-        public string UserName => Settings.StripUserDomain ? TextHelper.StripDomain(RequestedFor) : RequestedFor;
+        public string UserName => Settings.StripUserDomain ? TextHelper.StripDomain(RequestedForUniqueName) : RequestedForUniqueName;
 
-        public override IEnumerable<string> TargetUserNames => new[] { RequestedFor };
+        public override IEnumerable<string> TargetUserNames => new[] { RequestedForUniqueName };
         public string DisplayName => RequestedForDisplayName;
 
         protected string FormatBuildDuration(BotElement bot)
@@ -63,14 +63,15 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 BuildUrl,
                 BuildNumber = transform(BuildNumber),
                 BuildReason = transform(BuildReason.ToString()),
-                RequestedFor = transform(RequestedFor),
+                RequestedFor = transform(RequestedForUniqueName),
                 RequestedForDisplayName = transform(RequestedForDisplayName),
                 DisplayName = transform(RequestedForDisplayName),
                 StartTime,
                 FinishTime,
                 UserName = transform(UserName),
                 BuildDuration = FormatBuildDuration(bot),
-                DropLocation
+                DropLocation,
+                MappedUser = bot.GetMappedUser(RequestedForUniqueName)
             };
             return new[] { GetBuildFormat(bot).FormatWith(formatter), transform(BuildStatus.ToString()) };
         }

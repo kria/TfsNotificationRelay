@@ -38,7 +38,8 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
                 ProjectName = transform(ProjectName),
                 RepoName = transform(RepoName),
                 Pushed = IsForcePush ? bot.Text.ForcePushed : bot.Text.Pushed,
-                UserName = transform(UserName)
+                UserName = transform(UserName),
+                MappedUser = bot.GetMappedUser(UniqueName)
             };
             return bot.Text.PushFormat.FormatWith(formatter);
         }

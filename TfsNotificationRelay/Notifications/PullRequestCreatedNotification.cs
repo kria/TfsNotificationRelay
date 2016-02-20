@@ -34,7 +34,8 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 PrTitle = transform(PrTitle),
                 UserName = transform(UserName),
                 SourceBranchName = transform(SourceBranch.Name),
-                TargetBranchName = transform(TargetBranch.Name)
+                TargetBranchName = transform(TargetBranch.Name),
+                MappedUser = bot.GetMappedUser(UniqueName)
             };
 
             return new[] { bot.Text.PullRequestCreatedFormat.FormatWith(formatter) };

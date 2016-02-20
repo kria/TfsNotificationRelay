@@ -87,7 +87,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                             var notification = new Notifications.CommitCommentNotification()
                             {
                                 TeamProjectCollection = requestContext.ServiceHost.Name,
-                                PusherUserName = pusher?.UniqueName,
+                                PusherUniqueName = pusher?.UniqueName,
                                 UniqueName = commenter.UniqueName,
                                 DisplayName = comment.AuthorDisplayName,
                                 ProjectName = project.Name,
@@ -128,7 +128,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                             var notification = new Notifications.PullRequestCommentNotification()
                             {
                                 TeamProjectCollection = requestContext.ServiceHost.Name,
-                                CreatorUserName = creator?.UniqueName,
+                                CreatorUniqueName = creator?.UniqueName,
                                 UniqueName = commenter.UniqueName,
                                 DisplayName = commenter.DisplayName,
                                 ProjectName = project.Name,
@@ -191,7 +191,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                         var notification = new Notifications.ChangesetCommentNotification()
                         {
                             TeamProjectCollection = requestContext.ServiceHost.Name,
-                            CreatorUserName = commiter?.UniqueName,
+                            CreatorUniqueName = commiter?.UniqueName,
                             UniqueName = commenter.UniqueName,
                             DisplayName = commenter.DisplayName,
                             ProjectUrl = baseUrl + projectName,

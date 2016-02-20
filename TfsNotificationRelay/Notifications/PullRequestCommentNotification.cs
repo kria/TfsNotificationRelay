@@ -12,7 +12,6 @@
  */
 
 using DevCore.TfsNotificationRelay.Configuration;
-using Microsoft.TeamFoundation.Server.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,8 +37,9 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 UserName = transform(UserName),
                 SourceBranchName = transform(SourceBranch.Name),
                 TargetBranchName = transform(TargetBranch.Name),
-                CreatorUserId = bot.GetMappedUser(CreatorUserName),
-                UserId = bot.GetMappedUser(UniqueName)
+                CreatorUserName = transform(CreatorUserName),
+                MappedCreatorUser = bot.GetMappedUser(CreatorUniqueName),
+                MappedUser = bot.GetMappedUser(UniqueName)
             };
             
             return new[] { bot.Text.PullRequestCommentFormat.FormatWith(formatter), Comment };

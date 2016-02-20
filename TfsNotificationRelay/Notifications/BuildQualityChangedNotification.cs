@@ -33,7 +33,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 BuildStatus = transform(BuildStatus.ToString()), BuildUrl,
                 BuildNumber = transform(BuildNumber),
                 BuildReason = transform(BuildReason.ToString()),
-                RequestedFor = transform(RequestedFor),
+                RequestedFor = transform(RequestedForUniqueName),
                 RequestedForDisplayName = transform(RequestedForDisplayName),
                 DisplayName = transform(RequestedForDisplayName),
                 StartTime,
@@ -42,7 +42,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 BuildDuration = FormatBuildDuration(bot),
                 DropLocation,
                 NewValue = NewValue == null ? bot.Text.BuildQualityNotSet : transform(NewValue),
-                OldValue = OldValue == null ? bot.Text.BuildQualityNotSet : transform(OldValue)
+                OldValue = OldValue == null ? bot.Text.BuildQualityNotSet : transform(OldValue),
             };
             return new[] { bot.Text.BuildQualityChangedFormat.FormatWith(formatter) };
         }
