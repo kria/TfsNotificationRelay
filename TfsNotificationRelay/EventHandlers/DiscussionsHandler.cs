@@ -49,11 +49,11 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             
             foreach (var thread in args.Threads)
             {
+                if (thread.Comments == null) continue; // e.g. when a comment is deleted
+
                 var artifactId = LinkingUtilities.DecodeUri(thread.ArtifactUri);
 
                 int discussionId = thread.DiscussionId <= 0 ? thread.Comments[0].DiscussionId : thread.DiscussionId;
-                List<DiscussionComment> discussionComments;
-                discussionService.QueryDiscussionsById(requestContext, discussionId, out discussionComments);
 
                 if (artifactId.ArtifactType.Equals("Commit", StringComparison.OrdinalIgnoreCase))
                 {
