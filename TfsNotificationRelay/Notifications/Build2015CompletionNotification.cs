@@ -19,7 +19,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
     {
         protected override string GetBuildFormat(BotElement bot)
         {
-            return bot.Text.Build2015Format;
+            return string.IsNullOrEmpty(bot.Text.Build2015Format) ? bot.Text.BuildFormat : bot.Text.Build2015Format;
         }
     }
 }
