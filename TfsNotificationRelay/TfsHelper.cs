@@ -43,14 +43,14 @@ namespace DevCore.TfsNotificationRelay
             return false;
         }
 
-        public static bool IsForceRequired(this PushNotification pushNotification, IVssRequestContext requestContext, TfsGitRepository repository)
+        public static bool IsForceRequired(this PushNotification pushNotification, IVssRequestContext requestContext, ITfsGitRepository repository)
         {
             foreach (var refUpdateResult in pushNotification.RefUpdateResults.Where(r => r.Succeeded))
             {
                 // Don't bother with new or deleted refs
                 if (refUpdateResult.OldObjectId.IsEmpty || refUpdateResult.NewObjectId.IsEmpty) continue;
 
-                TfsGitObject gitObject = repository.LookupObject(requestContext, refUpdateResult.NewObjectId);
+                TfsGitObject gitObject = repository.LookupObject(refUpdateResult.NewObjectId);
                 if (gitObject.ObjectType != GitObjectType.Commit) continue;
                 TfsGitCommit gitCommit = (TfsGitCommit)gitObject;
 

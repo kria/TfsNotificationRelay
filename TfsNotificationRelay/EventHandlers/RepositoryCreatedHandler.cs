@@ -24,15 +24,15 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
     {
         protected override IEnumerable<Notifications.INotification> CreateNotifications(IVssRequestContext requestContext, RepositoryCreatedNotification ev, int maxLines)
         {
-            var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
+            var repositoryService = requestContext.GetService<ITeamFoundationGitRepositoryService>();
             var identityService = requestContext.GetService<ITeamFoundationIdentityService>();
             var commonService = requestContext.GetService<CommonStructureService>();
 
             var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.Identifier, ev.Creator.Identifier);
 
-            using (TfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, ev.RepositoryId))
+            using (ITfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, ev.RepositoryId))
             {
-                string repoUri = repository.GetRepositoryUri(requestContext);
+                string repoUri = repository.GetRepositoryUri();
 
                 var notification = new Notifications.RepositoryCreatedNotification()
                 {

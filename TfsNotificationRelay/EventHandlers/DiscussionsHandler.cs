@@ -58,7 +58,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
                 if (artifactId.ArtifactType.Equals("Commit", StringComparison.OrdinalIgnoreCase))
                 {
-                    var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
+                    var repositoryService = requestContext.GetService<ITeamFoundationGitRepositoryService>();
                     var commitService = requestContext.GetService<TeamFoundationGitCommitService>();
                     
                     Guid projectGuid;
@@ -66,10 +66,10 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     Sha1Id commitId;
                     GitCommitArtifactId.Decode(artifactId, out projectGuid, out repositoryId, out commitId);
 
-                    using (TfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, repositoryId))
+                    using (ITfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, repositoryId))
                     {
                         var project = commonService.GetProject(requestContext, projectGuid);
-                        var repoUri = repository.GetRepositoryUri(requestContext);
+                        var repoUri = repository.GetRepositoryUri();
                         var commitUri = repoUri + "/commit/" + commitId.ToHexString();
                         string itemPath;
                         if (thread.Properties.TryGetValue<string>("Microsoft.TeamFoundation.Discussion.ItemPath", out itemPath))
@@ -114,12 +114,12 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     var pullRequestService = requestContext.GetService<ITeamFoundationGitPullRequestService>();
                     var pullRequest = pullRequestService.GetPullRequestDetails(requestContext, pullRequestId);
 
-                    var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
+                    var repositoryService = requestContext.GetService<ITeamFoundationGitRepositoryService>();
 
-                    using (TfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, pullRequest.RepositoryId))
+                    using (ITfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, pullRequest.RepositoryId))
                     {
                         var project = commonService.GetProject(requestContext, projectGuid);
-                        string repoUri = repository.GetRepositoryUri(requestContext);
+                        string repoUri = repository.GetRepositoryUri();
                         var creator = identityService.ReadIdentities(requestContext, new[] { pullRequest.Creator }).FirstOrDefault();
 
                         foreach (var comment in thread.Comments)

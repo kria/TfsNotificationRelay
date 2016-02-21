@@ -28,7 +28,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
     {
         protected override IEnumerable<INotification> CreateNotifications(IVssRequestContext requestContext, PushNotification pushNotification, int maxLines)
         {
-            var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
+            var repositoryService = requestContext.GetService<ITeamFoundationGitRepositoryService>();
             var commonService = requestContext.GetService<CommonStructureService>();
             var commitService = requestContext.GetService<TeamFoundationGitCommitService>();
             var identityService = requestContext.GetService<TeamFoundationIdentityService>();
@@ -36,14 +36,14 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.Identifier, pushNotification.Pusher.Identifier);
             var teamNames = GetUserTeamsByProjectUri(requestContext, pushNotification.TeamProjectUri, pushNotification.Pusher);
 
-            using (TfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, pushNotification.RepositoryId))
+            using (ITfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, pushNotification.RepositoryId))
             {
                 var pushRow = new PushRow()
                 {
                     UniqueName = pushNotification.AuthenticatedUserName,
                     DisplayName = identity.DisplayName,
                     RepoName = pushNotification.RepositoryName,
-                    RepoUri = repository.GetRepositoryUri(requestContext),
+                    RepoUri = repository.GetRepositoryUri(),
                     ProjectName = commonService.GetProject(requestContext, pushNotification.TeamProjectUri).Name,
                     IsForcePush = Settings.IdentifyForcePush && pushNotification.IsForceRequired(requestContext, repository)
                 };
@@ -70,7 +70,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                         continue;
                     }
 
-                    TfsGitObject gitObject = repository.LookupObject(requestContext, newObjectId);
+                    TfsGitObject gitObject = repository.LookupObject(newObjectId);
 
                     if (gitObject.ObjectType == WebApi.GitObjectType.Commit)
                     {
@@ -109,7 +109,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 // Add new commits with refs
                 foreach (var commitId in pushNotification.IncludedCommits.TakeWhile(c => notification.Count < maxLines))
                 {
-                    TfsGitCommit gitCommit = (TfsGitCommit)repository.LookupObject(requestContext, commitId);
+                    TfsGitCommit gitCommit = (TfsGitCommit)repository.LookupObject(commitId);
                     notification.Add(CreateCommitRow(requestContext, commitService, repository, gitCommit, CommitRowType.Commit, pushNotification, refLookup));
                 }
 
@@ -129,7 +129,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 foreach (var refUpdateResult in unknowns.TakeWhile(c => notification.Count < maxLines))
                 {
                     var newObjectId = refUpdateResult.NewObjectId;
-                    TfsGitObject gitObject = repository.LookupObject(requestContext, newObjectId);
+                    TfsGitObject gitObject = repository.LookupObject(newObjectId);
                     notification.Add(new RefUpdateRow()
                     {
                         NewObjectId = newObjectId,
@@ -142,11 +142,11 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             }
         }
 
-        private static CommitRow CreateCommitRow(IVssRequestContext requestContext, TeamFoundationGitCommitService commitService,
-            TfsGitRepository repository, TfsGitCommit gitCommit, CommitRowType rowType, PushNotification pushNotification, Dictionary<Sha1Id, List<GitRef>> refLookup)
+        private static CommitRow CreateCommitRow(IVssRequestContext requestContext, ITeamFoundationGitCommitService commitService,
+            ITfsGitRepository repository, TfsGitCommit gitCommit, CommitRowType rowType, PushNotification pushNotification, Dictionary<Sha1Id, List<GitRef>> refLookup)
         {
             var commitManifest = commitService.GetCommitManifest(requestContext, repository, gitCommit.ObjectId);
-            string repoUri = repository.GetRepositoryUri(requestContext);
+            string repoUri = repository.GetRepositoryUri();
 
             var commitRow = new CommitRow()
             {

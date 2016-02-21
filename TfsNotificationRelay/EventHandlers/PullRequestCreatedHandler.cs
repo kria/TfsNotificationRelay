@@ -28,19 +28,19 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
     {
         protected override IEnumerable<Notifications.INotification> CreateNotifications(IVssRequestContext requestContext, PullRequestCreatedNotification ev, int maxLines)
         {
-            var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
+            var repositoryService = requestContext.GetService<ITeamFoundationGitRepositoryService>();
             var identityService = requestContext.GetService<ITeamFoundationIdentityService>();
             var commonService = requestContext.GetService<ICommonStructureService>();
             
             var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.Identifier, ev.Creator.Descriptor.Identifier);
 
-            using (TfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, ev.RepositoryId))
+            using (ITfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, ev.RepositoryId))
             {
                 var pullRequestService = requestContext.GetService<ITeamFoundationGitPullRequestService>();
                 TfsGitPullRequest pullRequest;
                 if (pullRequestService.TryGetPullRequestDetails(requestContext, repository, ev.PullRequestId, out pullRequest)) 
                 {
-                    string repoUri = repository.GetRepositoryUri(requestContext);
+                    string repoUri = repository.GetRepositoryUri();
                     var reviewers = identityService.ReadIdentities(requestContext, pullRequest.Reviewers.Select(r => r.Reviewer).ToArray());
                     // Expand team identies in reviewers?
 
