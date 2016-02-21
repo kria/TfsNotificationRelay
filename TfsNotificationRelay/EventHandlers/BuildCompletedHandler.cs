@@ -27,7 +27,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
             var converter = new Build2Converter();
 
-            var notification = new BuildCompletionNotification()
+            var notification = new Build2015CompletionNotification()
             {
                 TeamProjectCollection = requestContext.ServiceHost.Name,
                 BuildUrl = ((ReferenceLink)build.Links.Links["web"]).Href,
@@ -37,7 +37,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 BuildReason = converter.ConvertReason(build.Reason),
                 StartTime = build.StartTime.Value,
                 FinishTime = build.FinishTime.Value,
-                RequestedFor = build.RequestedFor.UniqueName,
+                RequestedForUniqueName = build.RequestedFor.UniqueName,
                 RequestedForDisplayName = build.RequestedFor.DisplayName,
                 BuildDefinition = build.Definition.Name,
                 DropLocation = "",

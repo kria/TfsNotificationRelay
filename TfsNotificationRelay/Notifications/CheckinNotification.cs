@@ -50,7 +50,8 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 ChangesetId,
                 Comment = transform(Comment),
                 UserName = transform(UserName),
-                ProjectLinks = FormatProjectLinks(bot, transform)
+                ProjectLinks = FormatProjectLinks(bot, transform),
+                MappedUser = bot.GetMappedUser(UniqueName)
             };
             return new[] { bot.Text.CheckinFormat.FormatWith(formatter) };
         }

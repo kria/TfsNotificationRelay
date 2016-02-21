@@ -42,7 +42,7 @@ namespace DevCore.TfsNotificationRelay.Configuration
 
         public string GetMappedUser(string tfsUserName)
         {
-            var userMapping = UserMap.FirstOrDefault(u => u.TfsUser == tfsUserName);
+            var userMapping = UserMap.FirstOrDefault(u => u.TfsUser.Equals(tfsUserName, StringComparison.OrdinalIgnoreCase));
             return userMapping?.MappedUser;
         }
 

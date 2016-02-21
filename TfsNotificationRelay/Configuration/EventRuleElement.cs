@@ -21,10 +21,10 @@ namespace DevCore.TfsNotificationRelay.Configuration
     {
         public object Key => this;
 
-        [ConfigurationProperty("events", IsRequired = true)]
+        [ConfigurationProperty("events", DefaultValue = TfsEvents.All)]
         public TfsEvents Events => (TfsEvents)this["events"];
 
-        [ConfigurationProperty("notify")]
+        [ConfigurationProperty("notify", IsRequired = true)]
         public bool Notify => (bool)this["notify"];
 
         [ConfigurationProperty("teamProjectCollection")]
@@ -48,15 +48,8 @@ namespace DevCore.TfsNotificationRelay.Configuration
         [ConfigurationProperty("areaPath")] 
         public string AreaPath => (string)this["areaPath"];
 
-        [ConfigurationProperty("buildStatuses")]
-        public BuildStatus BuildStatuses
-        {
-            get
-            {
-                if (this["buildStatuses"] == null) return BuildStatus.All;
-                return (BuildStatus)this["buildStatuses"];
-            }
-        }
+        [ConfigurationProperty("buildStatuses", DefaultValue = BuildStatus.All)]
+        public BuildStatus BuildStatuses => (BuildStatus)this["buildStatuses"];
 
         [ConfigurationProperty("workItemfields")]
         public string WorkItemfields => (string)this["workItemfields"];

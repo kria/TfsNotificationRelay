@@ -50,7 +50,10 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 UserName = transform(UserName),
                 Action = FormatAction(bot),
                 SourceBranchName = transform(SourceBranch.Name),
-                TargetBranchName = transform(TargetBranch.Name)
+                TargetBranchName = transform(TargetBranch.Name),
+                CreatorUserName = transform(CreatorUserName),
+                MappedCreatorUser = bot.GetMappedUser(CreatorUniqueName),
+                MappedUser = bot.GetMappedUser(UniqueName)
             };
             return new[] { bot.Text.PullRequestStatusUpdateFormat.FormatWith(formatter) };
         }

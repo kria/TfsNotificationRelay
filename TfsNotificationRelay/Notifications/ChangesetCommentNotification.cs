@@ -25,7 +25,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
     {
         protected static SettingsElement Settings = TfsNotificationRelaySection.Instance.Settings;
 
-        public string CreatorUserName { get; set; }
+        public string CreatorUniqueName { get; set; }
         public string UniqueName { get; set; }
         public string DisplayName { get; set; }
         public string ChangesetUrl { get; set; }
@@ -36,6 +36,8 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string SourcePath { get; set; }
 
         public string UserName => Settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName;
+
+        public string CreatorUserName => Settings.StripUserDomain ? TextHelper.StripDomain(CreatorUniqueName) : CreatorUniqueName;
 
         public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
         {
@@ -48,7 +50,10 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 Comment = transform(Comment),
                 UserName = transform(UserName),
                 ProjectName = transform(ProjectName),
-                ProjectUrl
+                ProjectUrl,
+                CreatorUserName = transform(CreatorUserName),
+                MappedCreatorUser = bot.GetMappedUser(CreatorUniqueName),
+                MappedUser = bot.GetMappedUser(UniqueName)
             };
 
             return new[] { bot.Text.ChangesetCommentFormat.FormatWith(formatter), Comment };

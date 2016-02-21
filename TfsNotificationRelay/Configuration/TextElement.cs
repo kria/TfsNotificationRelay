@@ -60,6 +60,9 @@ namespace DevCore.TfsNotificationRelay.Configuration
         [ConfigurationProperty("buildFormat")]
         public string BuildFormat => (string)this["buildFormat"];
 
+        [ConfigurationProperty("build2015Format")]
+        public string Build2015Format => (string)this["build2015Format"];
+
         [ConfigurationProperty("buildQualityChangedFormat")]
         public string BuildQualityChangedFormat => (string)this["buildQualityChangedFormat"];
 

@@ -21,7 +21,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
     {
         protected readonly static SettingsElement Settings = TfsNotificationRelaySection.Instance.Settings;
 
-        public string CreatorUserName { get; set; }
+        public string CreatorUniqueName { get; set; }
         public string UniqueName { get; set; }
         public string DisplayName { get; set; }
         public string ProjectName { get; set; }
@@ -36,7 +36,9 @@ namespace DevCore.TfsNotificationRelay.Notifications
 
         public string UserName => Settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName;
 
-        public override IEnumerable<string> TargetUserNames => CreatorUserName != UniqueName ? new[] { CreatorUserName } : Enumerable.Empty<string>();
+        public string CreatorUserName => Settings.StripUserDomain ? TextHelper.StripDomain(CreatorUniqueName) : CreatorUniqueName;
+
+        public override IEnumerable<string> TargetUserNames => CreatorUniqueName != UniqueName ? new[] { CreatorUniqueName } : Enumerable.Empty<string>();
 
         public IEnumerable<EventRuleElement> GetRulesMatch(string collection, IEnumerable<EventRuleElement> eventRules)
         {

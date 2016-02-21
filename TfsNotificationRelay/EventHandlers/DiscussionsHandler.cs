@@ -50,11 +50,11 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             
             foreach (var thread in args.Threads)
             {
+                if (thread.Comments == null) continue; // e.g. when a comment is deleted
+
                 var artifactId = LinkingUtilities.DecodeUri(thread.ArtifactUri);
 
                 int discussionId = thread.DiscussionId <= 0 ? thread.Comments[0].DiscussionId : thread.DiscussionId;
-                List<DiscussionComment> discussionComments;
-                discussionService.QueryDiscussionsById(requestContext, discussionId, out discussionComments);
 
                 if (artifactId.ArtifactType.Equals("Commit", StringComparison.OrdinalIgnoreCase))
                 {
@@ -88,7 +88,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                             var notification = new Notifications.CommitCommentNotification()
                             {
                                 TeamProjectCollection = requestContext.ServiceHost.Name,
-                                PusherUserName = pusher?.UniqueName,
+                                PusherUniqueName = pusher?.UniqueName,
                                 UniqueName = commenter.UniqueName,
                                 DisplayName = comment.Author.DisplayName,
                                 ProjectName = project.Name,
@@ -129,7 +129,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                             var notification = new Notifications.PullRequestCommentNotification()
                             {
                                 TeamProjectCollection = requestContext.ServiceHost.Name,
-                                CreatorUserName = creator?.UniqueName,
+                                CreatorUniqueName = creator?.UniqueName,
                                 UniqueName = commenter.UniqueName,
                                 DisplayName = commenter.DisplayName,
                                 ProjectName = project.Name,
@@ -192,7 +192,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                         var notification = new Notifications.ChangesetCommentNotification()
                         {
                             TeamProjectCollection = requestContext.ServiceHost.Name,
-                            CreatorUserName = commiter?.UniqueName,
+                            CreatorUniqueName = commiter?.UniqueName,
                             UniqueName = commenter.UniqueName,
                             DisplayName = commenter.DisplayName,
                             ProjectUrl = baseUrl + projectName,

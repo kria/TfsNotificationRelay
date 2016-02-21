@@ -47,7 +47,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     var notification = new Notifications.PullRequestCreatedNotification()
                     {
                         TeamProjectCollection = requestContext.ServiceHost.Name,
-                        CreatorUserName = identity.UniqueName,
+                        CreatorUniqueName = identity.UniqueName,
                         UniqueName = identity.UniqueName,
                         DisplayName = identity.DisplayName,
                         ProjectName = commonService.GetProject(requestContext, ev.TeamProjectUri).Name,

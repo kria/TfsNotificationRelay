@@ -29,16 +29,18 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string ProjectName { get; set; }
         public string AreaPath { get; set; }
         public string AssignedTo { get; set; }
-        public string AssignedToUserName { get; set; }
+        public string AssignedToUniqueName { get; set; }
 
         public string UserName => Settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName;
+
+        public string AssignedToUserName => Settings.StripUserDomain ? TextHelper.StripDomain(AssignedToUniqueName) : AssignedToUniqueName;
 
         public override IEnumerable<string> TargetUserNames
         {
             get
             {
-                if (AssignedToUserName != null && AssignedToUserName != UniqueName)
-                    return new[] { AssignedToUserName };
+                if (AssignedToUniqueName != null && AssignedToUniqueName != UniqueName)
+                    return new[] { AssignedToUniqueName };
                 else
                     return Enumerable.Empty<string>();
             }

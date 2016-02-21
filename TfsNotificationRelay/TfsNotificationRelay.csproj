@@ -148,6 +148,7 @@
     <Compile Include="Notifications\ICommentNotification.cs" />
     <Compile Include="Notifications\PullRequestCommentNotification.cs" />
     <Compile Include="Notifications\PullRequestNotification.cs" />
+    <Compile Include="Notifications\Build2015CompletionNotification.cs" />
     <Compile Include="TextHelper.cs" />
     <Compile Include="INotifier.cs" />
     <Compile Include="Notifications\BaseNotification.cs" />

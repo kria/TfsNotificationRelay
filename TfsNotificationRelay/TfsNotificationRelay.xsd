@@ -42,7 +42,7 @@
                         <xs:sequence>
                           <xs:element maxOccurs="unbounded" name="rule">
                             <xs:complexType>
-                              <xs:attribute name="events" type="xs:string" use="required" />
+                              <xs:attribute name="events" type="xs:string" />
                               <xs:attribute name="notify" type="xs:boolean" use="required" />
                               <xs:attribute name="teamProjectCollection" type="xs:string" />
                               <xs:attribute name="teamProject" type="xs:string" />
@@ -90,6 +90,7 @@
                   <xs:attribute name="dateTimeFormat" type="xs:string" use="required" />
                   <xs:attribute name="timeSpanFormat" type="xs:string" use="required" />
                   <xs:attribute name="buildFormat" type="xs:string" use="required" />
+                  <xs:attribute name="build2015Format" type="xs:string" use="required" />
                   <xs:attribute name="buildQualityChangedFormat" type="xs:string" use="required" />
                   <xs:attribute name="buildQualityNotSet" type="xs:string" use="required" />
                   <xs:attribute name="projectCreatedFormat" type="xs:string" use="required" />
