@@ -46,12 +46,12 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             int id = idField.NewValue;
 
             var assignedTo = ev.CoreFields.StringFields.GetFieldValue("System.AssignedTo", f => f.NewValue);
-            string assignedToUserName = null;
+            string assignedToUniqueName = null;
             if (!string.IsNullOrEmpty(assignedTo))
             {
                 var assignedToIdentity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.DisplayName, assignedTo);
                 if (assignedToIdentity != null)
-                    assignedToUserName = assignedToIdentity.UniqueName;
+                    assignedToUniqueName = assignedToIdentity.UniqueName;
             }
 
             var teamNames = GetUserTeamsByProjectUri(requestContext, ev.ProjectNodeId, identity.Descriptor).ToList();
@@ -71,7 +71,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     ProjectName = ev.PortfolioProject,
                     AreaPath = ev.AreaPath,
                     AssignedTo = assignedTo,
-                    AssignedToUserName = assignedToUserName,
+                    AssignedToUniqueName = assignedToUniqueName,
                     CommentHtml = comment.Value,
                     Comment = TextHelper.HtmlToText(comment.Value),
                     TeamNames = teamNames
@@ -96,7 +96,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 IsAssignmentChanged = ev.ChangedFields?.StringFields?.Any(f => f.ReferenceName == "System.AssignedTo") ?? false,
                 State = ev.CoreFields.StringFields.GetFieldValue("System.State", f => f.NewValue),
                 AssignedTo = assignedTo,
-                AssignedToUserName = assignedToUserName,
+                AssignedToUniqueName = assignedToUniqueName,
                 CoreFields = ev.CoreFields,
                 ChangedFields = ev.ChangedFields,
                 TeamNames = teamNames

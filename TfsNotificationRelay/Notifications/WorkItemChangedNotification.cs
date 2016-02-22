@@ -50,7 +50,10 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 AssignedTo = transform(AssignedTo),
                 State = transform(State),
                 UserName = transform(UserName),
-                Action = FormatAction(bot)
+                Action = FormatAction(bot),
+                AssignedToUserName = transform(AssignedToUserName),
+                MappedAssignedToUser = bot.GetMappedUser(AssignedToUniqueName),
+                MappedUser = bot.GetMappedUser(UniqueName)
             };
             lines.Add(bot.Text.WorkItemchangedFormat.FormatWith(formatter));
 

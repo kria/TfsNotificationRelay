@@ -45,6 +45,7 @@ namespace DevCore.TfsNotificationRelay
 
         public static string StripDomain(string username)
         {
+            if (username == null) return null;
             int pos = username.IndexOf("\\");
             return pos != -1 ? username.Substring(pos + 1) : username;
         }

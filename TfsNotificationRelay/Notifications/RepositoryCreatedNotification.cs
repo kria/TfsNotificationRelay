@@ -39,7 +39,8 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 UserName = transform(UserName),
                 ProjectName = transform(ProjectName),
                 RepoUri,
-                RepoName = transform(RepoName)
+                RepoName = transform(RepoName),
+                MappedUser = bot.GetMappedUser(UniqueName)
             };
 
             return new[] { bot.Text.RepositoryCreatedFormat.FormatWith(formatter) };

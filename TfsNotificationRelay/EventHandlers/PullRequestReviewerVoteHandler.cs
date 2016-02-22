@@ -46,7 +46,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     var notification = new Notifications.PullRequestReviewerVoteNotification()
                     {
                         TeamProjectCollection = requestContext.ServiceHost.Name,
-                        CreatorUserName = creator.UniqueName,
+                        CreatorUniqueName = creator.UniqueName,
                         Vote = ev.ReviewerVote,
                         UniqueName = identity.UniqueName,
                         DisplayName = identity.DisplayName,

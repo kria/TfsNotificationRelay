@@ -51,7 +51,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     BuildReason = build.Reason,
                     StartTime = build.StartTime,
                     FinishTime = build.FinishTime,
-                    RequestedFor = qb.RequestedFor,
+                    RequestedForUniqueName = qb.RequestedFor,
                     RequestedForDisplayName = qb.RequestedForDisplayName,
                     BuildDefinition = build.Definition.Name,
                     DropLocation = build.DropLocation,

@@ -6,34 +6,32 @@ TfsNotificationRelay is an extensible plugin for Team Foundation Server that sen
 
 ## Features
 
-- [x] Notify multiple targets
-- [x] Rule-based event filtering
-- [x] Collection/project/repository regex filtering
-- [x] Configurable notification format
-- [x] Notification links to event in TFS web
-- [x] Extensible
+- Notify multiple targets
+- Rule-based event filtering
+- Regex filtering on collection, project, repository, branch etc.
+- Configurable notification format
+- Notification links back to event in TFS web
+- Extensible to support other targets
 
-### Events
+## Supported Events
 
-- [x] XAML Build completion
-- [x] vNext Build completion (*)
-- [x] Build quality change
-- [x] Work item update
-- [x] Team project creation/deletion
+- XAML Build completion
+- vNext Build completion*
+- Build quality change
+- Work item update
+- Team project creation/deletion
 - Git
-  - [x] Push
-  - [x] Comment on commit (*)
-  - [x] Pull request (*)
-  - [x] Comment on pull request (*)
-  - [x] New repository
-  - [x] New branch/tag
-  - [x] Deleted branch/tag
-  - [x] Updated ref
-  - [x] Lightweight/annotated tag
-  - [x] Force-push
+  + Push and force-push
+  + Pull request*
+  + Comment on Pull request*
+  + Comment on Commit*
+  + Repository created
+  + Branch created/deleted
+  + Tag created/deleted (both lightweight and annotated)
+  + Ref updated
 - TFVC
-  - [x] Checkin
-  - [x] Comment on changeset (*)
+  + Checkin
+  + Comment on changeset*
 
 *TFS 2015 only
 
@@ -43,24 +41,36 @@ TfsNotificationRelay is an extensible plugin for Team Foundation Server that sen
 
 ![HipChat screenshot](https://raw.githubusercontent.com/kria/TfsNotificationRelay/master/hipchat-notifications.png)
 
-## Installation & Configuration
-
-See the [wiki](https://github.com/kria/TfsNotificationRelay/wiki).
-
 ## TFS version support
 
-There are two separate [releases](https://github.com/kria/TfsNotificationRelay/releases) of TfsNotificationRelay:
+Since the TFS API changes quite frequently, there are multiple editions of TfsNotificationRelay. Make sure you pick the correct one for your system.
 
-* **TfsNotificationRelay for TFS 2013** - Should work on TFS 2013.2 and up. Because of a few breaking API changes in TFS 2013.2, the plugin won't work on previous versions without some minor modifications.
-* **TfsNotificationRelay for TFS 2015**
+- TfsNotificationRelay for TFS 2013 - TFS 2013.2 and up
+- TfsNotificationRelay for TFS 2015
+- TfsNotificationRelay for TFS 2015.1
+- TfsNotificationRelay for TFS 2015.2
+
+## Download
+
+Download from [releases](https://github.com/kria/TfsNotificationRelay/releases).
+
+## Installation & Configuration
+
+See the [wiki](https://github.com/kria/TfsNotificationRelay/wiki)
+ on how to install and configure TfsNotificationRelay.
+
+## Building
+
+Visual Studio 2015 is required since TfsNotificationRelay uses C# 6. All needed TFS dependecies are included, so you should be able to just clone and build.
 
 ## Branches
 
-Branch    | Description
-----------|----------------------------------
-`master`  | TfsNotificationRelay for TFS 2013
-`tfs2015` | TfsNotificationRelay for TFS 2015
-`develop` | Current development (based on master)
+Branch     | Description                         | Status
+-----------|-------------------------------------|-------
+`master`   | TfsNotificationRelay for TFS 2015   | [![master status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/master?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/master)
+`tfs2013`  | TfsNotificationRelay for TFS 2013   | [![tfs2013 status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/tfs2013?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/tfs2013)
+`tfs2015.1`| TfsNotificationRelay for TFS 2015.1 | [![tfs2015.1 status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/tfs2015.1?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/tfs2015.1)
+`tfs2015.2`| TfsNotificationRelay for TFS 2015.2 | [![tfs2015.2 status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/tfs2015.2?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/tfs2015.2)
 
 ## Extending TfsNotificationRelay
 
@@ -74,6 +84,6 @@ TfsNotificationRelay can easily be extended to send notifications to other servi
 
 ## License
 
-Copyright (C) 2014-2015 Kristian Adrup
+Copyright (C) 2014-2016 Kristian Adrup
 
 TfsNotificationRelay is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. See included file [COPYING](COPYING) for details.
