@@ -141,6 +141,7 @@
     <Compile Include="EventHandlers\PullRequestReviewerVoteHandler.cs" />
     <Compile Include="EventHandlers\PullRequestStatusUpdateHandler.cs" />
     <Compile Include="EventHandlers\RepositoryCreatedHandler.cs" />
+    <Compile Include="EventHandlers\UserField.cs" />
     <Compile Include="HtmlToText.cs" />
     <Compile Include="Notifications\ChangesetCommentNotification.cs" />
     <Compile Include="Notifications\CommitCommentNotification.cs" />
