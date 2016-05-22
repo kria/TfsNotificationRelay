@@ -12,6 +12,7 @@
  */
 
 using DevCore.TfsNotificationRelay.Configuration;
+using DevCore.TfsNotificationRelay.EventHandlers;
 using Microsoft.TeamFoundation.WorkItemTracking.Server;
 using System;
 using System.Collections.Generic;
@@ -162,9 +163,8 @@ namespace DevCore.TfsNotificationRelay.Notifications
 
         private string GetDisplayName(string value)
         {
-            string pattern = @"\|(.*)%";
-            var match = Regex.Match(value, pattern);
-            if (match.Success) return match.Groups[1].Value;
+            UserField field = null;
+            if (UserField.TryParse(value, out field)) return field.DisplayName;
 
             return value;
         }

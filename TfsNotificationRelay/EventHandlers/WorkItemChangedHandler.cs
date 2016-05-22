@@ -45,13 +45,18 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             if (idField == null) throw new TfsNotificationRelayException("missing System.Id");
             int id = idField.NewValue;
 
-            var assignedTo = ev.CoreFields.StringFields.GetFieldValue("System.AssignedTo", f => f.NewValue);
+            var assignedToString = ev.CoreFields.StringFields.GetFieldValue("System.AssignedTo", f => f.NewValue);
             string assignedToUniqueName = null;
-            if (!string.IsNullOrEmpty(assignedTo))
+            string assignedTo = null;
+            if (!string.IsNullOrEmpty(assignedToString))
             {
-                var assignedToIdentity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.DisplayName, assignedTo);
-                if (assignedToIdentity != null)
+                UserField assignedToField = null;
+                if (UserField.TryParse(assignedToString, out assignedToField) && assignedToField.Identifier != Guid.Empty)
+                {
+                    assignedTo = assignedToField.DisplayName;
+                    var assignedToIdentity = identityService.ReadIdentities(requestContext, new[] { assignedToField.Identifier }).First();
                     assignedToUniqueName = assignedToIdentity.UniqueName;
+                }
             }
 
             var teamNames = GetUserTeamsByProjectUri(requestContext, ev.ProjectNodeId, identity.Descriptor).ToList();
