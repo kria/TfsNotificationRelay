@@ -170,5 +170,11 @@ namespace DevCore.TfsNotificationRelay.Configuration
 
         [ConfigurationProperty("changesetCommentFormat")]
         public string ChangesetCommentFormat => (string)this["changesetCommentFormat"];
+
+        [ConfigurationProperty("releaseCreatedFormat")]
+        public string ReleaseCreatedFormat => (string)this["releaseCreatedFormat"];
+
+        [ConfigurationProperty("releaseEnvironmentCompletedFormat")]
+        public string ReleaseEnvironmentCompletedFormat => (string)this["releaseEnvironmentCompletedFormat"];
     }
 }

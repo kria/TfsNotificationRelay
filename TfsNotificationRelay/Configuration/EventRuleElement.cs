@@ -12,8 +12,11 @@
  */
 
 using Microsoft.TeamFoundation.Build.Server;
+using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 
 namespace DevCore.TfsNotificationRelay.Configuration
 {
@@ -39,13 +42,16 @@ namespace DevCore.TfsNotificationRelay.Configuration
         [ConfigurationProperty("buildDefinition")]
         public string BuildDefinition => (string)this["buildDefinition"];
 
+        [ConfigurationProperty("releaseDefinition")]
+        public string ReleaseDefinition => (string)this["releaseDefinition"];
+
         [ConfigurationProperty("teamName")]
         public string TeamName => (string)this["teamName"];
 
         [ConfigurationProperty("workItemType")]
         public string WorkItemType => (string)this["workItemType"];
 
-        [ConfigurationProperty("areaPath")] 
+        [ConfigurationProperty("areaPath")]
         public string AreaPath => (string)this["areaPath"];
 
         [ConfigurationProperty("buildStatuses", DefaultValue = BuildStatus.All)]
@@ -64,5 +70,23 @@ namespace DevCore.TfsNotificationRelay.Configuration
 
         [ConfigurationProperty("gitTag")]
         public string GitTag => (string)this["gitTag"];
+
+        [ConfigurationProperty("environment")]
+        public string Environment => (string)this["environment"];
+
+        [ConfigurationProperty("environmentStatuses")]
+        public string EnvironmentStatuses => (string)this["environmentStatuses"];
+
+        public IEnumerable<EnvironmentStatus> EnvironmentStatusesEnums { get; private set; }
+
+        protected override void PostDeserialize()
+        {
+            base.PostDeserialize();
+
+            if (EnvironmentStatuses == "" || EnvironmentStatuses == "All")
+                EnvironmentStatusesEnums = Enumerable.Empty<EnvironmentStatus>();
+            else
+                EnvironmentStatusesEnums = TextHelper.SplitCsv(EnvironmentStatuses).Cast<EnvironmentStatus>().ToArray();
+        }
     }
 }

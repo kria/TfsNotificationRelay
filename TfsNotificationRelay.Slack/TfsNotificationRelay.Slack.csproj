@@ -34,6 +34,10 @@
       <HintPath>..\lib\Microsoft.TeamFoundation.Framework.Server.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.Services.ReleaseManagement.WebApi">
+      <HintPath>..\lib\Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.WebApi, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Microsoft.VisualStudio.Services.WebApi.dll</HintPath>

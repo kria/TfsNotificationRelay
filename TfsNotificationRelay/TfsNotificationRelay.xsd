@@ -48,6 +48,7 @@
                               <xs:attribute name="teamProject" type="xs:string" />
                               <xs:attribute name="gitRepository" type="xs:string" />
                               <xs:attribute name="buildDefinition" type="xs:string" />
+                              <xs:attribute name="releaseDefinition" type="xs:string" />
                               <xs:attribute name="teamName" type="xs:string" />
                               <xs:attribute name="workItemType" type="xs:string" />
                               <xs:attribute name="areaPath" type="xs:string" />
@@ -56,6 +57,8 @@
                               <xs:attribute name="sourcePath" type="xs:string" />
                               <xs:attribute name="gitBranch" type="xs:string" />
                               <xs:attribute name="gitTag" type="xs:string" />
+                              <xs:attribute name="environment" type="xs:string" />
+                              <xs:attribute name="environmentStatuses" type="xs:string" />
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>
@@ -127,6 +130,8 @@
                   <xs:attribute name="commitCommentFormat" type="xs:string" use="required" />
                   <xs:attribute name="pullRequestCommentFormat" type="xs:string" use="required" />
                   <xs:attribute name="changesetCommentFormat" type="xs:string" use="required" />
+                  <xs:attribute name="releaseCreatedFormat" type="xs:string" use="required" />
+                  <xs:attribute name="releaseEnvironmentCompletedFormat" type="xs:string" use="required" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>

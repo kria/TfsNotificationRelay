@@ -38,6 +38,9 @@
     <Reference Include="Microsoft.TeamFoundation.Build.Server">
       <HintPath>..\lib\Microsoft.TeamFoundation.Build.Server.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.Services.ReleaseManagement.WebApi">
+      <HintPath>..\..\TfsGitPolicy\lib\Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
   </ItemGroup>
@@ -49,7 +52,9 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -58,6 +63,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TfsNotificationRelay.Slack\TfsNotificationRelay.Slack.csproj">
+      <Project>{1b7cd662-6b07-47fe-8a83-a9201631377a}</Project>
+      <Name>TfsNotificationRelay.Slack</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TfsNotificationRelay\TfsNotificationRelay.csproj">
       <Project>{b42fe02c-24b3-4d93-b27b-df3a352e8504}</Project>
       <Name>TfsNotificationRelay</Name>
