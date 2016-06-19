@@ -17,16 +17,16 @@ using System.Linq;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
-    public class RepositoryCreatedNotification : RepositoryNotification
+    public class RepositoryRenamedNotification : RepositoryNotification
     {
         protected override string GetFormat(BotElement bot)
         {
-            return bot.Text.RepositoryCreatedFormat;
+            return bot.Text.RepositoryRenamedFormat;
         }
 
         public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
         {
-            return GetRulesMatch(collection, eventRules).FirstOrDefault(r => r.Events.HasFlag(TfsEvents.RepositoryCreated));
+            return GetRulesMatch(collection, eventRules).FirstOrDefault(r => r.Events.HasFlag(TfsEvents.RepositoryRenamed));
         }
     }
 }

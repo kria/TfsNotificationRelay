@@ -21,28 +21,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.TeamFoundation.Common;
 
-namespace DevCore.Tfs2Slack.EventHandlers
+namespace DevCore.TfsNotificationRelay.EventHandlers
 {
-    class DebugHandler : BaseHandler
+    class DebugHandler : ISubscriber
     {
-        public override Type[] SubscribedTypes()
+        public string Name => "DebugHandler";
+
+        public SubscriberPriority Priority => SubscriberPriority.Normal;
+
+        public Type[] SubscribedTypes()
         {
-            return new Type[] { 
-                typeof(TitleDescriptionUpdatedNotification),
-                typeof(MergeCompletedNotification),
-                typeof(ReviewersUpdateNotification),
-                typeof(PreProjectDeletionNotification),
-                typeof(LabelNotification),
-                typeof(RepositoryCreatedNotification)
+            return new Type[] {
+                typeof(RepositoryCreatedNotification),
+                typeof(RepositoryDeletedNotification),
+                typeof(RepositoryRenamedNotification)
             };
         }
 
-        protected override Notifications.INotification CreateNotification(TeamFoundationRequestContext requestContext, object eventargs, int maxLines)
+        public EventNotificationStatus ProcessEvent(IVssRequestContext requestContext, NotificationType notificationType, object notificationEventArgs, out int statusCode, out string statusMessage, out ExceptionPropertyCollection properties)
         {
-            Logger.Log("eventargs: " + JObject.FromObject(eventargs).ToString());
+            statusCode = 0;
+            statusMessage = string.Empty;
+            properties = null;
 
-            throw new Tfs2SlackException("DebugHandler");
+            Logger.Log("notificationType: " + notificationType);
+            Logger.Log("event: " + notificationEventArgs.GetType());
+            Logger.Log("eventargs", notificationEventArgs);
+
+            return EventNotificationStatus.ActionApproved;
         }
     }
 }
