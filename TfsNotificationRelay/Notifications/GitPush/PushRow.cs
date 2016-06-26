@@ -30,18 +30,18 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
         public bool IsForcePush { get; set; }
         public string UserName => Settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName;
 
-        public override string ToString(BotElement bot, Func<string, string> transform)
+        public override string ToString(BotElement bot, TextElement text, Func<string, string> transform)
         {
             var formatter = new
             {
                 DisplayName = transform(DisplayName), RepoUri,
                 ProjectName = transform(ProjectName),
                 RepoName = transform(RepoName),
-                Pushed = IsForcePush ? bot.Text.ForcePushed : bot.Text.Pushed,
+                Pushed = IsForcePush ? text.ForcePushed : text.Pushed,
                 UserName = transform(UserName),
                 MappedUser = bot.GetMappedUser(UniqueName)
             };
-            return bot.Text.PushFormat.FormatWith(formatter);
+            return text.PushFormat.FormatWith(formatter);
         }
     }
 }

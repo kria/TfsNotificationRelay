@@ -37,7 +37,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string UserName => Settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName;
         public string PusherUserName => Settings.StripUserDomain ? TextHelper.StripDomain(PusherUniqueName) : PusherUniqueName;
 
-        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform)
         {
             var formatter = new
             {
@@ -55,7 +55,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 MappedUser = bot.GetMappedUser(UniqueName)
             };
 
-            return new[] { bot.Text.CommitCommentFormat.FormatWith(formatter), Comment };
+            return new[] { text.CommitCommentFormat.FormatWith(formatter), Comment };
         }
 
         public override IEnumerable<string> TargetUserNames =>

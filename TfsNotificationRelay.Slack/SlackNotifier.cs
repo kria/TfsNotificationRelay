@@ -51,7 +51,7 @@ namespace DevCore.TfsNotificationRelay.Slack
         {
             var lines = notification.ToMessage(bot, s => s);
 
-            return SlackHelper.CreateSlackMessage(lines, bot, channel, bot.GetSetting("standardColor"), asUser);
+            return SlackHelper.CreateSlackMessage(lines, bot, channel, asUser);
         }
 
         public Message ToSlackMessage(BuildCompletionNotification notification, BotElement bot, string channel, bool asUser)

@@ -70,6 +70,11 @@ namespace DevCore.TfsNotificationRelay.Configuration
             return GetSetting(name) ?? fallback;
         }
 
+        public int GetIntSetting(string name, int fallback)
+        {
+            int val;
+            return int.TryParse(GetSetting(name), out val) ? val : fallback;
+        }
         public IEnumerable<string> GetCsvSetting(string name, string fallback)
         {
             return TextHelper.SplitCsv(GetSetting(name, fallback));

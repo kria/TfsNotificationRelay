@@ -24,9 +24,9 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
     {
         public IEnumerable<GitRef> Refs { get; set; }
 
-        public override string ToString(BotElement bot, Func<string, string> transform)
+        public override string ToString(BotElement bot, TextElement text, Func<string, string> transform)
         {
-            return $"{Refs.ToString(bot, transform)} {bot.Text.Deleted}";
+            return $"{Refs.ToString(text, transform)} {text.Deleted}";
         }
     }
 }

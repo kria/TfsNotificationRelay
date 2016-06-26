@@ -21,19 +21,19 @@ namespace DevCore.TfsNotificationRelay.Notifications
     public class PullRequestReviewerVoteNotification : PullRequestNotification
     {
         public short Vote { get; set; }
-        private string FormatAction(BotElement bot)
+        private string FormatAction(TextElement text)
         {
             switch (Vote)
             {
-                case -10: return bot.Text.VoteRejected;
-                case 0: return bot.Text.VoteRescinded;
-                case 10: return bot.Text.VoteApproved;
+                case -10: return text.VoteRejected;
+                case 0: return text.VoteRescinded;
+                case 10: return text.VoteApproved;
                 default:
                     return $"voted {Vote} on";
             }
         }
 
-        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform)
         {
             var formatter = new
             {
@@ -47,14 +47,14 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 PrUrl,
                 PrTitle = transform(PrTitle),
                 UserName = transform(UserName),
-                Action = FormatAction(bot),
+                Action = FormatAction(text),
                 SourceBranchName = transform(SourceBranch.Name),
                 TargetBranchName = transform(TargetBranch.Name),
                 CreatorUserName = transform(CreatorUserName),
                 MappedCreatorUser = bot.GetMappedUser(CreatorUniqueName),
                 MappedUser = bot.GetMappedUser(UniqueName)
             };
-            return new[] { bot.Text.PullRequestReviewerVoteFormat.FormatWith(formatter) };
+            return new[] { text.PullRequestReviewerVoteFormat.FormatWith(formatter) };
         }
 
         public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
