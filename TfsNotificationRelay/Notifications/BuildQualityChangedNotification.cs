@@ -23,7 +23,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string OldValue { get; set; }
         public string NewValue { get; set; }
 
-        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform)
         {
             var formatter = new
             {
@@ -39,12 +39,12 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 StartTime,
                 FinishTime,
                 UserName = transform(UserName),
-                BuildDuration = FormatBuildDuration(bot),
+                BuildDuration = FormatBuildDuration(text),
                 DropLocation,
-                NewValue = NewValue == null ? bot.Text.BuildQualityNotSet : transform(NewValue),
-                OldValue = OldValue == null ? bot.Text.BuildQualityNotSet : transform(OldValue),
+                NewValue = NewValue == null ? text.BuildQualityNotSet : transform(NewValue),
+                OldValue = OldValue == null ? text.BuildQualityNotSet : transform(OldValue),
             };
-            return new[] { bot.Text.BuildQualityChangedFormat.FormatWith(formatter) };
+            return new[] { text.BuildQualityChangedFormat.FormatWith(formatter) };
         }
 
         public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)

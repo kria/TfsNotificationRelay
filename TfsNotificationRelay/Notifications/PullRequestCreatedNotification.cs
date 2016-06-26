@@ -20,7 +20,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
 {
     public class PullRequestCreatedNotification : PullRequestNotification
     {
-        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform)
         {
             var formatter = new
             {
@@ -38,7 +38,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 MappedUser = bot.GetMappedUser(UniqueName)
             };
 
-            return new[] { bot.Text.PullRequestCreatedFormat.FormatWith(formatter) };
+            return new[] { text.PullRequestCreatedFormat.FormatWith(formatter) };
         }
 
         public override IEnumerable<string> TargetUserNames => ReviewerUserNames;

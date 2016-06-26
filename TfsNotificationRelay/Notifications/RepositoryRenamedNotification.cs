@@ -19,9 +19,9 @@ namespace DevCore.TfsNotificationRelay.Notifications
 {
     public class RepositoryRenamedNotification : RepositoryNotification
     {
-        protected override string GetFormat(BotElement bot)
+        protected override string GetFormat(TextElement text)
         {
-            return bot.Text.RepositoryRenamedFormat;
+            return text.RepositoryRenamedFormat;
         }
 
         public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)

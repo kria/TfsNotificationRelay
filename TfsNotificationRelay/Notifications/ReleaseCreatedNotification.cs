@@ -20,7 +20,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
 {
     class ReleaseCreatedNotification : ReleaseNotification
     {
-        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform)
         {
             var formatter = new
             {
@@ -38,7 +38,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 UserName = transform(UserName),
                 MappedUser = bot.GetMappedUser(CreatedByUniqueName)
             };
-            return new[] { bot.Text.ReleaseCreatedFormat.FormatWith(formatter) };
+            return new[] { text.ReleaseCreatedFormat.FormatWith(formatter) };
         }
 
         public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)

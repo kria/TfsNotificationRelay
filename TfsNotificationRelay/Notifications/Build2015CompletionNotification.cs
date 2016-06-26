@@ -17,9 +17,9 @@ namespace DevCore.TfsNotificationRelay.Notifications
 {
     public class Build2015CompletionNotification : BuildCompletionNotification
     {
-        protected override string GetBuildFormat(BotElement bot)
+        protected override string GetBuildFormat(TextElement text)
         {
-            return string.IsNullOrEmpty(bot.Text.Build2015Format) ? bot.Text.BuildFormat : bot.Text.Build2015Format;
+            return string.IsNullOrEmpty(text.Build2015Format) ? text.BuildFormat : text.Build2015Format;
         }
     }
 }

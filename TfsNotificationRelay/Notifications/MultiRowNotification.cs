@@ -26,18 +26,23 @@ namespace DevCore.TfsNotificationRelay.Notifications
 
         public int TotalLineCount { get; set; }
 
-        public IList<string> ToMessage(BotElement bot, Func<string, string> transform)
+        public IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform)
         {
-            var lines = this.Select(r => r.ToString(bot, transform)).ToList();
+            var lines = this.Select(r => r.ToString(bot, text, transform)).ToList();
             if (lines.Count > 0)
             {
                 if (lines.Count < TotalLineCount)
                 {
-                    lines.Add(bot.Text.LinesSupressedFormat.FormatWith(new { Count = TotalLineCount - lines.Count }));
+                    lines.Add(text.LinesSupressedFormat.FormatWith(new { Count = TotalLineCount - lines.Count }));
                 }
             }
 
             return lines;
+        }
+
+        public IList<string> ToMessage(BotElement bot, Func<string, string> transform)
+        {
+            return ToMessage(bot, bot.Text, transform);
         }
 
         public virtual IEnumerable<string> TargetUserNames => Enumerable.Empty<string>();

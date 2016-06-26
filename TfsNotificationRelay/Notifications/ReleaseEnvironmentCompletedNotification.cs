@@ -24,7 +24,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string EnvironmentName { get; set; }
         public EnvironmentStatus EnvironmentStatus { get; set; }
 
-        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform)
         {
             var formatter = new
             {
@@ -45,7 +45,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 MappedUser = bot.GetMappedUser(CreatedByUniqueName)
             };
 
-            return new[] { bot.Text.ReleaseEnvironmentCompletedFormat.FormatWith(formatter), $"{formatter.EnvironmentName}: {formatter.EnvironmentName}" };
+            return new[] { text.ReleaseEnvironmentCompletedFormat.FormatWith(formatter), $"{formatter.EnvironmentName}: {formatter.EnvironmentName}" };
         }
 
         public bool IsSuccessful => EnvironmentStatus == EnvironmentStatus.Succeeded;

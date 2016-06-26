@@ -16,11 +16,26 @@ using DevCore.TfsNotificationRelay.Slack.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace DevCore.TfsNotificationRelay.Slack
 {
     class SlackHelper
     {
+        public static Message CreateSlackMessage(IEnumerable<string> lines, BotElement bot, string channel, bool asUser)
+        {
+            if (lines == null || !lines.Any()) return null;
+            var sb = new StringBuilder();
+            sb.AppendLine(lines.First());
+            foreach(var line in lines.Skip(1))
+            {
+                sb.Append(">");
+                sb.AppendLine(line);
+            }
+
+            return CreateSlackMessage(sb.ToString(), null, bot, channel, null, asUser);
+        }
+
         public static Message CreateSlackMessage(IEnumerable<string> lines, BotElement bot, string channel, string color, bool asUser) 
         {
             if (lines == null || !lines.Any()) return null;
@@ -31,15 +46,15 @@ namespace DevCore.TfsNotificationRelay.Slack
             return CreateSlackMessage(header, fields, bot, channel, color, asUser);
         }
 
-        public static Message CreateSlackMessage(string header, IEnumerable<AttachmentField> fields, BotElement bot, string channel, string color, bool asUser)
+        public static Message CreateSlackMessage(string text, IEnumerable<AttachmentField> fields, BotElement bot, string channel, string color, bool asUser)
         {
-            if (header == null) return null;
+            if (text == null) return null;
             IEnumerable<Attachment> attachments = null;
-            if (fields.Any())
+            if (fields != null && fields.Any())
             {
                 attachments = new[] {
                     new Attachment() {
-                        Fallback = header,
+                        Fallback = text,
                         Color = color,
                         Fields = fields
                     }
@@ -48,10 +63,9 @@ namespace DevCore.TfsNotificationRelay.Slack
             var message = new Message()
             {
                 Channel = channel,
-                Text = header,
+                Text = text,
                 Attachments = attachments
             };
-            message.Text = header;
 
             if (!asUser)
             {

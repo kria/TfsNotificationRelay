@@ -33,14 +33,14 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string Comment { get; set; }
         public IEnumerable<string> SubmittedItems { get; set; }
 
-        private string FormatProjectLinks(BotElement bot, Func<string, string> transform)
+        private string FormatProjectLinks(TextElement text, Func<string, string> transform)
         {
-            return string.Join(", ", Projects.Select(x => bot.Text.ProjectLinkFormat
+            return string.Join(", ", Projects.Select(x => text.ProjectLinkFormat
                 .FormatWith(new { ProjectName = transform(x.Key), ProjectUrl = x.Value })));
         }
         public string UserName => Settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName;
 
-        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform)
         {
             var formatter = new
             {
@@ -50,10 +50,10 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 ChangesetId,
                 Comment = transform(Comment),
                 UserName = transform(UserName),
-                ProjectLinks = FormatProjectLinks(bot, transform),
+                ProjectLinks = FormatProjectLinks(text, transform),
                 MappedUser = bot.GetMappedUser(UniqueName)
             };
-            return new[] { bot.Text.CheckinFormat.FormatWith(formatter) };
+            return new[] { text.CheckinFormat.FormatWith(formatter) };
         }
 
         public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
