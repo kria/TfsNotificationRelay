@@ -28,7 +28,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string ProjectUrl { get; set; }
         public string ProjectName { get; set; }
 
-        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform)
         {
             var formatter = new
             {
@@ -37,7 +37,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 ProjectName = transform(ProjectName),
             };
 
-            return new[] { bot.Text.ProjectCreatedFormat.FormatWith(formatter) };
+            return new[] { text.ProjectCreatedFormat.FormatWith(formatter) };
         }
 
         public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)

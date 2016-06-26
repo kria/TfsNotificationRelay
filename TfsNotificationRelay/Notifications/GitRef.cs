@@ -54,9 +54,9 @@ namespace DevCore.TfsNotificationRelay.Notifications
             IsNew = updateResult.OldObjectId.IsZero();
         }
 
-        public string ToString(BotElement bot, Func<string, string> transform)
+        public string ToString(TextElement text, Func<string, string> transform)
         {
-            string pattern = Type == GitRefType.Tag ? bot.Text.TagFormat : bot.Text.BranchFormat;
+            string pattern = Type == GitRefType.Tag ? text.TagFormat : text.BranchFormat;
             var sb = new StringBuilder();
             if (Type == GitRefType.Branch && IsNew) sb.Append("+");
             sb.Append(Name);
@@ -70,9 +70,9 @@ namespace DevCore.TfsNotificationRelay.Notifications
 
     public static class GitRefExtension
     {
-        public static string ToString(this IEnumerable<GitRef> refs, BotElement bot, Func<string, string> transform)
+        public static string ToString(this IEnumerable<GitRef> refs, TextElement text, Func<string, string> transform)
         {
-            return string.Join(bot.Text.RefSeparator, refs.Select(r => r.ToString(bot, transform)));
+            return string.Join(text.RefSeparator, refs.Select(r => r.ToString(text, transform)));
         }
     }
 

@@ -23,7 +23,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string Comment { get; set; }
         public string CommentHtml { get; set; }
 
-        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform)
         {
             var lines = new List<string>();
             var formatter = new
@@ -37,12 +37,12 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 WiId,
                 WiTitle = transform(WiTitle),
                 UserName = transform(UserName),
-                Action = bot.Text.CommentedOn,
+                Action = text.CommentedOn,
                 AssignedToUserName = transform(AssignedToUserName),
                 MappedAssignedToUser = bot.GetMappedUser(AssignedToUniqueName),
                 MappedUser = bot.GetMappedUser(UniqueName)
             };
-            lines.Add(bot.Text.WorkItemchangedFormat.FormatWith(formatter));
+            lines.Add(text.WorkItemchangedFormat.FormatWith(formatter));
             lines.Add(TextHelper.Truncate(Comment, Settings.DiscussionCommentMaxLength));
 
             return lines;

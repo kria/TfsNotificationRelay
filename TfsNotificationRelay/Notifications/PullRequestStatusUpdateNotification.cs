@@ -22,19 +22,19 @@ namespace DevCore.TfsNotificationRelay.Notifications
     public class PullRequestStatusUpdateNotification : PullRequestNotification
     {
         public PullRequestStatus Status { get; set; } 
-        private string FormatAction(BotElement bot)
+        private string FormatAction(TextElement text)
         {
             switch (Status)
                 {
-                    case PullRequestStatus.Abandoned: return bot.Text.Abandoned;
-                    case PullRequestStatus.Active: return bot.Text.Reactivated;
-                    case PullRequestStatus.Completed: return bot.Text.Completed;
+                    case PullRequestStatus.Abandoned: return text.Abandoned;
+                    case PullRequestStatus.Active: return text.Reactivated;
+                    case PullRequestStatus.Completed: return text.Completed;
                     default:
                         return $"updated status to {Status} for";
                 }
         }
 
-        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform)
         {
             var formatter = new
             {
@@ -48,14 +48,14 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 PrUrl,
                 PrTitle = transform(PrTitle),
                 UserName = transform(UserName),
-                Action = FormatAction(bot),
+                Action = FormatAction(text),
                 SourceBranchName = transform(SourceBranch.Name),
                 TargetBranchName = transform(TargetBranch.Name),
                 CreatorUserName = transform(CreatorUserName),
                 MappedCreatorUser = bot.GetMappedUser(CreatorUniqueName),
                 MappedUser = bot.GetMappedUser(UniqueName)
             };
-            return new[] { bot.Text.PullRequestStatusUpdateFormat.FormatWith(formatter) };
+            return new[] { text.PullRequestStatusUpdateFormat.FormatWith(formatter) };
         }
 
         public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)

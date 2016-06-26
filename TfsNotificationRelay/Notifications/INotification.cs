@@ -32,6 +32,15 @@ namespace DevCore.TfsNotificationRelay.Notifications
         /// <returns></returns>
         IList<string> ToMessage(BotElement bot, Func<string, string> transform);
 
+        /// <summary>
+        /// Returns the message formatted according the TextElement.
+        /// The transform function will be applied to all text from TFS.
+        /// </summary>
+        /// <param name="bot"></param>
+        /// <param name="transform"></param>
+        /// <returns></returns>
+        IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform);
+
         EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules);
     }
 }

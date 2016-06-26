@@ -28,12 +28,12 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public CoreFieldsType CoreFields { get; set; }
         public ChangedFieldsType ChangedFields { get; set; }
 
-        private string FormatAction(BotElement bot)
+        private string FormatAction(TextElement text)
         {
-            return IsNew ? bot.Text.Created : bot.Text.Updated;
+            return IsNew ? text.Created : text.Updated;
         }
 
-        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform)
         {
             var lines = new List<string>();
             var formatter = new
@@ -50,16 +50,16 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 AssignedTo = transform(AssignedTo),
                 State = transform(State),
                 UserName = transform(UserName),
-                Action = FormatAction(bot),
+                Action = FormatAction(text),
                 AssignedToUserName = transform(AssignedToUserName),
                 MappedAssignedToUser = bot.GetMappedUser(AssignedToUniqueName),
                 MappedUser = bot.GetMappedUser(UniqueName)
             };
-            lines.Add(bot.Text.WorkItemchangedFormat.FormatWith(formatter));
+            lines.Add(text.WorkItemchangedFormat.FormatWith(formatter));
 
             var searchType = IsNew ? SearchFieldsType.Core : SearchFieldsType.Changed;
             var displayFieldsKey = IsNew ? "wiCreatedDisplayFields" : "wiChangedDisplayFields";
-            var pattern = IsNew ? "{name}: {newValue}" : "{name}: " + bot.Text.WorkItemFieldTransitionFormat;
+            var pattern = IsNew ? "{name}: {newValue}" : "{name}: " + text.WorkItemFieldTransitionFormat;
 
             foreach (var fieldId in bot.GetCsvSetting(displayFieldsKey, Defaults.WorkItemFields))
             {

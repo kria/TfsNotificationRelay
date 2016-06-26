@@ -30,7 +30,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
 
         public string UserName => Settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName;
 
-        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform)
         {
             var formatter = new
             {
@@ -43,7 +43,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 MappedUser = bot.GetMappedUser(UniqueName)
             };
 
-            return new[] { bot.Text.RepositoryCreatedFormat.FormatWith(formatter) };
+            return new[] { text.RepositoryCreatedFormat.FormatWith(formatter) };
         }
 
         public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
