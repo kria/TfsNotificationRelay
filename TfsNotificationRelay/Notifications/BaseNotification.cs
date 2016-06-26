@@ -23,7 +23,12 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public string TeamProjectCollection { get; set; }
         public IEnumerable<string> TeamNames { get; set; }
 
-        public abstract IList<string> ToMessage(BotElement bot, Func<string, string> transform);
+        public virtual IList<string> ToMessage(BotElement bot, Func<string, string> transform)
+        {
+            return ToMessage(bot, bot.Text, transform);
+        }
+
+        public abstract IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform);
 
         public abstract EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules);
 

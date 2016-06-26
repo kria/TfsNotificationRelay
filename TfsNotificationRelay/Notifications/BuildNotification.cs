@@ -39,20 +39,20 @@ namespace DevCore.TfsNotificationRelay.Notifications
         public override IEnumerable<string> TargetUserNames => new[] { RequestedForUniqueName };
         public string DisplayName => RequestedForDisplayName;
 
-        protected string FormatBuildDuration(BotElement bot)
+        protected string FormatBuildDuration(TextElement text)
         {
             var duration = FinishTime - StartTime;
-            return string.IsNullOrEmpty(bot.Text.TimeSpanFormat) ? duration.ToString(@"hh\:mm\:ss") : duration.ToString(bot.Text.TimeSpanFormat);
+            return string.IsNullOrEmpty(text.TimeSpanFormat) ? duration.ToString(@"hh\:mm\:ss") : duration.ToString(text.TimeSpanFormat);
         }
 
-        protected virtual string GetBuildFormat(BotElement bot)
+        protected virtual string GetBuildFormat(TextElement text)
         {
-            return bot.Text.BuildFormat;
+            return text.BuildFormat;
         }
 
         public bool IsSuccessful => BuildStatus.HasFlag(BuildStatus.Succeeded);
 
-        public override IList<string> ToMessage(BotElement bot, Func<string, string> transform)
+        public override IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform)
         {
             var formatter = new
             {
@@ -69,11 +69,11 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 StartTime,
                 FinishTime,
                 UserName = transform(UserName),
-                BuildDuration = FormatBuildDuration(bot),
+                BuildDuration = FormatBuildDuration(text),
                 DropLocation,
                 MappedUser = bot.GetMappedUser(RequestedForUniqueName)
             };
-            return new[] { GetBuildFormat(bot).FormatWith(formatter), transform(BuildStatus.ToString()) };
+            return new[] { GetBuildFormat(text).FormatWith(formatter), transform(BuildStatus.ToString()) };
         }
 
         public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
