@@ -154,7 +154,7 @@
     <Compile Include="EventHandlers\PullRequestStatusUpdateHandler.cs" />
     <Compile Include="EventHandlers\ReleaseCreatedHandler.cs" />
     <Compile Include="EventHandlers\ReleaseEnvironmentCompletedHandler.cs" />
-    <Compile Include="EventHandlers\RepositoryCreatedHandler.cs" />
+    <Compile Include="EventHandlers\RepositoryHandler.cs" />
     <Compile Include="EventHandlers\UserField.cs" />
     <Compile Include="HtmlToText.cs" />
     <Compile Include="Notifications\ChangesetCommentNotification.cs" />
@@ -167,6 +167,9 @@
     <Compile Include="Notifications\ReleaseCreatedNotification.cs" />
     <Compile Include="Notifications\ReleaseEnvironmentCompletedNotification.cs" />
     <Compile Include="Notifications\ReleaseNotification.cs" />
+    <Compile Include="Notifications\RepositoryCreatedNotification.cs" />
+    <Compile Include="Notifications\RepositoryDeletedNotification.cs" />
+    <Compile Include="Notifications\RepositoryRenamedNotification.cs" />
     <Compile Include="TextHelper.cs" />
     <Compile Include="INotifier.cs" />
     <Compile Include="Notifications\BaseNotification.cs" />
@@ -189,7 +192,7 @@
     <Compile Include="Notifications\PullRequestCreatedNotification.cs" />
     <Compile Include="Notifications\PullRequestReviewerVoteNotification.cs" />
     <Compile Include="Notifications\PullRequestStatusUpdateNotification.cs" />
-    <Compile Include="Notifications\RepositoryCreatedNotification.cs" />
+    <Compile Include="Notifications\RepositoryNotification.cs" />
     <Compile Include="Notifications\StringRow.cs" />
     <Compile Include="EventHandlers\WorkItemChangedHandler.cs" />
     <Compile Include="Logger.cs" />
