@@ -11,26 +11,22 @@
  * (at your option) any later version. See included file COPYING for details.
  */
 
+using DevCore.TfsNotificationRelay.Notifications;
+using Microsoft.TeamFoundation.Framework.Common;
+using Microsoft.TeamFoundation.Framework.Server;
+using Microsoft.TeamFoundation.Git.Server;
+using Microsoft.TeamFoundation.Integration.Server;
+using Microsoft.TeamFoundation.Server.Core;
+using Microsoft.TeamFoundation.VersionControl.Common;
+using Microsoft.TeamFoundation.VersionControl.Server;
+using Microsoft.VisualStudio.Services.CodeReview.Discussion.Server;
+using Microsoft.VisualStudio.Services.CodeReview.Discussion.WebApi.Events;
+using Microsoft.VisualStudio.Services.Common;
+using Microsoft.VisualStudio.Services.Location.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DevCore.TfsNotificationRelay.Notifications;
-using Microsoft.TeamFoundation;
-using Microsoft.TeamFoundation.Framework.Server;
-using Microsoft.TeamFoundation.Git.Server;
-using Microsoft.TeamFoundation.Server.Core;
-using Newtonsoft.Json.Linq;
-using Microsoft.TeamFoundation.Integration.Server;
-using Microsoft.TeamFoundation.VersionControl.Server;
-using Microsoft.TeamFoundation.VersionControl.Common;
 using System.Text.RegularExpressions;
-using Microsoft.TeamFoundation.Framework.Common;
-using Microsoft.VisualStudio.Services.Location.Server;
-using Microsoft.VisualStudio.Services.CodeReview.Discussion.Server;
-using Microsoft.VisualStudio.Services.CodeReview.Discussion.WebApi.Events;
-using Microsoft.VisualStudio.Services.CodeReview.Discussion.WebApi;
 
 namespace DevCore.TfsNotificationRelay.EventHandlers
 {

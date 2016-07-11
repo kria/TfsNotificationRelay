@@ -114,7 +114,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 }
 
                 // Add updated refs to old commits
-                foreach (TfsGitCommit gitCommit in oldCommits.OrderByDescending(c => c.GetCommitTime(requestContext)).TakeWhile(c => notification.Count < maxLines))
+                foreach (TfsGitCommit gitCommit in oldCommits.OrderByDescending(c => c.GetAuthor(requestContext).Time).TakeWhile(c => notification.Count < maxLines))
                 {
                     notification.Add(CreateCommitRow(requestContext, commitService, repository, gitCommit, CommitRowType.RefUpdate, pushNotification, refLookup));
                 }
@@ -153,10 +153,10 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 CommitId = gitCommit.ObjectId,
                 Type = rowType,
                 CommitUri = repoUri + "/commit/" + gitCommit.ObjectId.ToHexString(),
-                AuthorTime = gitCommit.GetLocalAuthorTime(requestContext),
-                Author = gitCommit.GetAuthor(requestContext),
-                AuthorName = gitCommit.GetAuthorName(requestContext),
-                AuthorEmail = gitCommit.GetAuthorEmail(requestContext),
+                AuthorTime = gitCommit.GetAuthor(requestContext).Time,
+                Author = gitCommit.GetAuthor(requestContext).NameAndEmail,
+                AuthorName = gitCommit.GetAuthor(requestContext).Name,
+                AuthorEmail = gitCommit.GetAuthor(requestContext).Email,
                 Comment = gitCommit.GetComment(requestContext),
                 ChangeCounts = commitManifest.ChangeCounts
             };
