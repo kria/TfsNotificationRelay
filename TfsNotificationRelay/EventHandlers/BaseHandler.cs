@@ -35,12 +35,12 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             return new[] { typeof(T) };
         }
 
-        protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines)
+        protected override IEnumerable<INotification> CreateNotifications(IVssRequestContext requestContext, object notificationEventArgs, int maxLines)
         {
             return CreateNotifications(requestContext, (T)notificationEventArgs, maxLines);
         }
 
-        protected abstract IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, T notificationEventArgs, int maxLines);
+        protected abstract IEnumerable<INotification> CreateNotifications(IVssRequestContext requestContext, T notificationEventArgs, int maxLines);
     }
 
     public abstract class BaseHandler : ISubscriber
@@ -56,9 +56,9 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
         public abstract Type[] SubscribedTypes();
 
-        protected abstract IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, object notificationEventArgs, int maxLines);
+        protected abstract IEnumerable<INotification> CreateNotifications(IVssRequestContext requestContext, object notificationEventArgs, int maxLines);
 
-        public virtual EventNotificationStatus ProcessEvent(TeamFoundationRequestContext requestContext, NotificationType notificationType,
+        public virtual EventNotificationStatus ProcessEvent(IVssRequestContext requestContext, NotificationType notificationType,
             object notificationEventArgs, out int statusCode, out string statusMessage, out Microsoft.TeamFoundation.Common.ExceptionPropertyCollection properties)
         {
             requestContext.Trace(0, TraceLevel.Info, Constants.TraceArea, "BaseHandler", 
@@ -128,7 +128,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             
         }
 
-        private static async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotifier notifier, INotification notification, BotElement bot, EventRuleElement matchingRule)
+        private static async Task NotifyAsync(IVssRequestContext requestContext, INotifier notifier, INotification notification, BotElement bot, EventRuleElement matchingRule)
         {
             try
             {
@@ -148,7 +148,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
         /// <param name="projectUri"></param>
         /// <param name="identity"></param>
         /// <returns>The teams the user is a member of</returns>
-        protected IEnumerable<string> GetUserTeamsByProjectUri(TeamFoundationRequestContext requestContext, string projectUri, IdentityDescriptor identity)
+        protected IEnumerable<string> GetUserTeamsByProjectUri(IVssRequestContext requestContext, string projectUri, IdentityDescriptor identity)
         {
             var teamService = requestContext.GetService<TeamFoundationTeamService>();
 
@@ -173,7 +173,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
         /// <param name="projectName"></param>
         /// <param name="identity"></param>
         /// <returns>The teams the user is a member of</returns>
-        protected IEnumerable<string> GetUserTeamsByProjectName(TeamFoundationRequestContext requestContext, string projectName, IdentityDescriptor identity)
+        protected IEnumerable<string> GetUserTeamsByProjectName(IVssRequestContext requestContext, string projectName, IdentityDescriptor identity)
         {
             var projectUri = ProjectsNames.Where(p => p.Value ==  projectName)
                 .Select(p => p.Key).FirstOrDefault();
@@ -189,7 +189,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
         /// <param name="projectName"></param>
         /// <param name="username"></param>
         /// <returns>The teams the user is a member of</returns>
-        protected IEnumerable<string> GetUserTeamsByProjectName(TeamFoundationRequestContext requestContext, string projectName, string username)
+        protected IEnumerable<string> GetUserTeamsByProjectName(IVssRequestContext requestContext, string projectName, string username)
         {
             var identity = GetIdentyByUsername(requestContext, username);
             if (identity == null) return Enumerable.Empty<string>();
@@ -197,7 +197,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             return GetUserTeamsByProjectName(requestContext, projectName, identity.Descriptor);
         }
 
-        protected TeamFoundationIdentity GetIdentyByUsername(TeamFoundationRequestContext requestContext, string username)
+        protected TeamFoundationIdentity GetIdentyByUsername(IVssRequestContext requestContext, string username)
         {
             var identityService = requestContext.GetService<TeamFoundationIdentityService>();
             var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.AccountName, username);
@@ -205,7 +205,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             return identity;
         }
 
-        protected void Trace(TeamFoundationRequestContext requestContext, string format, params object[] args)
+        protected void Trace(IVssRequestContext requestContext, string format, params object[] args)
         {
             requestContext.Trace(0, TraceLevel.Verbose, Constants.TraceArea, GetType().Name, format, args);
         }

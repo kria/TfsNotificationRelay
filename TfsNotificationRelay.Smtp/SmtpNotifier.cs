@@ -26,7 +26,7 @@ namespace DevCore.TfsNotificationRelay.Smtp
 {
     public class SmtpNotifier : INotifier
     {
-        public Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
+        public Task NotifyAsync(IVssRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
         {
             if (!notification.TargetUserNames.Any())
                 return Task.FromResult(0);

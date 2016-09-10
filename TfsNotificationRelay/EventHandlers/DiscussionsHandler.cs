@@ -23,19 +23,20 @@ using Microsoft.TeamFoundation.Git.Server;
 using Microsoft.TeamFoundation.Server.Core;
 using Newtonsoft.Json.Linq;
 using Microsoft.TeamFoundation.Integration.Server;
-using Microsoft.TeamFoundation.Discussion.Server;
-using Microsoft.TeamFoundation.Discussion.WebApi;
 using Microsoft.TeamFoundation.VersionControl.Server;
 using Microsoft.TeamFoundation.VersionControl.Common;
 using System.Text.RegularExpressions;
 using Microsoft.TeamFoundation.Framework.Common;
 using Microsoft.VisualStudio.Services.Location.Server;
+using Microsoft.VisualStudio.Services.CodeReview.Discussion.Server;
+using Microsoft.VisualStudio.Services.CodeReview.Discussion.WebApi.Events;
+using Microsoft.VisualStudio.Services.CodeReview.Discussion.WebApi;
 
 namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class DiscussionsHandler : BaseHandler<DiscussionsNotification>
     {
-        protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext,
+        protected override IEnumerable<INotification> CreateNotifications(IVssRequestContext requestContext,
             DiscussionsNotification args, int maxLines)
         {
             var locationService = requestContext.GetService<ILocationService>();
@@ -57,7 +58,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
                 if (artifactId.ArtifactType.Equals("Commit", StringComparison.OrdinalIgnoreCase))
                 {
-                    var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
+                    var repositoryService = requestContext.GetService<ITeamFoundationGitRepositoryService>();
                     var commitService = requestContext.GetService<TeamFoundationGitCommitService>();
                     
                     Guid projectGuid;
@@ -65,10 +66,10 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     Sha1Id commitId;
                     GitCommitArtifactId.Decode(artifactId, out projectGuid, out repositoryId, out commitId);
 
-                    using (TfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, repositoryId))
+                    using (ITfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, repositoryId))
                     {
                         var project = commonService.GetProject(requestContext, projectGuid);
-                        var repoUri = repository.GetRepositoryUri(requestContext);
+                        var repoUri = repository.GetRepositoryUri();
                         var commitUri = repoUri + "/commit/" + commitId.ToHexString();
                         string itemPath;
                         if (thread.Properties.TryGetValue<string>("Microsoft.TeamFoundation.Discussion.ItemPath", out itemPath))
@@ -82,14 +83,14 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
                         foreach (var comment in thread.Comments)
                         {
-                            var commenter = identityService.ReadIdentities(requestContext, new[] { comment.Author }).First();
+                            var commenter = identityService.ReadIdentities(requestContext, new[] { Guid.Parse(comment.Author.Id) }).First();
 
                             var notification = new Notifications.CommitCommentNotification()
                             {
                                 TeamProjectCollection = requestContext.ServiceHost.Name,
                                 PusherUniqueName = pusher?.UniqueName,
                                 UniqueName = commenter.UniqueName,
-                                DisplayName = comment.AuthorDisplayName,
+                                DisplayName = comment.Author.DisplayName,
                                 ProjectName = project.Name,
                                 RepoUri = repoUri,
                                 RepoName = repository.Name,
@@ -113,18 +114,18 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     var pullRequestService = requestContext.GetService<ITeamFoundationGitPullRequestService>();
                     var pullRequest = pullRequestService.GetPullRequestDetails(requestContext, pullRequestId);
 
-                    var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
+                    var repositoryService = requestContext.GetService<ITeamFoundationGitRepositoryService>();
 
-                    using (TfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, pullRequest.RepositoryId))
+                    using (ITfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, pullRequest.RepositoryId))
                     {
                         var project = commonService.GetProject(requestContext, projectGuid);
-                        string repoUri = repository.GetRepositoryUri(requestContext);
+                        string repoUri = repository.GetRepositoryUri();
                         var creator = identityService.ReadIdentities(requestContext, new[] { pullRequest.Creator }).FirstOrDefault();
 
                         foreach (var comment in thread.Comments)
                         {
-                            var commenter = identityService.ReadIdentities(requestContext, new[] { comment.Author }).First();
-                            
+                            var commenter = identityService.ReadIdentities(requestContext, new[] { Guid.Parse(comment.Author.Id) }).First();
+
                             var notification = new Notifications.PullRequestCommentNotification()
                             {
                                 TeamProjectCollection = requestContext.ServiceHost.Name,
@@ -186,7 +187,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
                     foreach (var comment in thread.Comments)
                     {
-                        var commenter = identityService.ReadIdentities(requestContext, new[] { comment.Author }).First();
+                        var commenter = identityService.ReadIdentities(requestContext, new[] { Guid.Parse(comment.Author.Id) }).First();
 
                         var notification = new Notifications.ChangesetCommentNotification()
                         {

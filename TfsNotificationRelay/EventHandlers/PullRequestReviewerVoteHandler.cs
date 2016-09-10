@@ -26,21 +26,21 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class PullRequestReviewerVoteHandler : BaseHandler<ReviewerVoteNotification>
     {
-        protected override IEnumerable<Notifications.INotification> CreateNotifications(TeamFoundationRequestContext requestContext, ReviewerVoteNotification ev, int maxLines)
+        protected override IEnumerable<Notifications.INotification> CreateNotifications(IVssRequestContext requestContext, ReviewerVoteNotification ev, int maxLines)
         {
-            var repositoryService = requestContext.GetService<TeamFoundationGitRepositoryService>();
+            var repositoryService = requestContext.GetService<ITeamFoundationGitRepositoryService>();
             var identityService = requestContext.GetService<ITeamFoundationIdentityService>();
             var commonService = requestContext.GetService<ICommonStructureService>();
 
-            var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.Identifier, ev.Reviewer.Identifier);
+            var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.Identifier, ev.Reviewer.Descriptor.Identifier);
 
-            using (TfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, ev.RepositoryId))
+            using (ITfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, ev.RepositoryId))
             {
                 var pullRequestService = requestContext.GetService<ITeamFoundationGitPullRequestService>();
                 TfsGitPullRequest pullRequest;
                 if (pullRequestService.TryGetPullRequestDetails(requestContext, repository, ev.PullRequestId, out pullRequest))
                 {
-                    string repoUri = repository.GetRepositoryUri(requestContext);
+                    string repoUri = repository.GetRepositoryUri();
                     var creator = identityService.ReadIdentities(requestContext, new[] { pullRequest.Creator }).First();
                     var reviewers = identityService.ReadIdentities(requestContext, pullRequest.Reviewers.Select(r => r.Reviewer).ToArray());
                     var notification = new Notifications.PullRequestReviewerVoteNotification()
@@ -56,7 +56,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                         PrId = pullRequest.PullRequestId,
                         PrUrl = $"{repoUri}/pullrequest/{ev.PullRequestId}#view=discussion",
                         PrTitle = pullRequest.Title,
-                        TeamNames = GetUserTeamsByProjectUri(requestContext, ev.TeamProjectUri, ev.Reviewer),
+                        TeamNames = GetUserTeamsByProjectUri(requestContext, ev.TeamProjectUri, ev.Reviewer.Descriptor),
                         SourceBranch = new Notifications.GitRef(pullRequest.SourceBranchName),
                         TargetBranch = new Notifications.GitRef(pullRequest.TargetBranchName),
                         ReviewerUserNames = reviewers.Select(r => r.UniqueName)

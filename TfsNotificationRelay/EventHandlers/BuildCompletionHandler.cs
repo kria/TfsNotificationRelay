@@ -27,7 +27,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class BuildCompletionHandler : BaseHandler<BuildCompletionNotificationEvent>
     {
-        protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, BuildCompletionNotificationEvent buildNotification, int maxLines)
+        protected override IEnumerable<INotification> CreateNotifications(IVssRequestContext requestContext, BuildCompletionNotificationEvent buildNotification, int maxLines)
         {
             BuildDetail build = buildNotification.Build;
             var locationService = requestContext.GetService<ILocationService>();

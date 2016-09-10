@@ -150,6 +150,12 @@ namespace DevCore.TfsNotificationRelay.Configuration
         [ConfigurationProperty("repositoryCreatedFormat")]
         public string RepositoryCreatedFormat => (string)this["repositoryCreatedFormat"];
 
+        [ConfigurationProperty("repositoryRenamedFormat")]
+        public string RepositoryRenamedFormat => (string)this["repositoryRenamedFormat"];
+
+        [ConfigurationProperty("repositoryDeletedFormat")]
+        public string RepositoryDeletedFormat => (string)this["repositoryDeletedFormat"];
+
         [ConfigurationProperty("workItemFieldTransitionFormat")]
         public string WorkItemFieldTransitionFormat => (string)this["workItemFieldTransitionFormat"];
 
@@ -170,5 +176,11 @@ namespace DevCore.TfsNotificationRelay.Configuration
 
         [ConfigurationProperty("changesetCommentFormat")]
         public string ChangesetCommentFormat => (string)this["changesetCommentFormat"];
+
+        [ConfigurationProperty("releaseCreatedFormat")]
+        public string ReleaseCreatedFormat => (string)this["releaseCreatedFormat"];
+
+        [ConfigurationProperty("releaseEnvironmentCompletedFormat")]
+        public string ReleaseEnvironmentCompletedFormat => (string)this["releaseEnvironmentCompletedFormat"];
     }
 }

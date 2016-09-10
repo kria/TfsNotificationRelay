@@ -52,15 +52,6 @@
       <HintPath>..\lib\Microsoft.TeamFoundation.Core.WebApi.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.TeamFoundation.Discussion.Server">
-      <HintPath>..\lib\Microsoft.TeamFoundation.Discussion.Server.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.TeamFoundation.Discussion.WebApi, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Microsoft.TeamFoundation.Discussion.WebApi.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.TeamFoundation.Framework.Server">
       <HintPath>..\lib\Microsoft.TeamFoundation.Framework.Server.dll</HintPath>
       <Private>False</Private>
@@ -93,6 +84,26 @@
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Server">
       <HintPath>..\lib\Microsoft.TeamFoundation.WorkItemTracking.Server.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Services.CodeReview.Discussion.Server">
+      <HintPath>..\lib\Microsoft.VisualStudio.Services.CodeReview.Discussion.Server.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Services.CodeReview.Discussion.WebApi">
+      <HintPath>..\lib\Microsoft.VisualStudio.Services.CodeReview.Discussion.WebApi.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Services.ReleaseManagement.WebApi">
+      <HintPath>..\lib\Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Services.ReleaseManagement2.Data">
+      <HintPath>..\lib\Microsoft.VisualStudio.Services.ReleaseManagement2.Data.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Services.ReleaseManagement2.Server">
+      <HintPath>..\lib\Microsoft.VisualStudio.Services.ReleaseManagement2.Server.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.WebApi, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -141,7 +152,9 @@
     <Compile Include="EventHandlers\PullRequestCreatedHandler.cs" />
     <Compile Include="EventHandlers\PullRequestReviewerVoteHandler.cs" />
     <Compile Include="EventHandlers\PullRequestStatusUpdateHandler.cs" />
-    <Compile Include="EventHandlers\RepositoryCreatedHandler.cs" />
+    <Compile Include="EventHandlers\ReleaseCreatedHandler.cs" />
+    <Compile Include="EventHandlers\ReleaseEnvironmentCompletedHandler.cs" />
+    <Compile Include="EventHandlers\RepositoryHandler.cs" />
     <Compile Include="EventHandlers\UserField.cs" />
     <Compile Include="HtmlToText.cs" />
     <Compile Include="Notifications\ChangesetCommentNotification.cs" />
@@ -151,6 +164,12 @@
     <Compile Include="Notifications\PullRequestCommentNotification.cs" />
     <Compile Include="Notifications\PullRequestNotification.cs" />
     <Compile Include="Notifications\Build2015CompletionNotification.cs" />
+    <Compile Include="Notifications\ReleaseCreatedNotification.cs" />
+    <Compile Include="Notifications\ReleaseEnvironmentCompletedNotification.cs" />
+    <Compile Include="Notifications\ReleaseNotification.cs" />
+    <Compile Include="Notifications\RepositoryCreatedNotification.cs" />
+    <Compile Include="Notifications\RepositoryDeletedNotification.cs" />
+    <Compile Include="Notifications\RepositoryRenamedNotification.cs" />
     <Compile Include="TextHelper.cs" />
     <Compile Include="INotifier.cs" />
     <Compile Include="Notifications\BaseNotification.cs" />
@@ -173,7 +192,7 @@
     <Compile Include="Notifications\PullRequestCreatedNotification.cs" />
     <Compile Include="Notifications\PullRequestReviewerVoteNotification.cs" />
     <Compile Include="Notifications\PullRequestStatusUpdateNotification.cs" />
-    <Compile Include="Notifications\RepositoryCreatedNotification.cs" />
+    <Compile Include="Notifications\RepositoryNotification.cs" />
     <Compile Include="Notifications\StringRow.cs" />
     <Compile Include="EventHandlers\WorkItemChangedHandler.cs" />
     <Compile Include="Logger.cs" />

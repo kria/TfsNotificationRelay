@@ -22,7 +22,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 {
     class ProjectCreatedHandler : BaseHandler<ProjectCreatedEvent>
     {
-        protected override IEnumerable<INotification> CreateNotifications(TeamFoundationRequestContext requestContext, ProjectCreatedEvent ev, int maxLines)
+        protected override IEnumerable<INotification> CreateNotifications(IVssRequestContext requestContext, ProjectCreatedEvent ev, int maxLines)
         {
             var locationService = requestContext.GetService<ILocationService>();
 

@@ -24,12 +24,13 @@ using DevCore.TfsNotificationRelay.Configuration;
 using DevCore.TfsNotificationRelay.Notifications.GitPush;
 using Microsoft.TeamFoundation.Framework.Server;
 using DevCore.TfsNotificationRelay.Slack.Models;
+using Microsoft.VisualStudio.Services.ReleaseManagement.WebApi;
 
 namespace DevCore.TfsNotificationRelay.Slack
 {
     public class SlackNotifier : INotifier
     {
-        public virtual async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
+        public virtual async Task NotifyAsync(IVssRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
         {
             var channels = bot.GetCsvSetting("channels");
             var tasks = new List<Task>();
@@ -92,6 +93,24 @@ namespace DevCore.TfsNotificationRelay.Slack
             };
 
             return SlackHelper.CreateSlackMessage(header, fields, bot, channel, bot.GetSetting("standardColor"), asUser);
+        }
+
+        public Message ToSlackMessage(ReleaseEnvironmentCompletedNotification notification, BotElement bot, string channel, bool asUser)
+        {
+            string header = notification.ToMessage(bot, s => s).First();
+            string color = null;
+            if (notification.EnvironmentStatus == EnvironmentStatus.Succeeded)
+                color = bot.GetSetting("successColor");
+            else if (notification.EnvironmentStatus == EnvironmentStatus.Rejected || notification.EnvironmentStatus == EnvironmentStatus.Canceled)
+                color = bot.GetSetting("errorColor");
+            else
+                color = bot.GetSetting("standardColor");
+
+            var fields = new[] {
+                new AttachmentField(notification.EnvironmentName, notification.EnvironmentStatus.ToString(), false)
+            };
+
+            return SlackHelper.CreateSlackMessage(header, fields, bot, channel, color, asUser);
         }
 
 

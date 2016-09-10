@@ -1,7 +1,7 @@
 ﻿/*
  * TfsNotificationRelay - http://github.com/kria/TfsNotificationRelay
  * 
- * Copyright (C) 2014 Kristian Adrup
+ * Copyright (C) 2016 Kristian Adrup
  * 
  * This file is part of TfsNotificationRelay.
  * 
@@ -12,50 +12,21 @@
  */
 
 using DevCore.TfsNotificationRelay.Configuration;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
-    public class RepositoryCreatedNotification : BaseNotification
+    public class RepositoryCreatedNotification : RepositoryNotification
     {
-        protected static SettingsElement Settings = TfsNotificationRelaySection.Instance.Settings;
-
-        public string UniqueName { get; set; }
-        public string DisplayName { get; set; }
-        public string ProjectName { get; set; }
-        public string RepoUri { get; set; }
-        public string RepoName { get; set; }
-
-        public string UserName => Settings.StripUserDomain ? TextHelper.StripDomain(UniqueName) : UniqueName;
-
-        public override IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform)
+        protected override string GetFormat(TextElement text)
         {
-            var formatter = new
-            {
-                TeamProjectCollection = transform(TeamProjectCollection),
-                DisplayName = transform(DisplayName),
-                UserName = transform(UserName),
-                ProjectName = transform(ProjectName),
-                RepoUri,
-                RepoName = transform(RepoName),
-                MappedUser = bot.GetMappedUser(UniqueName)
-            };
-
-            return new[] { text.RepositoryCreatedFormat.FormatWith(formatter) };
+            return text.RepositoryCreatedFormat;
         }
 
         public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
         {
-            var rule = eventRules.FirstOrDefault(r => r.Events.HasFlag(TfsEvents.RepositoryCreated)
-                && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
-                && ProjectName.IsMatchOrNoPattern(r.TeamProject)
-                && TeamNames.IsMatchOrNoPattern(r.TeamName)
-                && RepoName.IsMatchOrNoPattern(r.GitRepository));
-
-            return rule;
+            return GetRulesMatch(collection, eventRules).FirstOrDefault(r => r.Events.HasFlag(TfsEvents.RepositoryCreated));
         }
-
     }
 }

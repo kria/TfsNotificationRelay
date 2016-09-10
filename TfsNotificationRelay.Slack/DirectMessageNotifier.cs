@@ -23,7 +23,7 @@ namespace DevCore.TfsNotificationRelay.Slack
 {
     public class DirectMessageNotifier : SlackNotifier
     {
-        public override async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
+        public override async Task NotifyAsync(IVssRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
         {
             var token = bot.GetSetting("token");
             if (string.IsNullOrEmpty(token)) throw new ArgumentException("Missing token!");
