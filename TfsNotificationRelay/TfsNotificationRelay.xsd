@@ -59,6 +59,7 @@
                               <xs:attribute name="gitTag" type="xs:string" />
                               <xs:attribute name="environment" type="xs:string" />
                               <xs:attribute name="environmentStatuses" type="xs:string" />
+                              <xs:attribute name="text" type="xs:string" />
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>

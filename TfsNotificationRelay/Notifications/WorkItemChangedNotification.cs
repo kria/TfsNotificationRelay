@@ -68,7 +68,7 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 var field = GetUnifiedField(fieldId, searchType);
                 if (field != null)
                     lines.Add(pattern.FormatWith(field));
-            }
+                }
 
             return lines;
         }
@@ -81,12 +81,20 @@ namespace DevCore.TfsNotificationRelay.Notifications
             var integerFields = core ? CoreFields.IntegerFields : ChangedFields.IntegerFields;
 
             var sfield = stringFields.FirstOrDefault(f => f.ReferenceName == fieldId);
-            if (!string.IsNullOrEmpty(sfield?.NewValue) && (core || sfield.OldValue != sfield.NewValue))
-                return new UnifiedField(sfield);
-
             var ifield = integerFields.FirstOrDefault(f => f.ReferenceName == fieldId);
-            if (ifield != null && (core || ifield.OldValue != ifield.NewValue))
-                return new UnifiedField(ifield);
+            UnifiedField field = null;
+
+            if (sfield != null)
+            {
+                field = new UnifiedField(sfield);
+            }
+            else if (ifield != null)
+            {
+                field = new UnifiedField(ifield);
+            }
+
+            if (!string.IsNullOrEmpty(field?.NewValue) && (core || field.OldValue != field.NewValue))
+                return field;
 
             return null;
         }

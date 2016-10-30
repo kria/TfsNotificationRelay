@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DevCore.TfsNotificationRelay.Notifications.GitPush
 {
@@ -76,6 +77,11 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
             }
 
             return string.Join(", ", counters.Where(c => c.Count > 0).Select(c => c.Format.FormatWith(new {c.Count })));
+        }
+
+        public override bool IsMatch(string pattern)
+        {
+            return Comment != null && Regex.IsMatch(Comment, pattern);
         }
     }
 
