@@ -64,5 +64,8 @@ namespace DevCore.TfsNotificationRelay.Configuration
 
         [ConfigurationProperty("gitTag")]
         public string GitTag => (string)this["gitTag"];
+
+        [ConfigurationProperty("text")]
+        public string Text => (string)this["text"];
     }
 }

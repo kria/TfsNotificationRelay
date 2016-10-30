@@ -56,6 +56,7 @@
                               <xs:attribute name="sourcePath" type="xs:string" />
                               <xs:attribute name="gitBranch" type="xs:string" />
                               <xs:attribute name="gitTag" type="xs:string" />
+                              <xs:attribute name="text" type="xs:string" />
                             </xs:complexType>
                           </xs:element>
                         </xs:sequence>

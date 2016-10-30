@@ -32,6 +32,14 @@ namespace DevCore.TfsNotificationRelay
         PullRequestReviewerVote = 1 << 10,
         BuildQualityChanged = 1 << 11,
         RepositoryCreated = 1 << 12,
+        GitCommitComment = 1 << 13,
+        PullRequestComment = 1 << 14,
+        ChangesetComment = 1 << 15,
+        ReleaseCreated = 1 << 16,
+        ReleaseEnvironmentCompleted = 1 << 17,
+        RepositoryRenamed = 1 << 18,
+        RepositoryDeleted = 1 << 19,
+        PolicyViolation = 1 << 20,
 
         All = 0xFFFFFFFF
     }
