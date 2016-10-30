@@ -60,9 +60,12 @@ TfsNotificationRelay is an extensible plugin for Team Foundation Server that sen
 Since the TFS API changes quite frequently, there are multiple editions of TfsNotificationRelay. Make sure you pick the correct one for your system.
 
 - TfsNotificationRelay for TFS 2013 (TFS 2013.2+)
-- TfsNotificationRelay for TFS 2015
+- TfsNotificationRelay for TFS 2015 (TFS 2015.2+)
+
+Discontinued support (last builds available in [v1.16.0](https://github.com/kria/TfsNotificationRelay/releases/tag/v1.16.0)):
+
+- TfsNotificationRelay for TFS 2015 RTM
 - TfsNotificationRelay for TFS 2015.1
-- TfsNotificationRelay for TFS 2015.2+
 
 ## Download
 
@@ -81,10 +84,8 @@ Visual Studio 2015 is required since TfsNotificationRelay uses C# 6. All needed 
 
 Branch     | Description                          | Status
 -----------|--------------------------------------|-------
-`master`   | TfsNotificationRelay for TFS 2015    | [![master status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/master?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/master)
+`master`   | TfsNotificationRelay for TFS 2015.2+ | [![master status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/master?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/master)
 `tfs2013`  | TfsNotificationRelay for TFS 2013    | [![tfs2013 status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/tfs2013?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/tfs2013)
-`tfs2015.1`| TfsNotificationRelay for TFS 2015.1  | [![tfs2015.1 status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/tfs2015.1?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/tfs2015.1)
-`tfs2015.2`| TfsNotificationRelay for TFS 2015.2+ | [![tfs2015.2 status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/tfs2015.2?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/tfs2015.2)
 
 ## Extending TfsNotificationRelay
 
