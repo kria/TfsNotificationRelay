@@ -77,6 +77,9 @@ namespace DevCore.TfsNotificationRelay.Configuration
         [ConfigurationProperty("environmentStatuses")]
         public string EnvironmentStatuses => (string)this["environmentStatuses"];
 
+        [ConfigurationProperty("text")]
+        public string Text => (string)this["text"];
+
         public IEnumerable<EnvironmentStatus> EnvironmentStatusesEnums { get; private set; }
 
         protected override void PostDeserialize()

@@ -47,7 +47,8 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
                 && _teamNames.IsMatchOrNoPattern(r.TeamName)
                 && _repoName.IsMatchOrNoPattern(r.GitRepository)
                 && (string.IsNullOrEmpty(r.GitBranch) || _refs.Any(n => Regex.IsMatch(n.Name, r.GitBranch)))
-                && (string.IsNullOrEmpty(r.GitTag) || _refs.Any(n => Regex.IsMatch(n.Name, r.GitTag))));
+                && (string.IsNullOrEmpty(r.GitTag) || _refs.Any(n => Regex.IsMatch(n.Name, r.GitTag)))
+                && (string.IsNullOrEmpty(r.Text) || this.Any(row => row.IsMatch(r.Text))));
 
             return rule;
         }

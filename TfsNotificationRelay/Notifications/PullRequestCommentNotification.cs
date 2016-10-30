@@ -47,7 +47,9 @@ namespace DevCore.TfsNotificationRelay.Notifications
 
         public override EventRuleElement GetRuleMatch(string collection, IEnumerable<EventRuleElement> eventRules)
         {
-            var rule = GetRulesMatch(collection, eventRules).FirstOrDefault(r => r.Events.HasFlag(TfsEvents.PullRequestComment));
+
+            var rule = GetRulesMatch(collection, eventRules)
+                .FirstOrDefault(r => r.Events.HasFlag(TfsEvents.PullRequestComment) && Comment.IsMatchOrNoPattern(r.Text));
 
             return rule;
         }

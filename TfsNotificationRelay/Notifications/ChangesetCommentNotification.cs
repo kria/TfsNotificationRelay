@@ -65,7 +65,8 @@ namespace DevCore.TfsNotificationRelay.Notifications
                 && collection.IsMatchOrNoPattern(r.TeamProjectCollection)
                 && ProjectName.IsMatchOrNoPattern(r.TeamProject)
                 && TeamNames.IsMatchOrNoPattern(r.TeamName)
-                && SourcePath.IsMatchOrNoPattern(r.SourcePath));
+                && SourcePath.IsMatchOrNoPattern(r.SourcePath)
+                && Comment.IsMatchOrNoPattern(r.Text));
 
             return rule;
         }
