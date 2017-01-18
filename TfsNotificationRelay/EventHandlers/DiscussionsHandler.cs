@@ -101,7 +101,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     }
 
                 }
-                else if (artifactId.ArtifactType.Equals("CodeReviewId", StringComparison.OrdinalIgnoreCase))
+                else if (artifactId.ArtifactType.Equals("ReviewId", StringComparison.OrdinalIgnoreCase))
                 {
                     Guid projectGuid;
                     int pullRequestId;
