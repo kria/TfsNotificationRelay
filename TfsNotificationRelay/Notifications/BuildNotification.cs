@@ -19,7 +19,7 @@ using System.Collections.Generic;
 
 namespace DevCore.TfsNotificationRelay.Notifications
 {
-    public abstract class BuildNotification : BaseNotification
+    public abstract class BuildNotification:BaseNotification
     {
         protected static SettingsElement Settings = TfsNotificationRelaySection.Instance.Settings;
 
@@ -51,6 +51,8 @@ namespace DevCore.TfsNotificationRelay.Notifications
         }
 
         public bool IsSuccessful => BuildStatus.HasFlag(BuildStatus.Succeeded);
+
+        public bool IsPartiallySucceeded => BuildStatus.HasFlag(BuildStatus.PartiallySucceeded);
 
         public override IList<string> ToMessage(BotElement bot, TextElement text, Func<string, string> transform)
         {

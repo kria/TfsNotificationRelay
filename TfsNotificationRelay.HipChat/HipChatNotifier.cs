@@ -29,9 +29,9 @@ using System.Web;
 
 namespace DevCore.TfsNotificationRelay.HipChat
 {
-    public class HipChatNotifier : INotifier
+    public class HipChatNotifier:INotifier
     {
-        public async Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
+        public Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
         {
             string room = bot.GetSetting("room");
             string baseUrl = bot.GetSetting("apiBaseUrl");
@@ -45,7 +45,7 @@ namespace DevCore.TfsNotificationRelay.HipChat
             string url = baseUrl + "/room/" + room + "/notification";
             requestContext.Trace(0, TraceLevel.Verbose, Constants.TraceArea, "HipChatNotifier", "Sending notification to {0}\n{1}", url, json);
 
-            await httpClient.PostAsync(url, content).ContinueWith(t => t.Result.EnsureSuccessStatusCode());
+            return httpClient.PostAsync(url, content).ContinueWith(t => t.Result.EnsureSuccessStatusCode());
         }
 
         private string ToJson(INotification notification, BotElement bot)
@@ -70,7 +70,8 @@ namespace DevCore.TfsNotificationRelay.HipChat
                 if (lines == null || !lines.Any()) return null;
                 jobject.message_format = "text";
                 jobject.message = string.Join("\n", lines);
-            } else {
+            } else
+            {
                 var lines = notification.ToMessage(bot, HttpUtility.HtmlEncode);
                 if (lines == null || !lines.Any()) return null;
                 jobject.message_format = "html";
