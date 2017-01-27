@@ -53,9 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Fact.cs" />
     <Compile Include="Models\Message.cs" />
-    <Compile Include="Models\Section.cs" />
     <Compile Include="MsTeamsClient.cs" />
     <Compile Include="MsTeamsHelper.cs" />
     <Compile Include="MsTeamsNotifier.cs" />
