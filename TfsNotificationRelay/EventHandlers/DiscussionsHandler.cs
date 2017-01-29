@@ -57,14 +57,14 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     var repositoryService = requestContext.GetService<ITeamFoundationGitRepositoryService>();
                     var commitService = requestContext.GetService<TeamFoundationGitCommitService>();
                     
-                    Guid projectGuid;
+                    Guid projectId;
                     Guid repositoryId;
                     Sha1Id commitId;
-                    GitCommitArtifactId.Decode(artifactId, out projectGuid, out repositoryId, out commitId);
+                    GitCommitArtifactId.Decode(artifactId, out projectId, out repositoryId, out commitId);
 
                     using (ITfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, repositoryId))
                     {
-                        var project = commonService.GetProject(requestContext, projectGuid);
+                        var project = commonService.GetProject(requestContext, projectId);
                         var repoUri = repository.GetRepositoryUri();
                         var commitUri = repoUri + "/commit/" + commitId.ToHexString();
                         string itemPath;
@@ -101,20 +101,23 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     }
 
                 }
-                else if (artifactId.ArtifactType.Equals("ReviewId", StringComparison.OrdinalIgnoreCase))
+                if (artifactId.Tool.Equals("CodeReview", StringComparison.OrdinalIgnoreCase))
                 {
-                    Guid projectGuid;
-                    int pullRequestId;
-                    LegacyCodeReviewArtifactId.Decode(artifactId, out projectGuid, out pullRequestId);
-
                     var pullRequestService = requestContext.GetService<ITeamFoundationGitPullRequestService>();
-                    var pullRequest = pullRequestService.GetPullRequestDetails(requestContext, pullRequestId);
-
                     var repositoryService = requestContext.GetService<ITeamFoundationGitRepositoryService>();
+
+                    Guid projectId;
+                    int pullRequestId = PullRequestArtifactHelper.GetPullRequestId(requestContext, thread.ArtifactUri, out projectId);
+
+                    Logger.Log("pullRequestId:" + pullRequestId);
+                    Logger.Log("artifactId", artifactId);
+                    Logger.Log("args", args);
+
+                    var pullRequest = pullRequestService.GetPullRequestDetails(requestContext, pullRequestId);
 
                     using (ITfsGitRepository repository = repositoryService.FindRepositoryById(requestContext, pullRequest.RepositoryId))
                     {
-                        var project = commonService.GetProject(requestContext, projectGuid);
+                        var project = commonService.GetProject(requestContext, projectId);
                         string repoUri = repository.GetRepositoryUri();
                         var creator = identityService.ReadIdentities(requestContext, new[] { pullRequest.Creator }).FirstOrDefault();
 
