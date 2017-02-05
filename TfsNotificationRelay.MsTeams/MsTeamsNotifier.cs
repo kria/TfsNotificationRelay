@@ -12,7 +12,7 @@ namespace DevCore.TfsNotificationRelay.MsTeams
 {
     public class MsTeamsNotifier : INotifier
     {
-        public virtual Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
+        public virtual Task NotifyAsync(IVssRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
         {
             string webHookUrl = bot.GetSetting("webhookUrl");
 
