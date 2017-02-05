@@ -18,23 +18,9 @@ namespace DevCore.TfsNotificationRelay.MsTeams
 
             var msTeamsClient = new MsTeamsClient(webHookUrl);
 
-            Message message = ToMsTeamsMessage((dynamic)notification, bot);
+            Message message = MsTeamsHelper.CreateMsTeamsMessage((dynamic)notification, bot);
 
             return msTeamsClient.SendWebhookMessageAsync(message).ContinueWith(t => t.Result.EnsureSuccessStatusCode());
         }
-
-
-        private Message ToMsTeamsMessage(INotification notification, BotElement bot)
-        {
-            return MsTeamsHelper.CreateMsTeamsMessage(notification, bot, bot.GetSetting("standardColor"));
-        }
-
-        private Message ToMsTeamsMessage(BuildCompletionNotification notification, BotElement bot)
-        {
-            string color = notification.IsPartiallySucceeded ? bot.GetSetting("partiallySucceededColor") : (notification.IsSuccessful ? bot.GetSetting("successColor") : bot.GetSetting("errorColor"));
-
-            return MsTeamsHelper.CreateMsTeamsMessage(notification, bot, color);
-        }
-
     }
 }

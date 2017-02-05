@@ -158,5 +158,8 @@ namespace DevCore.TfsNotificationRelay.Configuration
 
         [ConfigurationProperty("refSeparator")]
         public string RefSeparator => (string)this["refSeparator"];
+
+        [ConfigurationProperty("buildStatus")]
+        public string BuildStatus => (string)this["buildStatus"];
     }
 }
