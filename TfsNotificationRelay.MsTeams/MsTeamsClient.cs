@@ -10,7 +10,7 @@ using Newtonsoft.Json.Serialization;
 
 namespace DevCore.TfsNotificationRelay.MsTeams
 {
-    class MsTeamsClient:HttpClient
+    class MsTeamsClient : HttpClient
     {
         private const string mediaType = "application/json";
 

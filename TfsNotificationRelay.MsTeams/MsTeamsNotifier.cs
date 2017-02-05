@@ -10,7 +10,7 @@ using Microsoft.TeamFoundation.Framework.Server;
 
 namespace DevCore.TfsNotificationRelay.MsTeams
 {
-    public class MsTeamsNotifier:INotifier
+    public class MsTeamsNotifier : INotifier
     {
         public virtual Task NotifyAsync(TeamFoundationRequestContext requestContext, INotification notification, BotElement bot, EventRuleElement matchingRule)
         {
@@ -26,7 +26,7 @@ namespace DevCore.TfsNotificationRelay.MsTeams
 
         private Message ToMsTeamsMessage(INotification notification, BotElement bot)
         {
-            return MsTeamsHelper.CreateMsTeamsMessage(notification, bot, string.Empty);
+            return MsTeamsHelper.CreateMsTeamsMessage(notification, bot, bot.GetSetting("standardColor"));
         }
 
         private Message ToMsTeamsMessage(BuildCompletionNotification notification, BotElement bot)

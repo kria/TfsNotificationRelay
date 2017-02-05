@@ -15,17 +15,18 @@ namespace DevCore.TfsNotificationRelay.MsTeams
 
             if (lines?.Any() ?? false)
             {
-                message = new Message();
-                message.themeColor = color?.Substring(1);
-                message.Text = lines.First();
-                if (!string.IsNullOrWhiteSpace(color))
+                var sb = new StringBuilder();
+                sb.Append("#####"); // Not using message.Title for now. It's displayed too small, doesn't handle markdown and is not shown at all on Android client.
+                sb.AppendLine(lines.First());
+                foreach (var line in lines.Skip(1))
                 {
-                    message.Title = $@"<h1 style=""color: {color}""> {string.Join(System.Environment.NewLine, lines.Skip(1))}</h1>";
-
-                } else
-                {
-                    message.Title = $@"{string.Join($"{System.Environment.NewLine}", string.Join("#", lines.Skip(1)))}"; ;
+                    sb.Append("* ");
+                    sb.AppendLine(line);
                 }
+
+                message = new Message();
+                message.ThemeColor = color?.Substring(1);
+                message.Text = sb.ToString();
             }
             return message;
         }

@@ -12,6 +12,6 @@ namespace DevCore.TfsNotificationRelay.MsTeams.Models
 
         public string Text { get; set; }
 
-        public string themeColor { get; set; }
+        public string ThemeColor { get; set; }
     }
 }
