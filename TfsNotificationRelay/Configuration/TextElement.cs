@@ -182,5 +182,8 @@ namespace DevCore.TfsNotificationRelay.Configuration
 
         [ConfigurationProperty("releaseEnvironmentCompletedFormat")]
         public string ReleaseEnvironmentCompletedFormat => (string)this["releaseEnvironmentCompletedFormat"];
+
+        [ConfigurationProperty("buildStatus")]
+        public string BuildStatus => (string)this["buildStatus"];
     }
 }
