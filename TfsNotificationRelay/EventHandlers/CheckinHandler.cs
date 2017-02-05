@@ -13,7 +13,6 @@
 
 using DevCore.TfsNotificationRelay.Notifications;
 using Microsoft.TeamFoundation.Framework.Server;
-using Microsoft.TeamFoundation.Server.Core;
 using Microsoft.VisualStudio.Services.Location.Server;
 using System;
 using System.Collections.Generic;
@@ -60,7 +59,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             var notification = new CheckinNotification()
             {
                 TeamProjectCollection = requestContext.ServiceHost.Name,
-                UniqueName = IdentityUtil.Convert(checkin.ChangesetOwner).UniqueName,
+                UniqueName = checkin.ChangesetOwner.UniqueName,
                 DisplayName = checkin.ChangesetOwner.DisplayName,
                 ChangesetUrl = $"{baseUrl}_versionControl/changeset/{checkin.Changeset}",
                 ChangesetId = checkin.Changeset,

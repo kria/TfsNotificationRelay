@@ -79,7 +79,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     else if (gitObject.ObjectType == WebApi.GitObjectType.Tag)
                     {
                         var tag = (TfsGitTag)gitObject;
-                        commit = tag.TryResolveToCommit();
+                        commit = tag.TryResolveToCommit(requestContext);
                     }
 
                     if (commit != null)
@@ -114,7 +114,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 }
 
                 // Add updated refs to old commits
-                foreach (TfsGitCommit gitCommit in oldCommits.OrderByDescending(c => c.GetCommitter().Time).TakeWhile(c => notification.Count < maxLines))
+                foreach (TfsGitCommit gitCommit in oldCommits.OrderByDescending(c => c.GetCommitTime(requestContext)).TakeWhile(c => notification.Count < maxLines))
                 {
                     notification.Add(CreateCommitRow(requestContext, commitService, repository, gitCommit, CommitRowType.RefUpdate, pushNotification, refLookup));
                 }
@@ -153,11 +153,11 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 CommitId = gitCommit.ObjectId,
                 Type = rowType,
                 CommitUri = repoUri + "/commit/" + gitCommit.ObjectId.ToHexString(),
-                AuthorTime = gitCommit.GetAuthor().Time,
-                Author = gitCommit.GetAuthor().NameAndEmail,
-                AuthorName = gitCommit.GetAuthor().Name,
-                AuthorEmail = gitCommit.GetAuthor().Email,
-                Comment = gitCommit.GetComment(),
+                AuthorTime = gitCommit.GetLocalAuthorTime(requestContext),
+                Author = gitCommit.GetAuthor(requestContext),
+                AuthorName = gitCommit.GetAuthorName(requestContext),
+                AuthorEmail = gitCommit.GetAuthorEmail(requestContext),
+                Comment = gitCommit.GetComment(requestContext),
                 ChangeCounts = commitManifest.ChangeCounts
             };
             List<GitRef> refs;

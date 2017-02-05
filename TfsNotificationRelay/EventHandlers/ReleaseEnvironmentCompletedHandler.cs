@@ -15,8 +15,8 @@ using DevCore.TfsNotificationRelay.Notifications;
 using Microsoft.TeamFoundation.Framework.Server;
 using Microsoft.TeamFoundation.Server.Core;
 using Microsoft.TeamFoundation.Server.Types;
-using Microsoft.VisualStudio.Services.ReleaseManagement.Common.Helpers;
 using Microsoft.VisualStudio.Services.ReleaseManagement.Data.ServerEvents;
+using Microsoft.VisualStudio.Services.ReleaseManagement.Server.Utilities;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -32,7 +32,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             var creator = identityService.ReadIdentities(requestContext, new[] { release.CreatedBy }).First();
 
             string projectName = projectService.GetProjectName(requestContext, ev.ProjectId);
-            var releaseUrl = WebAccessUrlBuilder.GetReleaseWebAccessUri(requestContext, projectName, release.Id);
+            var releaseUrl = WebAccessUrlBuilder.GetReleaseWebAccessUri(WebAccessUrlBuilder.GetCollectionUrl(requestContext), projectName, release.Id);
             var enironmentName = release.Environments.FirstOrDefault(e => e.Id == ev.CurrentEnvironmentId)?.Name;
 
             var notification = new ReleaseEnvironmentCompletedNotification

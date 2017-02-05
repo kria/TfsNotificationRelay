@@ -36,7 +36,7 @@ namespace DevCore.TfsNotificationRelay
 
                 if (current.ObjectId.Equals(ancestorId)) return true;
 
-                foreach (var c in current.GetParents())
+                foreach (var c in current.GetParents(requestContext))
                     q.Enqueue(c);
 
             }

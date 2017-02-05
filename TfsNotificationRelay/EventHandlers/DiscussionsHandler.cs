@@ -12,6 +12,7 @@
  */
 
 using DevCore.TfsNotificationRelay.Notifications;
+using Microsoft.TeamFoundation;
 using Microsoft.TeamFoundation.Framework.Common;
 using Microsoft.TeamFoundation.Framework.Server;
 using Microsoft.TeamFoundation.Git.Server;
@@ -21,7 +22,6 @@ using Microsoft.TeamFoundation.VersionControl.Common;
 using Microsoft.TeamFoundation.VersionControl.Server;
 using Microsoft.VisualStudio.Services.CodeReview.Discussion.Server;
 using Microsoft.VisualStudio.Services.CodeReview.Discussion.WebApi.Events;
-using Microsoft.VisualStudio.Services.Common;
 using Microsoft.VisualStudio.Services.Location.Server;
 using System;
 using System.Collections.Generic;
