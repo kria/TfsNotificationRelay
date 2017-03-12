@@ -63,6 +63,7 @@ Since the TFS API changes quite frequently, there are multiple editions of TfsNo
 - TfsNotificationRelay for TFS 2013 (2013.2+)
 - TfsNotificationRelay for TFS 2015 (2015.2+)
 - TfsNotificationRelay for TFS 2017
+- TfsNotificationRelay for TFS 2017.1
 
 Discontinued support (last builds available in [v1.16.0](https://github.com/kria/TfsNotificationRelay/releases/tag/v1.16.0)):
 
@@ -86,7 +87,8 @@ Visual Studio 2015 is required since TfsNotificationRelay uses C# 6. All needed 
 
 Branch     | Description                          | Status
 -----------|--------------------------------------|-------
-`master`   | TfsNotificationRelay for TFS 2017    | [![master status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/master?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/master)
+`master`   | TfsNotificationRelay for TFS 2017.1  | [![master status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/master?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/master)
+`tfs2017`  | TfsNotificationRelay for TFS 2017    | [![tfs2017 status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/tfs2017?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/tfs2017)
 `tfs2015`  | TfsNotificationRelay for TFS 2015.2+ | [![tfs2015 status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/tfs2015?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/tfs2015)
 `tfs2013`  | TfsNotificationRelay for TFS 2013.2+ | [![tfs2013 status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/tfs2013?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/tfs2013)
 
