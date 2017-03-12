@@ -153,7 +153,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 CommitId = gitCommit.ObjectId,
                 Type = rowType,
                 CommitUri = repoUri + "/commit/" + gitCommit.ObjectId.ToHexString(),
-                AuthorTime = gitCommit.GetAuthor().Time,
+                AuthorTime = gitCommit.GetAuthor().LocalTime,
                 Author = gitCommit.GetAuthor().NameAndEmail,
                 AuthorName = gitCommit.GetAuthor().Name,
                 AuthorEmail = gitCommit.GetAuthor().Email,
