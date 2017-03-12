@@ -30,7 +30,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
         {
             var repositoryService = requestContext.GetService<ITeamFoundationGitRepositoryService>();
             var commonService = requestContext.GetService<CommonStructureService>();
-            var commitService = requestContext.GetService<TeamFoundationGitCommitService>();
+            var commitService = requestContext.GetService<ITeamFoundationGitCommitService>();
             var identityService = requestContext.GetService<TeamFoundationIdentityService>();
             
             var identity = identityService.ReadIdentity(requestContext, IdentitySearchFactor.Identifier, pushNotification.Pusher.Identifier);

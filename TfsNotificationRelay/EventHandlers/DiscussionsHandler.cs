@@ -55,7 +55,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 if (artifactId.ArtifactType.Equals("Commit", StringComparison.OrdinalIgnoreCase))
                 {
                     var repositoryService = requestContext.GetService<ITeamFoundationGitRepositoryService>();
-                    var commitService = requestContext.GetService<TeamFoundationGitCommitService>();
+                    var commitService = requestContext.GetService<ITeamFoundationGitCommitService>();
                     
                     Guid projectId;
                     Guid repositoryId;
@@ -74,8 +74,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                         }
 
                         var commitManifest = commitService.GetCommitManifest(requestContext, repository, commitId);
-
-                        var pusher = identityService.ReadIdentities(requestContext, new[] { commitManifest.PusherId }).FirstOrDefault();
+                        var pushData = commitService.GetPushDataForPushIds(requestContext, repository.RepoId.RepoId, new[] { commitManifest.PushId }).FirstOrDefault();
+                        var pusher = identityService.ReadIdentities(requestContext, new[] { pushData.GetPusherId(requestContext) }).FirstOrDefault();
 
                         foreach (var comment in thread.Comments)
                         {

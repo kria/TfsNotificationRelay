@@ -26,7 +26,7 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
         public Sha1Id CommitId { get; set; }
         public CommitRowType Type { get; set; }
         public string CommitUri { get; set; }
-        public Dictionary<TfsGitChangeType, int> ChangeCounts { get; set; }
+        public ChangeCounts ChangeCounts { get; set; }
         public DateTime AuthorTime { get; set; }
         public string Author { get; set; }
         public string AuthorName { get; set; }
@@ -55,26 +55,13 @@ namespace DevCore.TfsNotificationRelay.Notifications.GitPush
             return sb.ToString();
         }
 
-        private string ChangeCountsToString(TextElement text, Dictionary<TfsGitChangeType, int> changeCounts)
+        private string ChangeCountsToString(TextElement text, ChangeCounts changeCounts)
         {
             var counters = new[] {
-                new ChangeCounter(TfsGitChangeType.Add, text.ChangeCountAddFormat, 0),
-                new ChangeCounter(TfsGitChangeType.Edit, text.ChangeCountEditFormat, 0),
-                new ChangeCounter(TfsGitChangeType.Delete, text.ChangeCountDeleteFormat, 0),
-                new ChangeCounter(TfsGitChangeType.Rename, text.ChangeCountRenameFormat, 0),
-                new ChangeCounter(TfsGitChangeType.SourceRename, text.ChangeCountSourceRenameFormat, 0)
+                new ChangeCounter(TfsGitChangeType.Add, text.ChangeCountAddFormat, changeCounts.Adds),
+                new ChangeCounter(TfsGitChangeType.Edit, text.ChangeCountEditFormat, changeCounts.Edits),
+                new ChangeCounter(TfsGitChangeType.Delete, text.ChangeCountDeleteFormat, changeCounts.Deletes)
             };
-
-            foreach (var changeCount in changeCounts)
-            {
-                // renamed files will also show up as Rename or Rename+Edit, so don't count them twice
-                if (changeCount.Key == (TfsGitChangeType.Delete | TfsGitChangeType.SourceRename)) continue;
-
-                foreach (var counter in counters.Where(c => changeCount.Key.HasFlag(c.Type)))
-                {
-                    counter.Count += changeCount.Value;
-                }
-            }
 
             return string.Join(", ", counters.Where(c => c.Count > 0).Select(c => c.Format.FormatWith(new {c.Count })));
         }
