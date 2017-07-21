@@ -75,7 +75,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
 
                         var commitManifest = commitService.GetCommitManifest(requestContext, repository, commitId);
                         var pushData = commitService.GetPushDataForPushIds(requestContext, repository.RepoId.RepoId, new[] { commitManifest.PushId }).FirstOrDefault();
-                        var pusher = identityService.ReadIdentities(requestContext, new[] { pushData.GetPusherId(requestContext) }).FirstOrDefault();
+                        var pusher = identityService.ReadIdentities(requestContext, new[] { pushData.PusherId }).FirstOrDefault();
 
                         foreach (var comment in thread.Comments)
                         {
