@@ -46,8 +46,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     ProjectName = commonService.GetProject(requestContext, pushNotification.TeamProjectUri).Name,
                     IsForcePush = Settings.IdentifyForcePush && pushNotification.IsForceRequired(requestContext, repository)
                 };
-                var notification = new GitPushNotification(requestContext.ServiceHost.Name, pushRow.ProjectName, 
-                    pushNotification.AuthenticatedUserName, pushRow.RepoName, teamNames,
+                var notification = new GitPushNotification(requestContext.ServiceHost.Name, pushRow.ProjectName,
+                    pushRow.RepoName, pushNotification.AuthenticatedUserName, teamNames,
                     pushNotification.RefUpdateResults.Where(r => r.Succeeded).Select(r => new GitRef(r)));
                 notification.Add(pushRow);
                 notification.TotalLineCount++;
