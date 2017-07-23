@@ -47,8 +47,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                     ProjectName = commonService.GetProject(requestContext, pushNotification.TeamProjectUri).Name,
                     IsForcePush = Settings.IdentifyForcePush && pushNotification.IsForceRequired(requestContext, repository)
                 };
-                var notification = new GitPushNotification(requestContext.ServiceHost.Name, pushRow.ProjectName, 
-                    pushNotification.AuthenticatedUserName, pushRow.RepoName, teamNames,
+                var notification = new GitPushNotification(requestContext.ServiceHost.Name, pushRow.ProjectName,
+                    pushRow.RepoName, pushNotification.AuthenticatedUserName, teamNames,
                     pushNotification.RefUpdateResults.Where(r => r.Succeeded).Select(r => new GitRef(r)));
                 notification.Add(pushRow);
                 notification.TotalLineCount++;
@@ -107,10 +107,10 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
                 notification.TotalLineCount += pushNotification.IncludedCommits.Count() + oldCommits.Count + unknowns.Count;
 
                 // Add new commits with refs
-                foreach (var commitId in pushNotification.IncludedCommits.TakeWhile(c => notification.Count < maxLines))
+                var pushCommits = pushNotification.IncludedCommits.Select(commitId => (TfsGitCommit)repository.LookupObject(commitId)).OrderByDescending(c => c.GetCommitter().Time);
+                foreach (var commit in pushCommits.TakeWhile(c => notification.Count < maxLines))
                 {
-                    TfsGitCommit gitCommit = (TfsGitCommit)repository.LookupObject(commitId);
-                    notification.Add(CreateCommitRow(requestContext, commitService, repository, gitCommit, CommitRowType.Commit, pushNotification, refLookup));
+                    notification.Add(CreateCommitRow(requestContext, commitService, repository, commit, CommitRowType.Commit, pushNotification, refLookup));
                 }
 
                 // Add updated refs to old commits
