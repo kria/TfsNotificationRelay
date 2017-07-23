@@ -22,7 +22,9 @@ var builtAssembliesToPackage = new [] {
 var extraFilesToPackage = new [] {
     "./README.md",
     "./COPYING",
-    "./src/TfsNotificationRelay/bin/" + configuration + "/DevCore.TfsNotificationRelay.dll.config"
+    "./src/TfsNotificationRelay/bin/" + configuration + "/DevCore.TfsNotificationRelay.dll.config",
+    "./src/TfsNotificationRelay/bin/" + configuration + "/Newtonsoft.Json.dll",
+    "./src/TfsNotificationRelay/bin/" + configuration + "/HtmlAgilityPack.dll"
 };
 
 var rnd = new Random();
