@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.TeamFoundation.Build.Server">
-      <HintPath>..\lib\Microsoft.TeamFoundation.Build.Server.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.TeamFoundation.Build.Server.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
