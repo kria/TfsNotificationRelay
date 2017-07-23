@@ -103,7 +103,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.ReleaseManagement2.Server">
-      <HintPath>..\lib\Microsoft.VisualStudio.Services.ReleaseManagement2.Server.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.VisualStudio.Services.ReleaseManagement2.Server.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.WebApi, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
