@@ -1,24 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsNotificationRelay", "TfsNotificationRelay\TfsNotificationRelay.csproj", "{B42FE02C-24B3-4D93-B27B-DF3A352E8504}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsNotificationRelay", "src\TfsNotificationRelay\TfsNotificationRelay.csproj", "{B42FE02C-24B3-4D93-B27B-DF3A352E8504}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsNotificationRelay.Slack", "TfsNotificationRelay.Slack\TfsNotificationRelay.Slack.csproj", "{1B7CD662-6B07-47FE-8A83-A9201631377A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsNotificationRelay.Slack", "src\TfsNotificationRelay.Slack\TfsNotificationRelay.Slack.csproj", "{1B7CD662-6B07-47FE-8A83-A9201631377A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsNotificationRelay.HipChat", "TfsNotificationRelay.HipChat\TfsNotificationRelay.HipChat.csproj", "{6CFA1BAD-4E12-42C8-BC97-9C860D08C502}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsNotificationRelay.HipChat", "src\TfsNotificationRelay.HipChat\TfsNotificationRelay.HipChat.csproj", "{6CFA1BAD-4E12-42C8-BC97-9C860D08C502}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsNotificationRelay.Tests", "TfsNotificationRelay.Tests\TfsNotificationRelay.Tests.csproj", "{60B57F4C-43E5-4C96-B44C-4F9AD94EC1EA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsNotificationRelay.Tests", "src\TfsNotificationRelay.Tests\TfsNotificationRelay.Tests.csproj", "{60B57F4C-43E5-4C96-B44C-4F9AD94EC1EA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0B97AE96-4985-40AF-B532-EC59697494B6}"
 	ProjectSection(SolutionItems) = preProject
+		build.cake = build.cake
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsNotificationRelay.Smtp", "TfsNotificationRelay.Smtp\TfsNotificationRelay.Smtp.csproj", "{943C358C-DD48-45AA-87EF-E185C25DB588}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsNotificationRelay.Smtp", "src\TfsNotificationRelay.Smtp\TfsNotificationRelay.Smtp.csproj", "{943C358C-DD48-45AA-87EF-E185C25DB588}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsNotificationRelay.MsTeams", "TfsNotificationRelay.MsTeams\TfsNotificationRelay.MsTeams.csproj", "{DAF38932-CA08-4E14-BAD0-7D4376D54320}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsNotificationRelay.MsTeams", "src\TfsNotificationRelay.MsTeams\TfsNotificationRelay.MsTeams.csproj", "{DAF38932-CA08-4E14-BAD0-7D4376D54320}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

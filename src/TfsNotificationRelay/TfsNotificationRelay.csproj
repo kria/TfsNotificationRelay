@@ -32,92 +32,92 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <HintPath>..\..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Build.Server">
-      <HintPath>..\lib\Microsoft.TeamFoundation.Build.Server.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.TeamFoundation.Build.Server.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Build2.WebApi">
-      <HintPath>..\lib\Microsoft.TeamFoundation.Build2.WebApi.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.TeamFoundation.Build2.WebApi.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Common, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Microsoft.TeamFoundation.Common.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.TeamFoundation.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Core.WebApi, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Microsoft.TeamFoundation.Core.WebApi.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.TeamFoundation.Core.WebApi.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Framework.Server">
-      <HintPath>..\lib\Microsoft.TeamFoundation.Framework.Server.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.TeamFoundation.Framework.Server.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Git.Server">
-      <HintPath>..\lib\Microsoft.TeamFoundation.Git.Server.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.TeamFoundation.Git.Server.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Server.Core">
-      <HintPath>..\lib\Microsoft.TeamFoundation.Server.Core.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.TeamFoundation.Server.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.Server.Types">
-      <HintPath>..\lib\Microsoft.TeamFoundation.Server.Types.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.TeamFoundation.Server.Types.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.SourceControl.WebApi, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Microsoft.TeamFoundation.SourceControl.WebApi.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.TeamFoundation.SourceControl.WebApi.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.VersionControl.Common.Integration, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Microsoft.TeamFoundation.VersionControl.Common.Integration.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.TeamFoundation.VersionControl.Common.Integration.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.VersionControl.Server">
-      <HintPath>..\lib\Microsoft.TeamFoundation.VersionControl.Server.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.TeamFoundation.VersionControl.Server.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.TeamFoundation.WorkItemTracking.Server">
-      <HintPath>..\lib\Microsoft.TeamFoundation.WorkItemTracking.Server.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.TeamFoundation.WorkItemTracking.Server.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.CodeReview.Discussion.Server">
-      <HintPath>..\lib\Microsoft.VisualStudio.Services.CodeReview.Discussion.Server.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.VisualStudio.Services.CodeReview.Discussion.Server.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.CodeReview.Discussion.WebApi">
-      <HintPath>..\lib\Microsoft.VisualStudio.Services.CodeReview.Discussion.WebApi.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.VisualStudio.Services.CodeReview.Discussion.WebApi.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.Common">
-      <HintPath>..\lib\Microsoft.VisualStudio.Services.Common.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.VisualStudio.Services.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.ReleaseManagement.WebApi">
-      <HintPath>..\lib\Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.VisualStudio.Services.ReleaseManagement.WebApi.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.ReleaseManagement2.Common">
-      <HintPath>..\lib\Microsoft.VisualStudio.Services.ReleaseManagement2.Common.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.VisualStudio.Services.ReleaseManagement2.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.ReleaseManagement2.Data">
-      <HintPath>..\lib\Microsoft.VisualStudio.Services.ReleaseManagement2.Data.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.VisualStudio.Services.ReleaseManagement2.Data.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Services.WebApi, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Microsoft.VisualStudio.Services.WebApi.dll</HintPath>
+      <HintPath>..\..\lib\Microsoft.VisualStudio.Services.WebApi.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
