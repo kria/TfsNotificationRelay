@@ -155,7 +155,7 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             var projectTeams = teamService.QueryTeams(requestContext, projectUri).ToList();
             Trace(requestContext, "Teams in project {0}: {1}", projectUri, string.Join(", ", projectTeams.Select(t => t.Name)));
 
-            var userTeams = teamService.QueryTeams(requestContext, identity).ToList();
+            var userTeams = teamService.QueryMyTeams(requestContext, identity).ToList();
             Trace(requestContext, "Teams for user {0}: {1}", identity, string.Join(", ", userTeams.Select(t => t.Name)));
 
             var teamNames = projectTeams.Join(userTeams,

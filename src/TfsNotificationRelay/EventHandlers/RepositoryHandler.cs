@@ -78,8 +78,8 @@ namespace DevCore.TfsNotificationRelay.EventHandlers
             else if (gitNotification is RepositoryDeletedNotification)
             {
                 var repoInfo = repositoryService
-                    .QueryDeletedRepositories(requestContext, gitNotification.TeamProjectUri)
-                    .Single(r => r.RepositoryId == gitNotification.RepositoryId);
+                    .QueryDeletedRepositories(requestContext, gitNotification.RepositoryId)
+                    .Single(r => r.Key.RepoId == gitNotification.RepositoryId);
                 var identity = identityService.ReadIdentities(requestContext, new[] { repoInfo.DeletedBy }).First();
                 notification = new Notifications.RepositoryDeletedNotification();
                 notification.UniqueName = identity.UniqueName;
