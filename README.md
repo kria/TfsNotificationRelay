@@ -48,7 +48,7 @@ TfsNotificationRelay is an extensible plugin for Team Foundation Server that sen
   + Checkin
   + Comment on changeset*
 
-*TFS 2015 only
+*TFS 2015+ only
 
 ## Screenshots
 
@@ -65,6 +65,8 @@ Since the TFS API changes quite frequently, there are multiple editions of TfsNo
 - TfsNotificationRelay for TFS 2017
 - TfsNotificationRelay for TFS 2017.1
 - TfsNotificationRelay for TFS 2017.2
+- TfsNotificationRelay for TFS 2018
+- TfsNotificationRelay for TFS 2018.2
 
 Discontinued support (last builds available in [v1.16.0](https://github.com/kria/TfsNotificationRelay/releases/tag/v1.16.0)):
 
@@ -88,7 +90,9 @@ Visual Studio 2015 is required since TfsNotificationRelay uses C# 6. All needed 
 
 Branch     | Description                          | Status
 -----------|--------------------------------------|-------
-`master`   | TfsNotificationRelay for TFS 2017.2  | [![master status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/master?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/master)
+`master`   | TfsNotificationRelay for TFS 2018.2  | [![master status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/master?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/master)
+`tfs2018`  | TfsNotificationRelay for TFS 2018    | [![tfs2018 status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/tfs2018?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/tfs2018)
+`tfs2017.2`| TfsNotificationRelay for TFS 2017.2  | [![tfs2017.2 status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/tfs2017.2?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/tfs2017.2)
 `tfs2017.1`| TfsNotificationRelay for TFS 2017.1  | [![tfs2017.1 status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/tfs2017.1?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/tfs2017.1)
 `tfs2017`  | TfsNotificationRelay for TFS 2017    | [![tfs2017 status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/tfs2017?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/tfs2017)
 `tfs2015`  | TfsNotificationRelay for TFS 2015.2+ | [![tfs2015 status](https://ci.appveyor.com/api/projects/status/f8tog2tftjbbotmr/branch/tfs2015?svg=true)](https://ci.appveyor.com/project/kria/tfsnotificationrelay/branch/tfs2015)
@@ -107,6 +111,6 @@ TfsNotificationRelay can easily be extended to send notifications to other servi
 
 ## License
 
-Copyright (C) 2014-2017 Kristian Adrup
+Copyright (C) 2014-2018 Kristian Adrup
 
 TfsNotificationRelay is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. See included file [COPYING](COPYING) for details.
